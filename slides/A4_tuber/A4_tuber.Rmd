@@ -1,0 +1,127 @@
+---
+title: "Automatic sampling and analysis of YouTubeData"
+subtitle: "Collecting data with the tuber package for R"
+author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
+date: "2020-02-10"
+location: "GESIS, Cologne, Germany"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["default", "default-fonts", "../workshop.css"]
+    nature:
+      highlightStyle: "github"
+      highlightLines: true
+      countIncrementalSlides: false
+---
+layout: true
+
+```{r setup, include = F}
+if (!require(easypackages)) install.packages("easypackages")
+library(easypackages)
+
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt = F)
+
+options(htmltools.dir.version = FALSE)
+
+opts_chunk$set(echo = FALSE, fig.align = "center")
+
+```
+
+<div class="my-footer">
+  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
+  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
+  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
+</div>
+
+<style type="text/css">
+
+pre {
+  font-size: 10px
+}
+</style>
+
+---
+
+# The `tuber` package
+
+With the [`tuber` package](https://github.com/soodoku/tuber) you can access the *YouTube* API via `R`. The author of the package has written a short [vignette](https://cran.r-project.org/web/packages/tuber/vignettes/tuber-ex.html) to introduce some of its main functions.
+
+Essentially, there are two main units of analysis for which you can access data with the `tuber` package:
+
+- Channels
+- Videos
+
+In this workshop, we will focus on the latter.
+
+---
+
+# Setup
+
+```{r packages, eval = F, echo = T}
+install.packages("tuber")
+library(tuber)
+options(stringsAsFactors = FALSE)
+```
+
+---
+
+# Excursus: Keep your secrets secret
+
+If you save your API credentials in an R script, anyone who has that script can potentially use your API key. This can affect your quota and might even cause costs for you.
+
+If you use R environment variables, your credentials won't be shared if you share your scripts. However, the information is still stored in a plain text file. You can run `usethis::edit_r_environ()` to see its contents.
+
+One way of keeping your credentials safer is using the `keyring` package.
+
+```{r keyring setup, eval = F, echo = T}
+install.packages("keyring")
+library(keyring)
+```
+
+---
+
+# Excursus: The `keyring` package
+
+To store your credentials in an encrypted password-protected keyring you first need to create a new keyring.
+
+```{r create keyring, eval = F, echo = T}
+keyring_create("YouTube_API")
+```
+
+You will then be prompted to set a password for this keyring. As always: This password should ideally be easy to remember (for you) but hard to guess (for anyone else). You might want to write it down or store it in your password manager (if you use one). In the next step, you can store your *YouTube* app secret in the keyring.
+```{r set key, eval = F, echo = T}
+key_set("app_secret", 
+        keyring ="YouTube_API")
+```
+
+When you are prompted to enter the password now you should enter your app secret. At the end of your script, you should lock the keyring again.
+```{r lock keyring, eval = F, echo = T}
+keyring_lock("YouTube_API")
+```
+
+---
+
+# Authenticate your app
+
+```{r authenticate plain, eval = F, echo = T}
+yt_oauth(app_id = "my_app_id", # paste your app ID here
+         app_secret = "my_app_secret", # paste your app secret here
+         token="")
+```
+or, if you stored your app secret in a keyring
+
+```{r authenticate keyring, eval = F, echo = T}
+yt_oauth(app_id = "my_app_id",  # paste your app ID here
+         app_secret = key_get("app_secret", keyring ="YouTube_API"),
+         token="")
+```
+
+When running this line, there will be a prompt in the console asking you to save the access token in a file. Select "No" by entering 2 in the console and hitting enter. Afterwards, a browser window should open, prompting you to log in with your Google account and to give permissions. After that, you can close the browser and return to `R`.
+
+---
+
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/tidyverse-workshop-gesis-2019/exercises/A5_DataWrangling1_exercises_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/tidyverse-workshop-gesis-2019/solutions/A5_DataWrangling1_exercises_solution.html)
