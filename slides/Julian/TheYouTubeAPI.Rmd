@@ -198,14 +198,48 @@ class: center, middle
 ---
 
 
+ ![plot](Images/AuthentificationButton.png)
 
 
+---
 
+ ![plot](Images/UserAgreement.png)
 
+---
 
+ ![plot](Images/CreateOAuth.png)
 
+---
 
+ ![plot](Images/OtherApplication.png)
 
+---
+# DONE!
+---
+
+# What can we do with these Credentials now?
+
+- We can see what the API allows us to do in the [Google API Explorer](https://developers.google.com/apis-explorer/#p/)
+
+- Basically, you can automate any action and see all data that you
+  also would be able to see when logged into YT with your Google account
+  
+- Fortunately for us, the YouTube API is very [well documented](https://developers.google.com/youtube/v3/docs/)
+
+---
+
+# Test
+
+---
+
+# Have a slide with an overview of most common parameters and which ones we are going to use
+
+---
+
+# Have a slide explaining what a GET Request it, how to execute it from the terminal and 
+# how to execute it from R
+
+---
 
 
 
