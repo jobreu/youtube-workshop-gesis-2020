@@ -23,7 +23,7 @@ packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt =
 
 options(htmltools.dir.version = FALSE)
 
-opts_chunk$set(echo = FALSE, fig.align = "center")
+opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ```
 
@@ -46,20 +46,23 @@ pre {
 
 With the [`tuber` package](https://github.com/soodoku/tuber) you can access the *YouTube* API via `R`. The author of the package has written a short [vignette](https://cran.r-project.org/web/packages/tuber/vignettes/tuber-ex.html) to introduce some of its main functions.
 
-Essentially, there are two main units of analysis for which you can access data with the `tuber` package:
+Essentially, there are three main units of analysis for which you can access data with the `tuber` package:
 
-- Channels
 - Videos
+- Channels
+- Playlists
 
-In this workshop, we will focus on the latter.
+In this workshop, we will focus on individual videos.
 
 ---
 
 # Setup
 
-```{r packages, eval = F, echo = T}
+```{r packages, eval = F}
 install.packages("tuber")
+install.packages("tidyverse")
 library(tuber)
+library(tidyverse)
 options(stringsAsFactors = FALSE)
 ```
 
@@ -73,7 +76,7 @@ If you use R environment variables, your credentials won't be shared if you shar
 
 One way of keeping your credentials safer is using the `keyring` package.
 
-```{r keyring setup, eval = F, echo = T}
+```{r keyring setup, eval = F}
 install.packages("keyring")
 library(keyring)
 ```
@@ -84,18 +87,18 @@ library(keyring)
 
 To store your credentials in an encrypted password-protected keyring you first need to create a new keyring.
 
-```{r create keyring, eval = F, echo = T}
+```{r create keyring, eval = F}
 keyring_create("YouTube_API")
 ```
 
 You will then be prompted to set a password for this keyring. As always: This password should ideally be easy to remember (for you) but hard to guess (for anyone else). You might want to write it down or store it in your password manager (if you use one). In the next step, you can store your *YouTube* app secret in the keyring.
-```{r set key, eval = F, echo = T}
+```{r set key, eval = F}
 key_set("app_secret", 
         keyring ="YouTube_API")
 ```
 
 When you are prompted to enter the password now you should enter your app secret. At the end of your script, you should lock the keyring again.
-```{r lock keyring, eval = F, echo = T}
+```{r lock keyring, eval = F}
 keyring_lock("YouTube_API")
 ```
 
@@ -103,20 +106,40 @@ keyring_lock("YouTube_API")
 
 # Authenticate your app
 
-```{r authenticate plain, eval = F, echo = T}
+```{r authenticate plain, eval = F}
 yt_oauth(app_id = "my_app_id", # paste your app ID here
          app_secret = "my_app_secret", # paste your app secret here
          token="")
 ```
 or, if you stored your app secret in a keyring
 
-```{r authenticate keyring, eval = F, echo = T}
+```{r authenticate keyring, eval = F}
 yt_oauth(app_id = "my_app_id",  # paste your app ID here
          app_secret = key_get("app_secret", keyring ="YouTube_API"),
          token="")
 ```
 
-When running this line, there will be a prompt in the console asking you to save the access token in a file. Select "No" by entering 2 in the console and hitting enter. Afterwards, a browser window should open, prompting you to log in with your Google account and to give permissions. After that, you can close the browser and return to `R`.
+When running the `yt_oauth()` function there will be a prompt in the console asking you to save the access token in a file. Select "No" by entering 2 in the console and hitting enter. Afterwards, a browser window should open, prompting you to log in with your Google account and to give permissions. After that, you can close the browser and return to `R`.
+
+---
+
+# Channel statistics
+
+Get information about a channel
+```{r channel stats, eval = F}
+hadley_stats <- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
+```
+Data is returned as a list which can then be wrangled into a dataframe (tibble).
+```{r channel stats to df, eval = F}
+hadley_stats_df <- hadley_stats$statistics %>% 
+  as_tibble() %>% 
+  mutate_at(vars(-hiddenSubscriberCount), as.numeric) %>% 
+  mutate(channel_id = hadley_stats$id,
+         channel_name = hadley_stats$snippet$title,
+         channel_published = hadley_stats$snippet$publishedAt)
+
+```
+
 
 ---
 
