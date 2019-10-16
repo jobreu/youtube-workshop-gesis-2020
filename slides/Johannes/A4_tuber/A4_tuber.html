@@ -49,7 +49,7 @@ Essentially, there are three main units of analysis for which you can access dat
 - Channels
 - Playlists
 
-In this workshop, we will focus on individual videos.
+In this workshop, we will focus on individual **videos**.
 
 ---
 
@@ -123,18 +123,298 @@ yt_oauth(app_id = "my_app_id",  # paste your app ID here
          token="")
 ```
 
-When running the `yt_oauth()` function there will be a prompt in the console asking you to save the access token in a file. Select "No" by entering 2 in the console and hitting enter. Afterwards, a browser window should open, prompting you to log in with your Google account and to give permissions. After that, you can close the browser and return to `R`.
+---
+
+# Authentication
+
+When running the `yt_oauth()` function there will be a prompt in the console asking you to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple R sessions that need your credentials (example: knitting an `RMarkdown` document). 
+
+Similar to the app key and secret, you should never share the `.httr-oauth` file as it can be read in `R` using `read_RDS()` (the file contains a list list with all information needed for OAuth, including your app key and secret). Hence, it is usually ok (and safer) to select "No" when asked whether to store a local `.httr-oauth` file. 
+---
+
+# App permissions
+
+After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your Google account and to give permissions. Google will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", and then "Accept". After that, you can close the browser and return to `R`.
+
+---
+
+# `tuber` test
+
+
+```r
+yt_oauth()
+get_video_details ("DcJFdCmN98s")
+```
+
+```
+## $kind
+## [1] "youtube#videoListResponse"
+## 
+## $etag
+## [1] "\"p4VTdlkQv3HQeTEaXgvLePAydmU/f6jz00JzFOgn3Q5jpZ99aHDVsrc\""
+## 
+## $pageInfo
+## $pageInfo$totalResults
+## [1] 1
+## 
+## $pageInfo$resultsPerPage
+## [1] 1
+## 
+## 
+## $items
+## $items[[1]]
+## $items[[1]]$kind
+## [1] "youtube#video"
+## 
+## $items[[1]]$etag
+## [1] "\"p4VTdlkQv3HQeTEaXgvLePAydmU/QlzWceWcQMKlb1mVxhoUj11hSgw\""
+## 
+## $items[[1]]$id
+## [1] "DcJFdCmN98s"
+## 
+## $items[[1]]$snippet
+## $items[[1]]$snippet$publishedAt
+## [1] "2012-08-15T22:04:48.000Z"
+## 
+## $items[[1]]$snippet$channelId
+## [1] "UCNYrK4tc5i1-eL8TXesH2pg"
+## 
+## $items[[1]]$snippet$title
+## [1] "OH MY DAYUM ft. Daym Drops"
+## 
+## $items[[1]]$snippet$description
+## [1] "the track on itunes- https://itunes.apple.com/us/album/oh-my-dayum-single/id553920419 (it's also streaming everywhere, even spotify &amp; your grandmom's house)\nDaym's Channel: http://youtube.com/GhettoNN\nOriginal Video:\nhttp://www.youtube.com/watch?v=zGkHRa64sDY\nour new Christmas album: https://thegregorybrothers.bandcamp.com/\nGet exclusive videos from us for just $1! https://www.patreon.com/gregorybrothers\n\n\n\nfeaturing the vocals of Catherine Provenzano\nhttps://kenniston.bandcamp.com/releases\nmastering by Dan Millice: http://www.danmillice.com/\n\nour stuff that you should click, to be happier:\nYouTube 2! http://www.youtube.com/thegregorybrothers\nFacebook! http://www.facebook.com/gregorybrothers\nTwitter! http://www.twitter.com/gregorybrothers\nWebs &amp; Store! http://www.thegregorybrothers.com\n\nChords:\n(intro) Cm Ab Cm Ab\n(chorus) Db Ab C7 Fm-Cm-Db-Ab\n(verse) Cm Ab Gm Fm\n\nLyrics:\n\noh my goodness, oh my damn\noh my goodness- they goin H.A.M.\n\nthis is how bacon is supposed to be\nthe fries, they blend so perfectly\nthe cheese up in here is goin H.A.M.\ndayum, dayum, DAYUM\n\ni wish you could smell what i'm smellin\nmm, mm, mm\nyou bite the fry, the fry bites back, my man\ndayum, dayum\n\nDAYUM, crispety crunch\nDAYUM, look at the bacon\nDAYUM, get yourself that double cheeseburger\ndayum, dayum\n\nDAYUM, ghetto grocery bag\nDAYUM, the cheese is oozin\nDAYUM, let's do this\ndayum, dayum, DAYUM\n\ndo you wanna know the difference\nbetween a weak burger\nand a burger that has strength\na burger that has strength\n\na weak burger you can chew and still talk\na burger with strength you chew\nthe meat just absorbs all the space\nand all the air possible all in your throat\nto the point that if you wanted to start talkin\nnothin but mm-mm, mm-mm, mm-mm, mm-mm, mm-mm\nis comin out\nword\n\nskimmalarinky dinky dink\nskimmmalarinky doo\ni love you\noh my damn\n\nchorus\n\n#Dayum #Songify #SongifyThis"
+## 
+## $items[[1]]$snippet$thumbnails
+## $items[[1]]$snippet$thumbnails$default
+## $items[[1]]$snippet$thumbnails$default$url
+## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/default.jpg"
+## 
+## $items[[1]]$snippet$thumbnails$default$width
+## [1] 120
+## 
+## $items[[1]]$snippet$thumbnails$default$height
+## [1] 90
+## 
+## 
+## $items[[1]]$snippet$thumbnails$medium
+## $items[[1]]$snippet$thumbnails$medium$url
+## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/mqdefault.jpg"
+## 
+## $items[[1]]$snippet$thumbnails$medium$width
+## [1] 320
+## 
+## $items[[1]]$snippet$thumbnails$medium$height
+## [1] 180
+## 
+## 
+## $items[[1]]$snippet$thumbnails$high
+## $items[[1]]$snippet$thumbnails$high$url
+## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/hqdefault.jpg"
+## 
+## $items[[1]]$snippet$thumbnails$high$width
+## [1] 480
+## 
+## $items[[1]]$snippet$thumbnails$high$height
+## [1] 360
+## 
+## 
+## $items[[1]]$snippet$thumbnails$standard
+## $items[[1]]$snippet$thumbnails$standard$url
+## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/sddefault.jpg"
+## 
+## $items[[1]]$snippet$thumbnails$standard$width
+## [1] 640
+## 
+## $items[[1]]$snippet$thumbnails$standard$height
+## [1] 480
+## 
+## 
+## $items[[1]]$snippet$thumbnails$maxres
+## $items[[1]]$snippet$thumbnails$maxres$url
+## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/maxresdefault.jpg"
+## 
+## $items[[1]]$snippet$thumbnails$maxres$width
+## [1] 1280
+## 
+## $items[[1]]$snippet$thumbnails$maxres$height
+## [1] 720
+## 
+## 
+## 
+## $items[[1]]$snippet$channelTitle
+## [1] "schmoyoho"
+## 
+## $items[[1]]$snippet$tags
+## $items[[1]]$snippet$tags[[1]]
+## [1] "guys"
+## 
+## $items[[1]]$snippet$tags[[2]]
+## [1] "five"
+## 
+## $items[[1]]$snippet$tags[[3]]
+## [1] "burgers"
+## 
+## $items[[1]]$snippet$tags[[4]]
+## [1] "and"
+## 
+## $items[[1]]$snippet$tags[[5]]
+## [1] "fries"
+## 
+## $items[[1]]$snippet$tags[[6]]
+## [1] "burger"
+## 
+## $items[[1]]$snippet$tags[[7]]
+## [1] "cheese"
+## 
+## $items[[1]]$snippet$tags[[8]]
+## [1] "cheeseburger"
+## 
+## $items[[1]]$snippet$tags[[9]]
+## [1] "daym"
+## 
+## $items[[1]]$snippet$tags[[10]]
+## [1] "drops"
+## 
+## $items[[1]]$snippet$tags[[11]]
+## [1] "GNN"
+## 
+## $items[[1]]$snippet$tags[[12]]
+## [1] "ghetto"
+## 
+## $items[[1]]$snippet$tags[[13]]
+## [1] "news"
+## 
+## $items[[1]]$snippet$tags[[14]]
+## [1] "network"
+## 
+## $items[[1]]$snippet$tags[[15]]
+## [1] "review"
+## 
+## $items[[1]]$snippet$tags[[16]]
+## [1] "auto"
+## 
+## $items[[1]]$snippet$tags[[17]]
+## [1] "tune"
+## 
+## $items[[1]]$snippet$tags[[18]]
+## [1] "the"
+## 
+## $items[[1]]$snippet$tags[[19]]
+## [1] "songify"
+## 
+## $items[[1]]$snippet$tags[[20]]
+## [1] "this"
+## 
+## $items[[1]]$snippet$tags[[21]]
+## [1] "gregory"
+## 
+## $items[[1]]$snippet$tags[[22]]
+## [1] "brothers"
+## 
+## $items[[1]]$snippet$tags[[23]]
+## [1] "andrew"
+## 
+## $items[[1]]$snippet$tags[[24]]
+## [1] "evan"
+## 
+## $items[[1]]$snippet$tags[[25]]
+## [1] "michael"
+## 
+## $items[[1]]$snippet$tags[[26]]
+## [1] "sarah"
+## 
+## $items[[1]]$snippet$tags[[27]]
+## [1] "oh"
+## 
+## $items[[1]]$snippet$tags[[28]]
+## [1] "my"
+## 
+## $items[[1]]$snippet$tags[[29]]
+## [1] "dayum"
+## 
+## $items[[1]]$snippet$tags[[30]]
+## [1] "oh my dayum"
+## 
+## $items[[1]]$snippet$tags[[31]]
+## [1] "shmoyoho"
+## 
+## $items[[1]]$snippet$tags[[32]]
+## [1] "shmoyo"
+## 
+## $items[[1]]$snippet$tags[[33]]
+## [1] "schmoyoho"
+## 
+## $items[[1]]$snippet$tags[[34]]
+## [1] "daymon"
+## 
+## $items[[1]]$snippet$tags[[35]]
+## [1] "patterson"
+## 
+## $items[[1]]$snippet$tags[[36]]
+## [1] "5 guys"
+## 
+## $items[[1]]$snippet$tags[[37]]
+## [1] "dayum dayum dayum"
+## 
+## $items[[1]]$snippet$tags[[38]]
+## [1] "comedy"
+## 
+## $items[[1]]$snippet$tags[[39]]
+## [1] "song"
+## 
+## $items[[1]]$snippet$tags[[40]]
+## [1] "parody"
+## 
+## $items[[1]]$snippet$tags[[41]]
+## [1] "spoof"
+## 
+## $items[[1]]$snippet$tags[[42]]
+## [1] "food review"
+## 
+## 
+## $items[[1]]$snippet$categoryId
+## [1] "25"
+## 
+## $items[[1]]$snippet$liveBroadcastContent
+## [1] "none"
+## 
+## $items[[1]]$snippet$defaultLanguage
+## [1] "en"
+## 
+## $items[[1]]$snippet$localized
+## $items[[1]]$snippet$localized$title
+## [1] "OH MY DAYUM ft. Daym Drops"
+## 
+## $items[[1]]$snippet$localized$description
+## [1] "the track on itunes- https://itunes.apple.com/us/album/oh-my-dayum-single/id553920419 (it's also streaming everywhere, even spotify &amp; your grandmom's house)\nDaym's Channel: http://youtube.com/GhettoNN\nOriginal Video:\nhttp://www.youtube.com/watch?v=zGkHRa64sDY\nour new Christmas album: https://thegregorybrothers.bandcamp.com/\nGet exclusive videos from us for just $1! https://www.patreon.com/gregorybrothers\n\n\n\nfeaturing the vocals of Catherine Provenzano\nhttps://kenniston.bandcamp.com/releases\nmastering by Dan Millice: http://www.danmillice.com/\n\nour stuff that you should click, to be happier:\nYouTube 2! http://www.youtube.com/thegregorybrothers\nFacebook! http://www.facebook.com/gregorybrothers\nTwitter! http://www.twitter.com/gregorybrothers\nWebs &amp; Store! http://www.thegregorybrothers.com\n\nChords:\n(intro) Cm Ab Cm Ab\n(chorus) Db Ab C7 Fm-Cm-Db-Ab\n(verse) Cm Ab Gm Fm\n\nLyrics:\n\noh my goodness, oh my damn\noh my goodness- they goin H.A.M.\n\nthis is how bacon is supposed to be\nthe fries, they blend so perfectly\nthe cheese up in here is goin H.A.M.\ndayum, dayum, DAYUM\n\ni wish you could smell what i'm smellin\nmm, mm, mm\nyou bite the fry, the fry bites back, my man\ndayum, dayum\n\nDAYUM, crispety crunch\nDAYUM, look at the bacon\nDAYUM, get yourself that double cheeseburger\ndayum, dayum\n\nDAYUM, ghetto grocery bag\nDAYUM, the cheese is oozin\nDAYUM, let's do this\ndayum, dayum, DAYUM\n\ndo you wanna know the difference\nbetween a weak burger\nand a burger that has strength\na burger that has strength\n\na weak burger you can chew and still talk\na burger with strength you chew\nthe meat just absorbs all the space\nand all the air possible all in your throat\nto the point that if you wanted to start talkin\nnothin but mm-mm, mm-mm, mm-mm, mm-mm, mm-mm\nis comin out\nword\n\nskimmalarinky dinky dink\nskimmmalarinky doo\ni love you\noh my damn\n\nchorus\n\n#Dayum #Songify #SongifyThis"
+## 
+## 
+## $items[[1]]$snippet$defaultAudioLanguage
+## [1] "en"
+```
 
 ---
 
 # Channel statistics
 
-Get information about a channel
 
 ```r
 hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ```
-Data is returned as a list which can then be wrangled into a dataframe (tibble).
+
+```
+## Channel Title: Hadley Wickham 
+## No. of Views: 41702 
+## No. of Subscribers: 2630 
+## No. of Videos: 4
+```
+
+---
+
+# Channel statistics
+`get_channel_stats` returns a list which can then be wrangled into a dataframe (tibble).
+
 
 ```r
 hadley_stats_df &lt;- hadley_stats$statistics %&gt;% 
@@ -143,8 +423,25 @@ hadley_stats_df &lt;- hadley_stats$statistics %&gt;%
   mutate(channel_id = hadley_stats$id,
          channel_name = hadley_stats$snippet$title,
          channel_published = hadley_stats$snippet$publishedAt)
+
+hadley_stats_df
 ```
 
+```
+## # A tibble: 1 x 8
+##   viewCount commentCount subscriberCount hiddenSubscribe~ videoCount
+##       &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt; &lt;lgl&gt;                 &lt;dbl&gt;
+## 1     41702            0            2630 FALSE                     4
+## # ... with 3 more variables: channel_id &lt;chr&gt;, channel_name &lt;chr&gt;,
+## #   channel_published &lt;chr&gt;
+```
+
+
+---
+
+# Other useful `tuber` functions
+
+`get_video_details("video_id")`: list with metadata for the video (e.g., title, description, tags) 
 
 ---
 
