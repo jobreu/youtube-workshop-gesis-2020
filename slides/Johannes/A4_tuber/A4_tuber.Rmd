@@ -48,9 +48,9 @@ With the [`tuber` package](https://github.com/soodoku/tuber) you can access the 
 
 Essentially, there are three main units of analysis for which you can access data with the `tuber` package:
 
-- Videos
-- Channels
-- Playlists
+- Videos (requires video IDs)
+- Channels (requires channel IDs)
+- Playlists (requires playlist IDs)
 
 In this workshop, we will focus on individual **videos**.
 
@@ -138,6 +138,10 @@ After making your choice regarding the `.httr-oauth` file, a browser window shou
 
 You can find the channel ID by searching on the *YouTube* website and then choosing Type = Channel from the options in the filter menu. When you click on the channel you want in the search results you see the channel ID at the end of the URL (after "/channel/").
 
+```{r YouTube oauth, echo = F}
+yt_oauth()
+```
+
 ```{r channel stats}
 hadley_stats <- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ```
@@ -147,10 +151,6 @@ hadley_stats <- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 # Channel statistics
 
 `get_channel_stats` returns a list which can then be wrangled into a dataframe (tibble).
-
-```{r YouTube oauth, echo = F}
-yt_oauth()
-```
 
 ```{r channel stats to df}
 hadley_stats_df <- hadley_stats$statistics %>% 
@@ -180,11 +180,34 @@ dayum_stats
 
 ---
 
+# Viewer comments
+
+There are two functions for collecting viewer comments on specific videos (both return a dataframe):
+
+1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results`. The number of comments needs to be <= 20. If the number is > 100, the function fetches all results (see `?get_comment_threads`). NB: This function does not collect replies to comments.
+
+2. `get_all_comments()` collects all comments for a video, including replies to comments. NB: For some reason, this function only collects up to 5 replies per comment (the related [issue in the `tuber` GitHub repo](https://github.com/soodoku/tuber/issues/52) is still open). Depending on the number of comments for a vide, running this function can take some time and might also deplete your API quota limit (more on that later).
+
+---
+
+# Other useful `tuber` functions
+
+`get_video_details("video_id")`: list with metadata for the video (e.g., title, description, tags)
+
+`get_all_channel_video_stats("channel_id")`: list with statistics for all videos in a channel
+
+`get_playlists(filter=c(channel_id="channel_id"))`: list with playlists for a channel
+
+`get_playlist_items(filter =c(playlist_id = "playlist_id"))`: dataframe with items from a playlist
+
+
+For the full list of functions in the package see the [`tuber` reference manual](https://cran.r-project.org/web/packages/tuber/tuber.pdf).
+
+---
+
 # Searching video IDs
 
-`tuber` provides the function `yt_search()` to use the API to search *YouTube*. However, using this function is extremely costly in terms of API queries. While the quota costs for search queries are, indeed, higher than those for other types of queries according to the [*YouTube* Data API Quota Calculator](https://developers.*Google*.com/youtube/v3/determine_quota_cost), this may also be due to the way in which the `yt_search()` function sends the GET requests to the API.
-
-A single search query with the `yt_search()` function can easily exceed your daily query limit (even if you use the function argument `max_results` to limit the number of search results). Hence, we would recommend not to use the `yt_search()` function
+`tuber` provides the function `yt_search()` to use the API to search *YouTube*. However, using this function is extremely costly in terms of API queries. A single search query with the `yt_search()` function can easily exceed your daily quota limit (even if you use the function argument `max_results` to limit the number of search results). Hence, we would recommend not to use the `yt_search()` function.
 
 ---
 
@@ -194,15 +217,88 @@ There are two alternatives to using the `yt_search()` function from the `tuber` 
 
 1. Manual search via the *YouTube* website: This works well for a small number of videos but is not really feasible if you want a large number of video IDs for your analyses.
 
-2. Web scraping: There are no ready-made solutions for scraping YouTube with `R`. While an introduction to web scraping would be beyond the scope of this workshop, we have created an `R` script for scraping *YouTube* search results which you can find in the `scripts` folder of the *GitHub* repo. 
+2. Web scraping: There are no ready-made solutions for scraping YouTube with `R`. While an introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)), we have created an `R` script for scraping *YouTube* search results which you can find in the `scripts` folder of the *GitHub* repo. 
 
-NB: Although [Freelon, 2018](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) rightly argues that researchers interested in social media and other internet data should learn how to scrape the web in what he calls the "post-API age", you should use this method with caution (as it might, e.g., get your IP address blocked if you overuse it). Also keep in mind that your web scraping code may stop working if the HTML code of the website changes.
+NB: Although [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) rightly argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age", you should use this method with caution. There is an ongoing debate about the legality of web scraping (for research purposes) and websites/companies have different policies regarding web scraping. In practical terms, the oversue of web scraping can, e.g., get your IP address blocked (at least temporarily).
 
 ---
 
-# Other useful `tuber` functions
+# Collecting comments for multiple videos
 
-`get_video_details("video_id")`: list with metadata for the video (e.g., title, description, tags) 
+If you want to collect comments for multiple videos, you need a vector with all video IDs. If you have that, you can use `map_df()` from the [`purrr` package](https://purrr.tidyverse.org/) to iterate over video IDs and create a combined dataframe (of course, you could also do this with a for-loop).
+
+```{r comments map_df, eval = F}
+comments <- purrr::map_df(.x = video_ids, # this should be your vector including all video IDs
+                          .f = get_all_comments) # this is the function you want to use
+```
+
+Important notice: Be aware that your daily API quota limit very likely won't allow you to collect all comments for videos with a high number of comments.
+
+---
+
+# YouTube API quota limits
+
+Since January 11, 2019, the [*YouTube* Data API v3](https://developers.google.com/youtube/v3) has a limit of **10000 queries per day** (was 1M/day before that and even 50M/day until April 20, 2016).
+
+The [*YouTube* Data API documentation](https://developers.google.com/youtube/v3/docs/) lists the costs of different API calls and allows you to test the API (without incurring any quota costs). There also is a [Quota Calculator](https://developers.google.com/youtube/v3/determine_quota_cost) for this API (note that the calculator does not list all types of API calls).
+
+---
+
+# YouTube API quota limits
+
+You can monitor the quota use of your app via the [*Google* Cloud Developer Console](https://console.cloud.google.com). From the navigation menu, select *APIs & Services*, then click on *YouTube Data API v3* in the list on the bottom of the page, and then on *Quotas* in the sidebar menu.
+
+In order to be able to estimate the quota costs of a specific API call via the `tuber` package, you need to know the specific queries that the function you use produces. If you want to do this, you can print the function code (you can do this in R by executing the function name without () behind it: `get_stats`). You can then use the information from that code for the Quota Calculator or the API Explorer. The help file for the function of interest can also be helpful here (`?get_stats`).
+
+---
+
+# `tuber` function code
+
+```{r tuber function code}
+get_stats
+```
+
+---
+
+# Exemplary quota costs for `tuber` functions
+
+```{r tuber quota cost examples, echo = F}
+quota_costs <- data.frame(
+  "Function" = c("get_channel_stats('channel_id')", "get_stats('video_id')", "get_comment_threads('video_id', max_results = 100)"),
+  "Costs" = c(5, 3, 3),
+  "API resource" = c("Channels", "Videos", "CommentThreads"),
+  "API method" = rep("list", 3),
+  "API parts" = c("statistics,snippet", "statistics", "snippet"),
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+quota_costs %>% 
+  kable("html") %>% 
+  kable_styling(font_size = 14)
+```
+
+Be aware that the costs increase with the number of returned items/results.
+
+---
+
+# How do I know the quota costs when I use `tuber`?
+
+a) Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments and you wish to collect all of them, you can estimate your cost as follows: 100 results per pages = 40 pages & cost per page for `get_all_comments()` = 5 -> overall cost = 200 (the actual cost will quite likely be somewhat lower as not all comments have replies).
+
+b) Use the *Google* Cloud Console for your app to monitor your API use.
+
+---
+
+# Managing your API quota
+
+The daily quota for your app resets at midnight Pacific Time. There are 3 ways of dealing with the quota limit:
+
+1. Request an increase through the Quotas menu in the developer console for your app mentioned previously. However, this will quite likely cost money and process is somewhat opaque and tedious as it requires you to fill out extended forms that were created for developers of actual apps.
+
+2. Schedule your scripts. You can either do this manually (by splitting your data collection into batches and running the scripts on several days) or automatically (e.g., using the [taskScheduleR package](https://github.com/bnosac/taskscheduleR) for Windows or the [cronR package](https://github.com/bnosac/cronR) for Linux/Unix).
+
+3. Use multiple apps and/or accounts for your data collection. This requires some manual scheduling/planning. You should also keep in mind that there is a limited number of projects per account for the *Google* Cloud Platform.
 
 ---
 

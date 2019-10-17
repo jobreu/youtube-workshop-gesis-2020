@@ -7,6 +7,7 @@
     <meta name="date" content="2020-02-10" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
     <link rel="stylesheet" href="..\workshop.css" type="text/css" />
   </head>
   <body>
@@ -45,9 +46,9 @@ With the [`tuber` package](https://github.com/soodoku/tuber) you can access the 
 
 Essentially, there are three main units of analysis for which you can access data with the `tuber` package:
 
-- Videos
-- Channels
-- Playlists
+- Videos (requires video IDs)
+- Channels (requires channel IDs)
+- Playlists (requires playlist IDs)
 
 In this workshop, we will focus on individual **videos**.
 
@@ -127,276 +128,22 @@ yt_oauth(app_id = "my_app_id",  # paste your app ID here
 
 # Authentication
 
-When running the `yt_oauth()` function there will be a prompt in the console asking you to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple R sessions that need your credentials (example: knitting an `RMarkdown` document). 
+When running the `yt_oauth()` function there will be a prompt in the console asking you to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple `R` sessions that need your credentials (example: knitting an `RMarkdown` document). 
 
 Similar to the app key and secret, you should never share the `.httr-oauth` file as it can be read in `R` using `read_RDS()` (the file contains a list list with all information needed for OAuth, including your app key and secret). Hence, it is usually ok (and safer) to select "No" when asked whether to store a local `.httr-oauth` file. 
 ---
 
 # App permissions
 
-After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your Google account and to give permissions. Google will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", and then "Accept". After that, you can close the browser and return to `R`.
-
----
-
-# `tuber` test
-
-
-```r
-yt_oauth()
-get_video_details ("DcJFdCmN98s")
-```
-
-```
-## $kind
-## [1] "youtube#videoListResponse"
-## 
-## $etag
-## [1] "\"p4VTdlkQv3HQeTEaXgvLePAydmU/f6jz00JzFOgn3Q5jpZ99aHDVsrc\""
-## 
-## $pageInfo
-## $pageInfo$totalResults
-## [1] 1
-## 
-## $pageInfo$resultsPerPage
-## [1] 1
-## 
-## 
-## $items
-## $items[[1]]
-## $items[[1]]$kind
-## [1] "youtube#video"
-## 
-## $items[[1]]$etag
-## [1] "\"p4VTdlkQv3HQeTEaXgvLePAydmU/QlzWceWcQMKlb1mVxhoUj11hSgw\""
-## 
-## $items[[1]]$id
-## [1] "DcJFdCmN98s"
-## 
-## $items[[1]]$snippet
-## $items[[1]]$snippet$publishedAt
-## [1] "2012-08-15T22:04:48.000Z"
-## 
-## $items[[1]]$snippet$channelId
-## [1] "UCNYrK4tc5i1-eL8TXesH2pg"
-## 
-## $items[[1]]$snippet$title
-## [1] "OH MY DAYUM ft. Daym Drops"
-## 
-## $items[[1]]$snippet$description
-## [1] "the track on itunes- https://itunes.apple.com/us/album/oh-my-dayum-single/id553920419 (it's also streaming everywhere, even spotify &amp; your grandmom's house)\nDaym's Channel: http://youtube.com/GhettoNN\nOriginal Video:\nhttp://www.youtube.com/watch?v=zGkHRa64sDY\nour new Christmas album: https://thegregorybrothers.bandcamp.com/\nGet exclusive videos from us for just $1! https://www.patreon.com/gregorybrothers\n\n\n\nfeaturing the vocals of Catherine Provenzano\nhttps://kenniston.bandcamp.com/releases\nmastering by Dan Millice: http://www.danmillice.com/\n\nour stuff that you should click, to be happier:\nYouTube 2! http://www.youtube.com/thegregorybrothers\nFacebook! http://www.facebook.com/gregorybrothers\nTwitter! http://www.twitter.com/gregorybrothers\nWebs &amp; Store! http://www.thegregorybrothers.com\n\nChords:\n(intro) Cm Ab Cm Ab\n(chorus) Db Ab C7 Fm-Cm-Db-Ab\n(verse) Cm Ab Gm Fm\n\nLyrics:\n\noh my goodness, oh my damn\noh my goodness- they goin H.A.M.\n\nthis is how bacon is supposed to be\nthe fries, they blend so perfectly\nthe cheese up in here is goin H.A.M.\ndayum, dayum, DAYUM\n\ni wish you could smell what i'm smellin\nmm, mm, mm\nyou bite the fry, the fry bites back, my man\ndayum, dayum\n\nDAYUM, crispety crunch\nDAYUM, look at the bacon\nDAYUM, get yourself that double cheeseburger\ndayum, dayum\n\nDAYUM, ghetto grocery bag\nDAYUM, the cheese is oozin\nDAYUM, let's do this\ndayum, dayum, DAYUM\n\ndo you wanna know the difference\nbetween a weak burger\nand a burger that has strength\na burger that has strength\n\na weak burger you can chew and still talk\na burger with strength you chew\nthe meat just absorbs all the space\nand all the air possible all in your throat\nto the point that if you wanted to start talkin\nnothin but mm-mm, mm-mm, mm-mm, mm-mm, mm-mm\nis comin out\nword\n\nskimmalarinky dinky dink\nskimmmalarinky doo\ni love you\noh my damn\n\nchorus\n\n#Dayum #Songify #SongifyThis"
-## 
-## $items[[1]]$snippet$thumbnails
-## $items[[1]]$snippet$thumbnails$default
-## $items[[1]]$snippet$thumbnails$default$url
-## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/default.jpg"
-## 
-## $items[[1]]$snippet$thumbnails$default$width
-## [1] 120
-## 
-## $items[[1]]$snippet$thumbnails$default$height
-## [1] 90
-## 
-## 
-## $items[[1]]$snippet$thumbnails$medium
-## $items[[1]]$snippet$thumbnails$medium$url
-## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/mqdefault.jpg"
-## 
-## $items[[1]]$snippet$thumbnails$medium$width
-## [1] 320
-## 
-## $items[[1]]$snippet$thumbnails$medium$height
-## [1] 180
-## 
-## 
-## $items[[1]]$snippet$thumbnails$high
-## $items[[1]]$snippet$thumbnails$high$url
-## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/hqdefault.jpg"
-## 
-## $items[[1]]$snippet$thumbnails$high$width
-## [1] 480
-## 
-## $items[[1]]$snippet$thumbnails$high$height
-## [1] 360
-## 
-## 
-## $items[[1]]$snippet$thumbnails$standard
-## $items[[1]]$snippet$thumbnails$standard$url
-## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/sddefault.jpg"
-## 
-## $items[[1]]$snippet$thumbnails$standard$width
-## [1] 640
-## 
-## $items[[1]]$snippet$thumbnails$standard$height
-## [1] 480
-## 
-## 
-## $items[[1]]$snippet$thumbnails$maxres
-## $items[[1]]$snippet$thumbnails$maxres$url
-## [1] "https://i.ytimg.com/vi/DcJFdCmN98s/maxresdefault.jpg"
-## 
-## $items[[1]]$snippet$thumbnails$maxres$width
-## [1] 1280
-## 
-## $items[[1]]$snippet$thumbnails$maxres$height
-## [1] 720
-## 
-## 
-## 
-## $items[[1]]$snippet$channelTitle
-## [1] "schmoyoho"
-## 
-## $items[[1]]$snippet$tags
-## $items[[1]]$snippet$tags[[1]]
-## [1] "guys"
-## 
-## $items[[1]]$snippet$tags[[2]]
-## [1] "five"
-## 
-## $items[[1]]$snippet$tags[[3]]
-## [1] "burgers"
-## 
-## $items[[1]]$snippet$tags[[4]]
-## [1] "and"
-## 
-## $items[[1]]$snippet$tags[[5]]
-## [1] "fries"
-## 
-## $items[[1]]$snippet$tags[[6]]
-## [1] "burger"
-## 
-## $items[[1]]$snippet$tags[[7]]
-## [1] "cheese"
-## 
-## $items[[1]]$snippet$tags[[8]]
-## [1] "cheeseburger"
-## 
-## $items[[1]]$snippet$tags[[9]]
-## [1] "daym"
-## 
-## $items[[1]]$snippet$tags[[10]]
-## [1] "drops"
-## 
-## $items[[1]]$snippet$tags[[11]]
-## [1] "GNN"
-## 
-## $items[[1]]$snippet$tags[[12]]
-## [1] "ghetto"
-## 
-## $items[[1]]$snippet$tags[[13]]
-## [1] "news"
-## 
-## $items[[1]]$snippet$tags[[14]]
-## [1] "network"
-## 
-## $items[[1]]$snippet$tags[[15]]
-## [1] "review"
-## 
-## $items[[1]]$snippet$tags[[16]]
-## [1] "auto"
-## 
-## $items[[1]]$snippet$tags[[17]]
-## [1] "tune"
-## 
-## $items[[1]]$snippet$tags[[18]]
-## [1] "the"
-## 
-## $items[[1]]$snippet$tags[[19]]
-## [1] "songify"
-## 
-## $items[[1]]$snippet$tags[[20]]
-## [1] "this"
-## 
-## $items[[1]]$snippet$tags[[21]]
-## [1] "gregory"
-## 
-## $items[[1]]$snippet$tags[[22]]
-## [1] "brothers"
-## 
-## $items[[1]]$snippet$tags[[23]]
-## [1] "andrew"
-## 
-## $items[[1]]$snippet$tags[[24]]
-## [1] "evan"
-## 
-## $items[[1]]$snippet$tags[[25]]
-## [1] "michael"
-## 
-## $items[[1]]$snippet$tags[[26]]
-## [1] "sarah"
-## 
-## $items[[1]]$snippet$tags[[27]]
-## [1] "oh"
-## 
-## $items[[1]]$snippet$tags[[28]]
-## [1] "my"
-## 
-## $items[[1]]$snippet$tags[[29]]
-## [1] "dayum"
-## 
-## $items[[1]]$snippet$tags[[30]]
-## [1] "oh my dayum"
-## 
-## $items[[1]]$snippet$tags[[31]]
-## [1] "shmoyoho"
-## 
-## $items[[1]]$snippet$tags[[32]]
-## [1] "shmoyo"
-## 
-## $items[[1]]$snippet$tags[[33]]
-## [1] "schmoyoho"
-## 
-## $items[[1]]$snippet$tags[[34]]
-## [1] "daymon"
-## 
-## $items[[1]]$snippet$tags[[35]]
-## [1] "patterson"
-## 
-## $items[[1]]$snippet$tags[[36]]
-## [1] "5 guys"
-## 
-## $items[[1]]$snippet$tags[[37]]
-## [1] "dayum dayum dayum"
-## 
-## $items[[1]]$snippet$tags[[38]]
-## [1] "comedy"
-## 
-## $items[[1]]$snippet$tags[[39]]
-## [1] "song"
-## 
-## $items[[1]]$snippet$tags[[40]]
-## [1] "parody"
-## 
-## $items[[1]]$snippet$tags[[41]]
-## [1] "spoof"
-## 
-## $items[[1]]$snippet$tags[[42]]
-## [1] "food review"
-## 
-## 
-## $items[[1]]$snippet$categoryId
-## [1] "25"
-## 
-## $items[[1]]$snippet$liveBroadcastContent
-## [1] "none"
-## 
-## $items[[1]]$snippet$defaultLanguage
-## [1] "en"
-## 
-## $items[[1]]$snippet$localized
-## $items[[1]]$snippet$localized$title
-## [1] "OH MY DAYUM ft. Daym Drops"
-## 
-## $items[[1]]$snippet$localized$description
-## [1] "the track on itunes- https://itunes.apple.com/us/album/oh-my-dayum-single/id553920419 (it's also streaming everywhere, even spotify &amp; your grandmom's house)\nDaym's Channel: http://youtube.com/GhettoNN\nOriginal Video:\nhttp://www.youtube.com/watch?v=zGkHRa64sDY\nour new Christmas album: https://thegregorybrothers.bandcamp.com/\nGet exclusive videos from us for just $1! https://www.patreon.com/gregorybrothers\n\n\n\nfeaturing the vocals of Catherine Provenzano\nhttps://kenniston.bandcamp.com/releases\nmastering by Dan Millice: http://www.danmillice.com/\n\nour stuff that you should click, to be happier:\nYouTube 2! http://www.youtube.com/thegregorybrothers\nFacebook! http://www.facebook.com/gregorybrothers\nTwitter! http://www.twitter.com/gregorybrothers\nWebs &amp; Store! http://www.thegregorybrothers.com\n\nChords:\n(intro) Cm Ab Cm Ab\n(chorus) Db Ab C7 Fm-Cm-Db-Ab\n(verse) Cm Ab Gm Fm\n\nLyrics:\n\noh my goodness, oh my damn\noh my goodness- they goin H.A.M.\n\nthis is how bacon is supposed to be\nthe fries, they blend so perfectly\nthe cheese up in here is goin H.A.M.\ndayum, dayum, DAYUM\n\ni wish you could smell what i'm smellin\nmm, mm, mm\nyou bite the fry, the fry bites back, my man\ndayum, dayum\n\nDAYUM, crispety crunch\nDAYUM, look at the bacon\nDAYUM, get yourself that double cheeseburger\ndayum, dayum\n\nDAYUM, ghetto grocery bag\nDAYUM, the cheese is oozin\nDAYUM, let's do this\ndayum, dayum, DAYUM\n\ndo you wanna know the difference\nbetween a weak burger\nand a burger that has strength\na burger that has strength\n\na weak burger you can chew and still talk\na burger with strength you chew\nthe meat just absorbs all the space\nand all the air possible all in your throat\nto the point that if you wanted to start talkin\nnothin but mm-mm, mm-mm, mm-mm, mm-mm, mm-mm\nis comin out\nword\n\nskimmalarinky dinky dink\nskimmmalarinky doo\ni love you\noh my damn\n\nchorus\n\n#Dayum #Songify #SongifyThis"
-## 
-## 
-## $items[[1]]$snippet$defaultAudioLanguage
-## [1] "en"
-```
+After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your *Google* account and to give permissions. *Google* will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", and then "Accept". After that, you can close the browser and return to `R`.
 
 ---
 
 # Channel statistics
+
+You can find the channel ID by searching on the *YouTube* website and then choosing Type = Channel from the options in the filter menu. When you click on the channel you want in the search results you see the channel ID at the end of the URL (after "/channel/").
+
+
 
 
 ```r
@@ -405,7 +152,7 @@ hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 
 ```
 ## Channel Title: Hadley Wickham 
-## No. of Views: 41702 
+## No. of Views: 41731 
 ## No. of Subscribers: 2630 
 ## No. of Videos: 4
 ```
@@ -413,6 +160,7 @@ hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ---
 
 # Channel statistics
+
 `get_channel_stats` returns a list which can then be wrangled into a dataframe (tibble).
 
 
@@ -431,17 +179,194 @@ hadley_stats_df
 ## # A tibble: 1 x 8
 ##   viewCount commentCount subscriberCount hiddenSubscribe~ videoCount
 ##       &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt; &lt;lgl&gt;                 &lt;dbl&gt;
-## 1     41702            0            2630 FALSE                     4
+## 1     41731            0            2630 FALSE                     4
 ## # ... with 3 more variables: channel_id &lt;chr&gt;, channel_name &lt;chr&gt;,
 ## #   channel_published &lt;chr&gt;
 ```
 
+---
+
+# Video statistics
+
+
+```r
+dayum_stats &lt;- get_stats("DcJFdCmN98s")
+
+dayum_stats &lt;- dayum_stats %&gt;%
+  as_tibble() %&gt;% 
+  mutate_at(vars(-id), as.numeric)
+
+dayum_stats
+```
+
+```
+## # A tibble: 1 x 6
+##   id          viewCount likeCount dislikeCount favoriteCount commentCount
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+## 1 DcJFdCmN98s  38505229    520635         6697             0        48208
+```
+
+---
+
+# Viewer comments
+
+There are two functions for collecting viewer comments on specific videos (both return a dataframe):
+
+1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results`. The number of comments needs to be &lt;= 20. If the number is &gt; 100, the function fetches all results (see `?get_comment_threads`). NB: This function does not collect replies to comments.
+
+2. `get_all_comments()` collects all comments for a video, including replies to comments. NB: For some reason, this function only collects up to 5 replies per comment (the related [issue in the `tuber` GitHub repo](https://github.com/soodoku/tuber/issues/52) is still open). Depending on the number of comments for a vide, running this function can take some time and might also deplete your API quota limit (more on that later).
 
 ---
 
 # Other useful `tuber` functions
 
-`get_video_details("video_id")`: list with metadata for the video (e.g., title, description, tags) 
+`get_video_details("video_id")`: list with metadata for the video (e.g., title, description, tags)
+
+`get_all_channel_video_stats("channel_id")`: list with statistics for all videos in a channel
+
+`get_playlists(filter=c(channel_id="channel_id"))`: list with playlists for a channel
+
+`get_playlist_items(filter =c(playlist_id = "playlist_id"))`: dataframe with items from a playlist
+
+
+For the full list of functions in the package see the [`tuber` reference manual](https://cran.r-project.org/web/packages/tuber/tuber.pdf).
+
+---
+
+# Searching video IDs
+
+`tuber` provides the function `yt_search()` to use the API to search *YouTube*. However, using this function is extremely costly in terms of API queries. A single search query with the `yt_search()` function can easily exceed your daily quota limit (even if you use the function argument `max_results` to limit the number of search results). Hence, we would recommend not to use the `yt_search()` function.
+
+---
+
+# Searching video IDs
+
+There are two alternatives to using the `yt_search()` function from the `tuber` package to search for *YouTube* video IDs:
+
+1. Manual search via the *YouTube* website: This works well for a small number of videos but is not really feasible if you want a large number of video IDs for your analyses.
+
+2. Web scraping: There are no ready-made solutions for scraping YouTube with `R`. While an introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)), we have created an `R` script for scraping *YouTube* search results which you can find in the `scripts` folder of the *GitHub* repo. 
+
+NB: Although [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) rightly argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age", you should use this method with caution. There is an ongoing debate about the legality of web scraping (for research purposes) and websites/companies have different policies regarding web scraping. In practical terms, the oversue of web scraping can, e.g., get your IP address blocked (at least temporarily).
+
+---
+
+# Collecting comments for multiple videos
+
+If you want to collect comments for multiple videos, you need a vector with all video IDs. If you have that, you can use `map_df()` from the [`purrr` package](https://purrr.tidyverse.org/) to iterate over video IDs and create a combined dataframe (of course, you could also do this with a for-loop).
+
+
+```r
+comments &lt;- purrr::map_df(.x = video_ids, # this should be your vector including all video IDs
+                          .f = get_all_comments) # this is the function you want to use
+```
+
+Important notice: Be aware that your daily API quota limit very likely won't allow you to collect all comments for videos with a high number of comments.
+
+---
+
+# YouTube API quota limits
+
+Since January 11, 2019, the [*YouTube* Data API v3](https://developers.google.com/youtube/v3) has a limit of **10000 queries per day** (was 1M/day before that and even 50M/day until April 20, 2016).
+
+The [*YouTube* Data API documentation](https://developers.google.com/youtube/v3/docs/) lists the costs of different API calls and allows you to test the API (without incurring any quota costs). There also is a [Quota Calculator](https://developers.google.com/youtube/v3/determine_quota_cost) for this API (note that the calculator does not list all types of API calls).
+
+---
+
+# YouTube API quota limits
+
+You can monitor the quota use of your app via the [*Google* Cloud Developer Console](https://console.cloud.google.com). From the navigation menu, select *APIs &amp; Services*, then click on *YouTube Data API v3* in the list on the bottom of the page, and then on *Quotas* in the sidebar menu.
+
+In order to be able to estimate the quota costs of a specific API call via the `tuber` package, you need to know the specific queries that the function you use produces. If you want to do this, you can print the function code (you can do this in R by executing the function name without () behind it: `get_stats`). You can then use the information from that code for the Quota Calculator or the API Explorer. The help file for the function of interest can also be helpful here (`?get_stats`).
+
+---
+
+# `tuber` function code
+
+
+```r
+get_stats
+```
+
+```
+## function (video_id = NULL, ...) 
+## {
+##     if (!is.character(video_id)) 
+##         stop("Must specify a video ID.")
+##     querylist &lt;- list(part = "statistics", id = video_id)
+##     raw_res &lt;- tuber_GET("videos", querylist, ...)
+##     if (length(raw_res$items) == 0) {
+##         warning("No statistics for this video are available.\n             Likely cause: Incorrect ID. \n")
+##         return(list())
+##     }
+##     res &lt;- raw_res$items[[1]]
+##     stat_res &lt;- res$statistics
+##     c(id = res$id, stat_res)
+## }
+## &lt;bytecode: 0x00000000185b4248&gt;
+## &lt;environment: namespace:tuber&gt;
+```
+
+---
+
+# Exemplary quota costs for `tuber` functions
+
+&lt;table class="table" style="font-size: 14px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Function &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Costs &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; API resource &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; API method &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; API parts &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; get_channel_stats('channel_id') &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Channels &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; list &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; statistics,snippet &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; get_stats('video_id') &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Videos &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; list &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; statistics &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; get_comment_threads('video_id', max_results = 100) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; CommentThreads &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; list &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; snippet &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+Be aware that the costs increase with the number of returned items/results.
+
+---
+
+# How do I know the quota costs when I use `tuber`?
+
+a) Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments and you wish to collect all of them, you can estimate your cost as follows: 100 results per pages = 40 pages &amp; cost per page for `get_all_comments()` = 5 -&gt; overall cost = 200 (the actual cost will quite likely be somewhat lower as not all comments have replies).
+
+b) Use the *Google* Cloud Console for your app to monitor your API use.
+
+---
+
+# Managing your API quota
+
+The daily quota for your app resets at midnight Pacific Time. There are 3 ways of dealing with the quota limit:
+
+1. Request an increase through the Quotas menu in the developer console for your app mentioned previously. However, this will quite likely cost money and process is somewhat opaque and tedious as it requires you to fill out extended forms that were created for developers of actual apps.
+
+2. Schedule your scripts. You can either do this manually (by splitting your data collection into batches and running the scripts on several days) or automatically (e.g., using the [taskScheduleR package](https://github.com/bnosac/taskscheduleR) for Windows or the [cronR package](https://github.com/bnosac/cronR) for Linux/Unix).
+
+3. Use multiple apps and/or accounts for your data collection. This requires some manual scheduling/planning. You should also keep in mind that there is a limited number of projects per account for the *Google* Cloud Platform.
 
 ---
 
