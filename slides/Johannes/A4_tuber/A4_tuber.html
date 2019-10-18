@@ -135,7 +135,7 @@ Similar to the app key and secret, you should never share the `.httr-oauth` file
 
 # App permissions
 
-After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your *Google* account and to give permissions. *Google* will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", and then "Accept". After that, you can close the browser and return to `R`.
+After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your *Google* account and to give permissions. *Google* will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", then on "Open App_Name", and grant the app the required permissions for your account. After that, you can close the browser and return to `R`.
 
 ---
 
@@ -152,7 +152,7 @@ hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 
 ```
 ## Channel Title: Hadley Wickham 
-## No. of Views: 41731 
+## No. of Views: 41764 
 ## No. of Subscribers: 2630 
 ## No. of Videos: 4
 ```
@@ -179,7 +179,7 @@ hadley_stats_df
 ## # A tibble: 1 x 8
 ##   viewCount commentCount subscriberCount hiddenSubscribe~ videoCount
 ##       &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt; &lt;lgl&gt;                 &lt;dbl&gt;
-## 1     41731            0            2630 FALSE                     4
+## 1     41764            0            2630 FALSE                     4
 ## # ... with 3 more variables: channel_id &lt;chr&gt;, channel_name &lt;chr&gt;,
 ## #   channel_published &lt;chr&gt;
 ```
@@ -187,6 +187,8 @@ hadley_stats_df
 ---
 
 # Video statistics
+
+The video IDs are the last 11 characters of the video URL. Example: https://www.youtube.com/watch?v=DcJFdCmN98s -&gt; ID = DcJFdCmN98s
 
 
 ```r
@@ -203,18 +205,18 @@ dayum_stats
 ## # A tibble: 1 x 6
 ##   id          viewCount likeCount dislikeCount favoriteCount commentCount
 ##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-## 1 DcJFdCmN98s  38505229    520635         6697             0        48208
+## 1 DcJFdCmN98s  38509954    520741         6696             0        48212
 ```
 
 ---
 
 # Viewer comments
 
-There are two functions for collecting viewer comments on specific videos (both return a dataframe):
+  There are two functions for collecting viewer comments for specific videos (both return a dataframe):
 
-1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results`. The number of comments needs to be &lt;= 20. If the number is &gt; 100, the function fetches all results (see `?get_comment_threads`). NB: This function does not collect replies to comments.
+1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results` (needs to be &gt;= 20). If the number is &gt; 100, the function fetches all results (see `?get_comment_threads`). NB: This function does not collect replies to comments.
 
-2. `get_all_comments()` collects all comments for a video, including replies to comments. NB: For some reason, this function only collects up to 5 replies per comment (the related [issue in the `tuber` GitHub repo](https://github.com/soodoku/tuber/issues/52) is still open). Depending on the number of comments for a vide, running this function can take some time and might also deplete your API quota limit (more on that later).
+2. `get_all_comments()` collects all comments for a video, including replies to comments. NB: For some reason, this function only collects up to 5 replies per comment (the related [issue in the `tuber` GitHub repo](https://github.com/soodoku/tuber/issues/52) is still open). Depending on the number of comments for a video, running this function can take some time and might also deplete your API quota limit (more on that later).
 
 ---
 
@@ -235,7 +237,15 @@ For the full list of functions in the package see the [`tuber` reference manual]
 
 # Searching video IDs
 
-`tuber` provides the function `yt_search()` to use the API to search *YouTube*. However, using this function is extremely costly in terms of API queries. A single search query with the `yt_search()` function can easily exceed your daily quota limit (even if you use the function argument `max_results` to limit the number of search results). Hence, we would recommend not to use the `yt_search()` function.
+`tuber` provides the function `yt_search()` to use the API to search *YouTube*. However, using this function is extremely costly in terms of API queries. 
+
+A single search query with the `yt_search()` function can easily exceed your daily quota limit as by default it returns data for all search results (you can check the number of results for a search query via the *YouTube* Data API Explorer). Hence, if you want to use the `yt_search()` function, we would strongly recommend setting the `get_all` argument to `FALSE`. This returns up to 50 results.
+
+
+```r
+yt_search(term = "tidyverse",
+*         get_all = F)
+```
 
 ---
 
@@ -247,18 +257,18 @@ There are two alternatives to using the `yt_search()` function from the `tuber` 
 
 2. Web scraping: There are no ready-made solutions for scraping YouTube with `R`. While an introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)), we have created an `R` script for scraping *YouTube* search results which you can find in the `scripts` folder of the *GitHub* repo. 
 
-NB: Although [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) rightly argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age", you should use this method with caution. There is an ongoing debate about the legality of web scraping (for research purposes) and websites/companies have different policies regarding web scraping. In practical terms, the oversue of web scraping can, e.g., get your IP address blocked (at least temporarily).
+NB: Although [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) rightly argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age", you should use this method with caution. There is an ongoing debate about the legalities of web scraping (for research purposes) and websites/companies have different policies regarding web scraping. In practical terms, the oversue of web scraping can, e.g., get your IP address blocked (at least temporarily).
 
 ---
 
 # Collecting comments for multiple videos
 
-If you want to collect comments for multiple videos, you need a vector with all video IDs. If you have that, you can use `map_df()` from the [`purrr` package](https://purrr.tidyverse.org/) to iterate over video IDs and create a combined dataframe (of course, you could also do this with a for-loop).
+If you want to collect comments for multiple videos, you need a vector with all video IDs (in the code example below this vector is named `video_ids`). If you have that, you can use `map_df()` from the [`purrr` package](https://purrr.tidyverse.org/) to iterate over video IDs and create a combined dataframe (of course, you could also do this with a for-loop).
 
 
 ```r
-comments &lt;- purrr::map_df(.x = video_ids, # this should be your vector including all video IDs
-                          .f = get_all_comments) # this is the function you want to use
+comments &lt;- purrr::map_df(.x = video_ids,
+                          .f = get_all_comments)
 ```
 
 Important notice: Be aware that your daily API quota limit very likely won't allow you to collect all comments for videos with a high number of comments.
@@ -303,7 +313,7 @@ get_stats
 ##     stat_res &lt;- res$statistics
 ##     c(id = res$id, stat_res)
 ## }
-## &lt;bytecode: 0x00000000185b4248&gt;
+## &lt;bytecode: 0x000000001855a0c0&gt;
 ## &lt;environment: namespace:tuber&gt;
 ```
 
@@ -347,14 +357,15 @@ get_stats
 &lt;/table&gt;
 
 Be aware that the costs increase with the number of returned items/results.
+For reference: `yt_search()` has a quota cost of 102 per page of results (with a default number of max. 50 results per page).
 
 ---
 
 # How do I know the quota costs when I use `tuber`?
 
-a) Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments and you wish to collect all of them, you can estimate your cost as follows: 100 results per pages = 40 pages &amp; cost per page for `get_all_comments()` = 5 -&gt; overall cost = 200 (the actual cost will quite likely be somewhat lower as not all comments have replies).
+a) Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments (without replies) and you wish to collect all of them, you can estimate your cost as follows: 100 results per page = 40 pages &amp; cost per page for `get_comment_threads()` = 5 -&gt; overall cost = 200. In practice this is a bit more difficult to estimate as both the website of the video and `get_stats()` give you the comment count including replies.
 
-b) Use the *Google* Cloud Console for your app to monitor your API use.
+b) Use the *Google* Cloud Console for your app to monitor your API quota use.
 
 ---
 
@@ -362,11 +373,36 @@ b) Use the *Google* Cloud Console for your app to monitor your API use.
 
 The daily quota for your app resets at midnight Pacific Time. There are 3 ways of dealing with the quota limit:
 
-1. Request an increase through the Quotas menu in the developer console for your app mentioned previously. However, this will quite likely cost money and process is somewhat opaque and tedious as it requires you to fill out extended forms that were created for developers of actual apps.
+1. Schedule your scripts. You can either do this manually (by splitting your data collection into batches and running the scripts on different days) or automatically (e.g., using the [taskScheduleR package](https://github.com/bnosac/taskscheduleR) for Windows or the [cronR package](https://github.com/bnosac/cronR) for Linux/Unix).
 
-2. Schedule your scripts. You can either do this manually (by splitting your data collection into batches and running the scripts on several days) or automatically (e.g., using the [taskScheduleR package](https://github.com/bnosac/taskscheduleR) for Windows or the [cronR package](https://github.com/bnosac/cronR) for Linux/Unix).
+2. Request an increase through the Quotas menu in the developer console for your app mentioned previously. However, this will quite likely cost money and process is somewhat opaque and tedious as it requires you to fill out extended forms that were created for developers of actual apps.
 
-3. Use multiple apps and/or accounts for your data collection. This requires some manual scheduling/planning. You should also keep in mind that there is a limited number of projects per account for the *Google* Cloud Platform.
+3. Use multiple apps and/or accounts for your data collection. This requires some manual scheduling/planning. Keep in mind that there is a limited number of projects per account for the *Google* Cloud Platform. Note that - depending on your setup and use - this strategy might get your API quota, app(s), account(s) or IP address(es) suspended/blocked. 
+
+---
+
+# Manual quota limit management example
+
+If you want to use `yt_search()` and want more than 50 search results, you can use the `page_token` argument to get more than one page of results.
+
+
+```r
+search_p1 &lt;- yt_search(term = "search term",
+*                      simplify = F,
+                       get_all = F)
+
+page_token &lt;-search_p1$nextPageToken
+
+search_p2 &lt;- yt_search(term = "search term",
+                       get_all = F,
+*                      page_token = page_token)
+
+# turn search_p1 from a list into a dataframe
+search_p1 &lt;- lapply(search_p1$items, function(x) unlist(x$snippet))
+search_p1 &lt;- plyr::ldply(search_p1, rbind)
+
+search_results &lt;- bind_rows(search_p1, search_p2)
+```
 
 ---
 
