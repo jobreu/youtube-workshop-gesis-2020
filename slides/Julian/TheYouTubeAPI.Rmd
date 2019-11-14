@@ -20,48 +20,84 @@ class: center, middle
 
 ---
 
-# How does YouTube work?
+# Overview
 
-
-- Before we can try to get data out of YouTube, it's important to understand
-how the website works first.
-
-![plot](Images/YT_draft.png)
----
-
-# How does YouTube work?
-
-- Data on YT server is stored in a database (SQL, NoSQL, MongoDB etc.)
-
-- The Youtube Website is build in HTML (Hyper Text Markup Language), uses CSS (Cascasind Style Sheets)
- for the "styling" and dynamically loads content using Ajax/JavaScript from the Database
+- All data on YouTube is stored in a [MySQL](https://en.wikipedia.org/wiki/MySQL) database
  
-- Important: There are static websites (only change when Users click on sth.) and dynamic websites
-  (Content is updated constantly even if users do nothing)
-  
-- Almost all Social Media Websites (Facebook, Twitter, Instagram) are dynamic
+- The website itself is an HTML page, which loads content from this database
 
-- Dynamic Websites are usually more difficult to interact with
+- The HTML is rendered by a webbrowser so the user can interact with it
+
+- Through interacting with the rendered website, we can either retrieve content from the database
+or send content to the database
+
+- The Youtube Website is
+    - build in [HTML](https://de.wikipedia.org/wiki/Hypertext_Markup_Language), 
+    - uses [CSS](https://de.wikipedia.org/wiki/Cascading_Style_Sheets) for the "styling"
+    - dynamically loads content using [Ajax]( https://en.wikipedia.org/wiki/Ajax_(programming) ) from the Database
+
+![plot](Images/YouTube_better.png)
+---
+
+# How do we get data from Websites?
+
+- Theoretically, we could gather all the information manually by clicking on the things that are
+ interesting to us and copy/pasting them. However, this is tedious and time-consuming.**We want a way
+ of automatizing this task**
+
+- In general, there are two ways of getting data from a Website ( [Webscraping](https://en.wikipedia.org/wiki/Web_scraping))
+
+ 1)  **Screenscraping:** Getting the HTML-code out of your browser, parsing & formatting it, then analyzing the data
+  
+ 2)  **API-harvesting:** Sending requests directly to the database and only getting back the information that you want and need.
 
 ---
 
-# How do we get Data from Websites
+# Screenscraping
 
-- In general, there are 2 ways of getting data from a Website (=Webscraping)
+- Screenscraping means that we are downloading the HTML textfile, which contains the content we are interested in but also a lot of unnecessary clutter that describes how the website should be rendered by the browser
 
-- First way: Screenscraping = Getting the HTML-code out of your browser, parsing & formatting it,
-  then analyzing the data
-  
-- Second way: API-harvesting = Sending requests directly to the database and only getting back the
-  information that you want and that you need.
+![plot](Images/Screenscraping_2.png)
+---
+# Screenscraping
 
-- What is an API?
-    - application Programming Interface. It's a system build for developers
-    that allows them to interact with a websites content (upload automatically, embed in other websites,
-    use data, link accounts etc.)
-    - Its a service of the website where they can dictate what information is accessible, to whom, how, and and which Quantities
+![plot](Images/BBC2.png)
 
-- Both Methods have their adavantages and Disadvantages
+---
+# API-harvesting
+
+- An **A**pplication **P**rogramming **I**nterface:
+  - system build for developers
+  - directly communicate with the database
+  - Voluntary service of the website
+  - they can dictate what information is accessible, to whom, how, and in which quantities.
+    
+![plot](Images/API_harvesting.png)
+
+---
+# API-harvesting
+
+- APIs can be used to:
+
+  - embed content in other applications
+  - create Bots that do something automatically
+  - scheduling/moderation for content creators
+  - collect data for (market) research purposes
+
+
+- Not every website has their own API. However, most large Social Media Websites do
+    - [Facebook](https://developers.facebook.com/docs/graph-api?locale=de_DE)
+    - [Twitter](https://developer.twitter.com/en/docs/basics/getting-started)
+    - [Instagram](https://www.instagram.com/developer/)
+    - [Wikipedia](https://de.wikipedia.org/wiki/Wikipedia:Technik/Datenbank/API)
+    - [Google Maps](https://www.programmableweb.com/api/google-maps-places)
+    
+---
+
+# Screenscraping vs. API-harvesting
+
+- Which way you should use depends on multiple factors, as both of their unique
+  advantages and disadvantages
 
 ---
 
@@ -70,17 +106,17 @@ how the website works first.
 - Advantages of Screenscraping:
   + You can access everything that you are able to access from your browser
   + You are (theoretically) not restricted in how much data you can get
-  + (Theoretically) Independent from new incoming API-restrictions
+  + (Theoretically) Independent from API-restrictions
   
 - Disadvantages of Screenscraping:
-  - Extremely tedious to get information out of HTML-pages (They can't be parse with
+  - Extremely tedious to get information out of HTML-pages (They can't be parsed with
     regex, you need an XML-parser)
-  - You have to manually look up the Xpaths/CSS/HTML containers to identify
+  - You have to manually look up the Xpaths/CSS/HTML containers to get specific information
   - Reproducibility: The website might be tailored to stuff in your Cache, Cookies, Accounts etc.
   - There is no guarantee that even pages that look the same have the same underlying HTML structure
   - You have to manually check the website and your data to make sure that you're getting what you want
-  - If the website changes anything
-  - Legal Gray Area (recent court decision though!)
+  - If the website changes anything in their styling, your scripts won't work anymore
+  - Legal Gray Area (recent court decision though)
 
 ---
 
@@ -94,11 +130,56 @@ how the website works first.
 - Disadvantages of API-harvesting:
   - Not every website has an API
   - You can only get what the company allows you to get
-  - There are often restricting Quotas (querys per day)
+  - There are often restricting quotas (querys per day)
   - there is no standard language to make querys, you have to check the documentation
   - Not every API has a documentation
   
+---
+- It can be used to:
+
+  - embed content in other applications
+  - create Bots that do something automatically
+  - scheduling/moderation for content creators
+  - collect data for (market) research purposes
+
+
+- Not every website has
+  their own API. However, most large Social Media Websites do
+    - [Facebook](https://developers.facebook.com/docs/graph-api?locale=de_DE)
+    - [Twitter](https://developer.twitter.com/en/docs/basics/getting-started)
+    - [Instagram](https://www.instagram.com/developer/)
+    - [Wikipedia](https://de.wikipedia.org/wiki/Wikipedia:Technik/Datenbank/API)
+    - [Google Maps](https://www.programmableweb.com/api/google-maps-places)
+    
+---
+
+- What is an [API](https://en.wikipedia.org/wiki/Application_programming_interface)?
+    - application Programming Interface. It's a system build for developers
+    that allows them to interact with a websites content (upload automatically, embed in other websites,
+    use data, link accounts etc.)
+    - Its a service of the website where they can dictate what information is accessible, to whom, how, and and which quantities
+
+- Both Methods have their adavantages and Disadvantages
+
+---
+
+# How does YouTube work?
+
+- Important: There are static websites (only change when Users click on sth.) and dynamic websites
+  (Content is updated constantly even if users do nothing)
   
+- Almost all Social Media Websites (Facebook, Twitter, Instagram) are dynamic
+
+- Dynamic Websites are usually more difficult to interact with
+
+- Before we can try to get data out of YouTube, it's important to understand
+how the website works first.
+
+![plot](Images/YT_draft.png)
+
+---
+
+
 ---
 class: inverse, middle, center
 

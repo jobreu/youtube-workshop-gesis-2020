@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Automatic Sampling and Analysis of YouTube Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
+    <meta name="date" content="2020-02-10" />
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <link rel="stylesheet" href="default-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Automatic Sampling and Analysis of YouTube Data
+## Collecting Data With the tuber Package for R
+### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
+### 2020-02-10
+
+---
+
+
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+  &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Collecting Data With the tuber Package for R&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+
+pre {
+  font-size: 10px
+}
+&lt;/style&gt;
+
+---
+
+# Tools for the Automatic Sampling of YouTube data
+
+- [Webometric Analyst](http://lexiurl.wlv.ac.uk/)
+
+- [YouTube Data Tools](https://tools.digitalmethods.net/netvizz/youtube/)
+
+- [tuber](https://cran.r-project.org/web/packages/tuber/)
+
+Short tutorials on how to use the tools are available in our [GitHub repo](https://github.com/JuKo007/YouTubeComments)
+
+---
+
+# Overview
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Method &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Manual Coding &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Webometric Analyst &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; YouTube Data Tools &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; tuber &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Type &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; n/a &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Program &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Web service &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Package for R &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Platforms &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; All &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Win &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; All &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Win, Mac, Linux, Unix &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Collected Features &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Depends on coding scheme &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Channel Info, Video Info, Comments, Video Search &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Channel Info, Video Info, Comments, Video List &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Channel Info, Video Info, Comments, Subtitles, All searches &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Scoping &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Depends on coding scheme &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 100 most recent or all comments &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; All comments &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 20-100 most recent or all comments &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Pros and Cons
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Method &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Manual Coding &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Webometric Analyst &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; YouTube Data Tools &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; tuber &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Need API-Key? &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Disadvantages &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Time-consuming &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Only first 5 follow-up comments, no error feedback, undetectable time-outs &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Lacking flexibility, fewer infos &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Only first 5 follow-up comments due to bug &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Ease of Use &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Low &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; High &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Low &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; License &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; n/a &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Free for n/c &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Open Source &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Open Source &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Example: Dayum Video (22.2.19@2pm &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 47,163 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 44,828 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 47,153 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 44,810 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+[Dayum Video](https://www.youtube.com/watch?v=DcJFdCmN98s) / [tuber bug](https://github.com/soodoku/tuber/issues/52)
+
+---
+
+# How to retrieve comments with YouTube Data Tools
+
+- [Identify relevant videos](https://www.channelcrawler.com/)
+
+- [Launch Video Info and Comments Module](https://tools.digitalmethods.net/netvizz/youtube/mod_video_info.php)
+
+- Insert relevant Video ID (one at a time, e.g. XWxRrCXjmF0)
+
+- Save "..._comments.tab" and rename it to "...comments.txt"
+
+- Open it with Notepad, copy&amp;paste to Excel and save as .XLS
+
+- Beware, saving as .CSV destroys emojis
+
+---
+
+# Your Research / Application
+
+- Which tool would you prefer?
+
+---
+
+class: center, middle
+
+# Any questions?
+
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
