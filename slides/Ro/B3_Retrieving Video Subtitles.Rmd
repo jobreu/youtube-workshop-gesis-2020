@@ -1,0 +1,125 @@
+--- 
+title: "Automatic Sampling and Analysis of YouTube Data"
+subtitle: "Collecting Data With the tuber Package for R"
+author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
+date: "2020-02-10"
+location: "GESIS, Cologne, Germany" 
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["default.css", "default-fonts.css", "workshop.css"]
+    nature:
+      highlightStyle: "github"
+      highlightLines: true
+      countIncrementalSlides: false
+
+---
+
+layout: true
+
+```{r setup, include = F}
+if (!require(easypackages)) install.packages("easypackages")
+library(easypackages)
+library(tuber)
+
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", "tuber", prompt = F)
+
+devtools::install_github("fkeck/subtools")
+
+options(htmltools.dir.version = FALSE)
+
+opts_chunk$set(echo = FALSE, fig.align = "center")
+
+```
+
+<div class="my-footer">
+  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
+  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
+  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
+</div>
+
+<style type="text/css">
+
+pre {
+  font-size: 10px
+}
+</style>
+
+---
+
+
+# Retrieving Video Subtitles -1
+
+- Instead of transscribing a video, you can retrieve its subtitles
+
+- What research would you conduct with video subtitles?
+
+---
+
+# Retrieving Video Subtitles -2
+
+- Retrieve a list of subtitles with `tuber::list_caption_tracks`
+
+- Videos without any subtitles
+
+  - Error XXX
+
+- Videos with [deactivated 3rd party contribution](https://stackoverflow.com/questions/30653865/downloading-captions-always-returns-a-403)
+  
+  - Error 403
+  
+- Videos with more than one subtitle for same language
+
+  - Can be downloaded, but must be selected
+
+- Videos with automatically created subtitle
+
+  - Can be downloaded, but text quality can be bad
+
+---
+
+# Retrieving Video Subtitles -3
+
+- First we need to get a video's list of subtitles
+
+  `caption_list <- list_caption_tracks(part = "snippet", video_id = "nI_OfkQOG6Q")`
+
+- Next, we need to get the ID of the subtitle and convert it to a string
+
+  `ID <- toString(caption_list["id"]) # extracts the id and converts it to string`
+
+- After that, we need to retrieve the subtitles and convert them from raw to char
+
+  `text <- rawToChar(get_captions(id = ID, format = "sbv"))`
+
+- Now we can save the subtitles to a subtitle file
+
+  `write(Text, file = "Captions.sbv", sep="\n")`
+
+---
+
+# Converting Subtitles
+
+- Subtitles come in a special format called SBV
+
+- The format contains time stamps etc. that we do not need for text analysis
+
+- We can read the format with the package `subtools`
+
+ `subs <- read.subtitles("Captions.sbv", format = "subviewer")`
+ 
+- With subtools, we can also retrieve the text from the subtitles
+
+  `subtext <- rawText(Subs)`
+
+- Now the text is ready for text analysis
+
+---
+
+class: center, middle
+
+# Any questions?
+
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
