@@ -1,5 +1,5 @@
 # Workshop "Automatic Sampling and Analysis of YouTube Comments", GESIS 2020
-Materials for the 2020 [*GESIS*](https://www.gesis.org/en/home/) workshop "Automatic Sampling and Analysis of YouTube Comments"
+Materials for the 2020 [*GESIS*](https://www.gesis.org/en/home/) workshop ["Automatic Sampling and Analysis of YouTube Comments"](https://training.gesis.org/?site=pDetails&child=full&pID=0x94462B6E0610447EB34C0A702811ECCF&lang=en_US)
 
 [Johannes Breuer](https://www.johannesbreuer.com/) ([johannes.breuer@gesis.org](mailto:johannes.breuer@gesis.org), [\@MattEagle09](https://twitter.com/MattEagle09)); [Julian Kohne](https://www.gesis.org/en/institute/staff/person/?tx_gextstaffdir_staffdirectory%5Bemail%5D=Julian.Kohne%40gesis.org&tx_gextstaffdir_staffdirectory%5Baction%5D=details&tx_gextstaffdir_staffdirectory%5Bcontroller%5D=Index&cHash=202be2d68c6c1f598730dbfb939e520e) ([Julian.Kohne@gesis.org](mailto:Julian.Kohne@gesis.org), [\@JuuuuKoooo](https://twitter.com/JuuuuKoooo)); [M. Rohangis Mohseni](https://www.tu-ilmenau.de/en/media-psychology-and-media-design/team/dr-rohangis-mohseni/) ([Rohangis.Mohseni@tu-ilmenau.de](mailto:Rohangis.Mohseni@tu-ilmenau.de), [\@romohseni](https://twitter.com/romohseni))
 
