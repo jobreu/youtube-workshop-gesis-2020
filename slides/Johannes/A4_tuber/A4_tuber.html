@@ -151,9 +151,13 @@ hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ```
 
 ```
+## Auto-refreshing stale OAuth token.
+```
+
+```
 ## Channel Title: Hadley Wickham 
-## No. of Views: 41764 
-## No. of Subscribers: 2630 
+## No. of Views: 42729 
+## No. of Subscribers: 2680 
 ## No. of Videos: 4
 ```
 
@@ -179,7 +183,7 @@ hadley_stats_df
 ## # A tibble: 1 x 8
 ##   viewCount commentCount subscriberCount hiddenSubscribe~ videoCount
 ##       &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt; &lt;lgl&gt;                 &lt;dbl&gt;
-## 1     41764            0            2630 FALSE                     4
+## 1     42729            0            2680 FALSE                     4
 ## # ... with 3 more variables: channel_id &lt;chr&gt;, channel_name &lt;chr&gt;,
 ## #   channel_published &lt;chr&gt;
 ```
@@ -205,7 +209,7 @@ dayum_stats
 ## # A tibble: 1 x 6
 ##   id          viewCount likeCount dislikeCount favoriteCount commentCount
 ##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-## 1 DcJFdCmN98s  38509954    520741         6696             0        48212
+## 1 DcJFdCmN98s  38661029    523654         6730             0        48335
 ```
 
 ---
@@ -255,9 +259,7 @@ There are two alternatives to using the `yt_search()` function from the `tuber` 
 
 1. Manual search via the *YouTube* website: This works well for a small number of videos but is not really feasible if you want a large number of video IDs for your analyses.
 
-2. Web scraping: There are no ready-made solutions for scraping YouTube with `R`. While an introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)), we have created an `R` script for scraping *YouTube* search results which you can find in the `scripts` folder of the *GitHub* repo. 
-
-NB: Although [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) rightly argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age", you should use this method with caution. There is an ongoing debate about the legalities of web scraping (for research purposes) and websites/companies have different policies regarding web scraping. In practical terms, the oversue of web scraping can, e.g., get your IP address blocked (at least temporarily).
+2. Web scraping: [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age". However, you should use this method with caution. The [robots.txt of *YouTube*](https://www.youtube.com/robots.txt) disallows the scraping of results pages. In practical terms, the (over)use of web scraping can, e.g., get your IP address blocked (at least temporarily). While an introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)). 
 
 ---
 
@@ -313,7 +315,7 @@ get_stats
 ##     stat_res &lt;- res$statistics
 ##     c(id = res$id, stat_res)
 ## }
-## &lt;bytecode: 0x000000001855a0c0&gt;
+## &lt;bytecode: 0x000000001318e450&gt;
 ## &lt;environment: namespace:tuber&gt;
 ```
 
