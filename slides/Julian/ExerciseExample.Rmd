@@ -1,0 +1,22 @@
+---
+title: "Examen demo"
+author: "John Doe"
+date: "19 April, 2016"
+output:
+  unilur::examen_pdf:
+  id: yes
+  unilur::examen_pdf_solution:
+  id: yes
+---
+
+##### Write your answer below
+
+```{block, solution = TRUE, answer.lines = 1}
+This is the hidden answer generating lines in the main pdf file.
+```
+
+##### Second question
+
+```{block, solution = TRUE, answer.lines = 0.5}
+This would be the expected answer to the question
+```
