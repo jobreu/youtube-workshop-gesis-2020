@@ -41,7 +41,7 @@ pre {
 
 # Text mining
 
-In this session, we will only discuss some very basic exploratory analyses of *YouTube* user comments. We will explore the use of words as well as the use of emojis.
+In this session, we will discuss some basic exploratory analyses of *YouTube* user comments. We will explore the use of words as well as the use of emojis.
 
 An introduction to text mining is beyond the scope of this workshop, but there are many great introductions available (for free) online. For example:
 
@@ -49,6 +49,77 @@ An introduction to text mining is beyond the scope of this workshop, but there a
 - [Tutorials for the package `quanteda`](https://tutorials.quanteda.io/)
 - [Text mining for humanists and social scientists in R](https://tm4ss.github.io/docs/) by Andreas Niekler &amp; Gregor Wiedemann
 - [Automatisierte Inhaltsanalyse mit `R`](http://inhaltsanalyse-mit-r.de/) by Cornelius Puschmann
+
+In the following, we will very briefly introduce some key terms and steps in text mining, and then go through some examples of exploring *YouTube* comments (text + emojis).
+
+---
+
+# Text as data (in a nutshell)
+
+**Document** = collection of strings (+ metadata about the documents)
+
+**Corpus** = collection of documents
+
+**Token** = part of a text that is a meaningful unit of analysis (often individual words)
+
+**Vocabulary** = list of all distinct words form a corpus
+
+**Document-term matrix (DTM)** or **Document-feature matrix (DFM)** = matrix with *n* = # of documents rows and *m* = size of vocabulary columns where each cell contains the count of a particular word for a particular document
+
+---
+
+# Preprocessing (in a nutshell)
+
+For our examples in this session, we will go through the following preprocessing steps:
+
+1. **Basic string operations**: 
+  - Transforming to lower case
+  - Detecting and removing certain patterns in strings (e.g., punctuation, numbers or URLs)
+2. **Tokenization**: Splitting up strings into words (could also be combinations of multiple words: n-grams)
+3. **Stop word removal**: Stopwords are very frequent words that appear in almost all texts (e.g., "a","but","it", "the")
+
+**NB**: There are many other preprocessing options that we will not use for our examples, such as [stemming](https://en.wikipedia.org/wiki/Stemming), [lemmatization](https://en.wikipedia.org/wiki/Lemmatisation) or natural language processing pipelines (e.g., to detect and select specific word types, such as nouns and adjectives). Keep in mind that the choice and order of these preprocessing steps is important and should be informed by your research question.
+
+---
+
+# Collect the data &amp; parse the comments
+
+The following code will only work after completing the necessary authentication steps.
+
+
+```r
+Comments &lt;- get_all_comments(c(video_id="DcJFdCmN98s"))
+source("yt_parse.R") # for this to work, the script yt_parse.R needs to be in the same directory
+FormattedComments &lt;- yt_parse(Comments) # while take a while to complete
+```
+
+
+
+---
+
+# Data cleaning
+
+We will use the column including the comment text without emojis for the following examples. First, we need to remove newline commands from comment texts.
+
+
+```r
+FormattedComments$TextEmojiDeleted &lt;- gsub(FormattedComments$TextEmojiDeleted,
+                                           pattern = "\\\n",
+                                           replacement = " ")
+```
+
+Next, we tokenize the comments and remove punctuation, symbols, numbers, and URLs.
+
+
+```r
+toks &lt;- tokens(char_tolower(FormattedComments$TextEmojiDeleted),
+               remove_numbers = TRUE,
+               remove_punct = TRUE,
+               remove_separators = TRUE,
+               remove_symbols = TRUE,
+               remove_hyphens = TRUE,
+               remove_url = TRUE)
+```
 
 ---
 
