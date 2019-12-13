@@ -22,11 +22,11 @@ library(easypackages)
 packages("knitr",
          "rmarkdown",
          "tidyverse",
+         "lubridate",
          "kableExtra",
          "hadley/emo",
          "tuber",
          "dill/emoGG",
-         "ggwordcloud",
          "quanteda",
          prompt = F)
 
@@ -51,6 +51,113 @@ pre {
 
 ---
 
+# Required libraries for this session
+
+```{r libraries, eval=F}
+library(tidyverse)
+library(tuber)
+library(quanteda)
+library(RColorBrewer)
+library(devtools)
+install_github("dill/emoGG")
+```
+
+---
+
+# Collect & parse the data
+
+```{r get & parse comments, eval=F}
+Comments <- get_all_comments(c(video_id="DcJFdCmN98s"))
+source("yt_parse.R") # yt_parse.R needs to be in the same directory
+FormattedComments <- yt_parse(Comments) # will take a while
+```
+
+```{r load data, echo=F}
+load("C:/Users/breuerjs/Nextcloud/YouTube-Workshop/Material/YouTubeComments-master/Data/ParsedCommentsUTF8.Rdata")
+```
+
+---
+
+# Number of comments over time: Data wrangling
+
+We want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
+
+```{r wrangle comments over time}
+FormattedComments <- FormattedComments %>% 
+  arrange(Published) %>% 
+  mutate(date = date(Published),
+         week = floor_date(date, 
+                           unit = "week",
+                           week_start = getOption("lubridate.week.start", 1)),
+         counter = 1)
+
+weekly_comments <- FormattedComments %>% 
+  group_by(week) %>% 
+  summarize(count = n()) %>% 
+  mutate(cumulative_count = cumsum(count))
+
+PercTimes <- round(quantile(cumsum(FormattedComments$counter), 
+                            probs = c(0.5, 0.75, 0.9, 0.99)))
+```
+
+---
+
+# Number of comments over time: Plot
+
+```{r comments over time plot code, eval=F}
+weekly_comments %>% 
+  ggplot(aes(x = week, y = count)) +
+  geom_bar(stat = "identity") +
+  scale_x_date(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,7000)) +
+  labs(title = "Number of comments over time",
+  subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+  x = "Week",
+  y = "# of comments") +
+  geom_vline(xintercept = FormattedComments$week[PercTimes],linetype = "dashed", colour = "red") +
+  geom_text(aes(x = FormattedComments$week[PercTimes][1], label = "50%", y = 3500),
+            colour="red", angle=90, vjust = 1.2) +
+  geom_text(aes(x = FormattedComments$week[PercTimes][2], label = "75%", y = 3500),
+            colour="red", angle=90, vjust = 1.2) +
+  geom_text(aes(x = FormattedComments$week[PercTimes][3], label = "90%", y = 3500),
+            colour="red", angle=90, vjust = 1.2) +
+  geom_text(aes(x = FormattedComments$week[PercTimes][4], label = "99%", y = 3500), 
+            colour="red", angle=90, vjust = 1.2)
+```
+
+---
+
+# Number of comments over time: Plot
+
+```{r comments over time plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
+PercTimes <- round(quantile(cumsum(FormattedComments$counter), 
+                            probs = c(0.5, 0.75, 0.9, 0.99)))
+
+weekly_comments %>% 
+  ggplot(aes(x = week, y = count)) +
+  geom_bar(stat = "identity") +
+  scale_x_date(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,7000)) +
+  labs(title = "Number of comments over time",
+  subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+  x = "Week",
+  y = "# of comments") +
+  geom_vline(xintercept = FormattedComments$week[PercTimes],linetype = "dashed", colour = "red") +
+  geom_text(aes(x = FormattedComments$week[PercTimes][1], label = "50%", y = 3500),
+            colour="red", angle=90, vjust = 1.2) +
+  geom_text(aes(x = FormattedComments$week[PercTimes][2], label = "75%", y = 3500),
+            colour="red", angle=90, vjust = 1.2) +
+  geom_text(aes(x = FormattedComments$week[PercTimes][3], label = "90%", y = 3500),
+            colour="red", angle=90, vjust = 1.2) +
+  geom_text(aes(x = FormattedComments$week[PercTimes][4], label = "99%", y = 3500), 
+            colour="red", angle=90, vjust = 1.2)
+```
+---
+
 # Text mining
 
 In this session, we will discuss some basic exploratory analyses of *YouTube* user comments. We will explore the use of words as well as the use of emojis.
@@ -58,11 +165,24 @@ In this session, we will discuss some basic exploratory analyses of *YouTube* us
 An introduction to text mining is beyond the scope of this workshop, but there are many great introductions available (for free) online. For example:
 
 - [Text Mining in R](https://www.tidytextmining.com/) by Julia Silge & David Robinson: A tidy(verse) approach
+
 - [Tutorials for the package `quanteda`](https://tutorials.quanteda.io/)
+
 - [Text mining for humanists and social scientists in R](https://tm4ss.github.io/docs/) by Andreas Niekler & Gregor Wiedemann
+
 - [Automatisierte Inhaltsanalyse mit `R`](http://inhaltsanalyse-mit-r.de/) by Cornelius Puschmann
 
 In the following, we will very briefly introduce some key terms and steps in text mining, and then go through some examples of exploring *YouTube* comments (text + emojis).
+
+---
+
+# Popular text mining packages
+
+- [tm](http://tm.r-forge.r-project.org/): the first comprehensive text mining package for R
+
+- [tidytext](https://juliasilge.github.io/tidytext/): tidyverse tools & tidy data principles
+
+- [**quanteda**](https://quanteda.io/): very powerful text mining package with extensive documentation
 
 ---
 
@@ -87,49 +207,185 @@ For our examples in this session, we will go through the following preprocessing
 1. **Basic string operations**: 
   - Transforming to lower case
   - Detecting and removing certain patterns in strings (e.g., punctuation, numbers or URLs)
+  
 2. **Tokenization**: Splitting up strings into words (could also be combinations of multiple words: n-grams)
+
 3. **Stop word removal**: Stopwords are very frequent words that appear in almost all texts (e.g., "a","but","it", "the")
 
 **NB**: There are many other preprocessing options that we will not use for our examples, such as [stemming](https://en.wikipedia.org/wiki/Stemming), [lemmatization](https://en.wikipedia.org/wiki/Lemmatisation) or natural language processing pipelines (e.g., to detect and select specific word types, such as nouns and adjectives). Keep in mind that the choice and order of these preprocessing steps is important and should be informed by your research question.
 
 ---
 
-# Collect the data & parse the comments
+# Tokenization
 
-The following code will only work after completing the necessary authentication steps.
+Before we tokenize the comments, we want to remove newline commands from the strings
 
-```{r get & parse comments, eval=F}
-Comments <- get_all_comments(c(video_id="DcJFdCmN98s"))
-source("yt_parse.R") # for this to work, the script yt_parse.R needs to be in the same directory
-FormattedComments <- yt_parse(Comments) # while take a while to complete
+```{r remove newline}
+FormattedComments <- FormattedComments %>% 
+  mutate(TextEmojiDeleted = str_replace_all(TextEmojiDeleted,
+                                            pattern = "\\\n",
+                                            replacement = " "))
 ```
 
-```{r load data, echo=F}
-load("C:/Users/breuerjs/Nextcloud/YouTube-Workshop/Material/YouTubeComments-master/Data/ParsedCommentsUTF8.Rdata")
-```
-
----
-
-# Data cleaning
-
-We will use the column including the comment text without emojis for the following examples. First, we need to remove newline commands from comment texts.
-
-```{r comment cleaning}
-FormattedComments$TextEmojiDeleted <- gsub(FormattedComments$TextEmojiDeleted,
-                                           pattern = "\\\n",
-                                           replacement = " ")
-```
-
-Next, we tokenize the comments and remove punctuation, symbols, numbers, and URLs.
+Now we can tokenize the comments and remove punctuation, symbols, numbers, and URLs.
 
 ```{r tokenization}
-toks <- tokens(char_tolower(FormattedComments$TextEmojiDeleted),
-               remove_numbers = TRUE,
+toks <- FormattedComments %>% 
+  pull(TextEmojiDeleted) %>% 
+  char_tolower() %>% 
+  tokens(remove_numbers = TRUE,
                remove_punct = TRUE,
                remove_separators = TRUE,
                remove_symbols = TRUE,
                remove_hyphens = TRUE,
                remove_url = TRUE)
+```
+
+---
+
+# Document-feature matrix
+
+Now we create a document-feature matrix (DFM) and remove stopwords.
+
+```{r dfm}
+commentsDfm <- dfm(toks, 
+                   remove = quanteda::stopwords("english"))
+```
+
+---
+
+# Most frequent words
+
+```{r word freq}
+TermFreq <- textstat_frequency(commentsDfm)
+TermFreq[10:20, ]
+```
+
+---
+
+# Removing tokens
+
+There seem to be ASCII emojis among the most frequent tokens. We might want to remove these and/or other tokens if we consider them irrelevant for our analyses.
+
+```{r custom stops}
+custom_stopwords <- c("video","d","xd", "youtube")
+commentsDfm <- dfm(toks, remove = c(quanteda::stopwords("english"),
+                                    custom_stopwords))
+TermFreq <- textstat_frequency(commentsDfm)
+```
+
+For more options for selecting or removing tokens, see the [quanteda documentation](https://tutorials.quanteda.io/basic-operations/tokens/tokens_select/).
+
+---
+
+# Plot most frequent words
+
+```{r code word freq plot, eval=F}
+head(TermFreq, n = 20) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1,
+                                   vjust = 0.3)) +
+  labs(title = "Most frequent words in comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,10000)) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+---
+
+# Plot most frequent words
+
+```{r word freq plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
+head(TermFreq, n = 20) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1,
+                                   vjust = 0.3)) +
+  labs(title = "Most frequent words in comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,10000)) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+---
+
+# Plot docfreq
+
+```{r code docfreq plot, eval=F}
+head(TermFreq, n = 20) %>% 
+ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1,
+                                   vjust = 0.3)) +
+  labs(title = "Words that appear in the highest number of comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "# of comments") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,6500)) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+---
+
+# Plot docfreq
+
+```{r docfreq plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
+head(TermFreq, n = 20) %>% 
+ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1,
+                                   vjust = 0.3)) +
+  labs(title = "Words that appear in the highest number of comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "# of comments") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,6500)) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+---
+
+# Emojis
+
+In most of the research studying user-generated text from social media emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. In the following, we will do some exploratory analysis of emoji frequencies in *YouTube* comments.
+
+Before we can start, we first need to do some data cleaning again, then tokenize the emojis as some comments include more than one emoji, and create an emoji DFM.
+
+```{r wrangle emoji data}
+emoji_toks <- FormattedComments %>% 
+  mutate_at(c("Emoji"), list(~na_if(., "NA"))) %>%
+  mutate (Emoji = str_trim(Emoji)) %>% 
+  filter(!is.na(Emoji)) %>% 
+  pull(Emoji) %>% 
+  tokens()
+
+EmojiDfm <- dfm(emoji_toks)
+```
+
+---
+
+# Most frequent emojis
+
+```{r emoji freq}
+EmojiFreq <- textstat_frequency(EmojiDfm)
+head(EmojiFreq, n = 10)
 ```
 
 ---
