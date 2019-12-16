@@ -55,11 +55,13 @@ pre {
 
 ```{r libraries, eval=F}
 library(tidyverse)
+library(lubridate)
 library(tuber)
 library(quanteda)
 library(RColorBrewer)
 library(devtools)
 install_github("dill/emoGG")
+install_github("hadley/emo")
 ```
 
 ---
@@ -78,7 +80,7 @@ load("C:/Users/breuerjs/Nextcloud/YouTube-Workshop/Material/YouTubeComments-mast
 
 ---
 
-# Number of comments over time: Data wrangling
+# Number of comments over time: Data wrangling `r ji("cowboy")`
 
 We want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
 
@@ -364,19 +366,19 @@ ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
 
 # Emojis
 
-In most of the research studying user-generated text from social media emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. In the following, we will do some exploratory analysis of emoji frequencies in *YouTube* comments.
+In most of the research studying user-generated text from social media emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. 
 
-Before we can start, we first need to do some data cleaning again, then tokenize the emojis as some comments include more than one emoji, and create an emoji DFM.
+In the following, we will do some exploratory analysis of emoji frequencies in *YouTube* comments. Before we can start, we first need to do some data cleaning again, then tokenize the emojis as some comments include more than one emoji, and create an emoji DFM.
 
 ```{r wrangle emoji data}
 emoji_toks <- FormattedComments %>% 
-  mutate_at(c("Emoji"), list(~na_if(., "NA"))) %>%
-  mutate (Emoji = str_trim(Emoji)) %>% 
-  filter(!is.na(Emoji)) %>% 
-  pull(Emoji) %>% 
-  tokens()
+  mutate_at(c("Emoji"), list(~na_if(., "NA"))) %>% # define missings
+  mutate (Emoji = str_trim(Emoji)) %>% # remove spaces
+  filter(!is.na(Emoji)) %>% # only keep comments with emojis
+  pull(Emoji) %>% # pull out column cotaining emoji labels
+  tokens() # tokenize emoji labels
 
-EmojiDfm <- dfm(emoji_toks)
+EmojiDfm <- dfm(emoji_toks) # create DFM for emojis
 ```
 
 ---
@@ -386,6 +388,154 @@ EmojiDfm <- dfm(emoji_toks)
 ```{r emoji freq}
 EmojiFreq <- textstat_frequency(EmojiDfm)
 head(EmojiFreq, n = 10)
+```
+
+---
+
+# Plot most frequent emojis
+
+```{r lame emoji bar plot code, eval=F}
+head(EmojiFreq, n = 10) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1,
+                                   vjust = 0.3)) +
+  labs(title = "Most frequent emojis in comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,800)) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+Note: Similar to what we did for the comment text before we could replace `frequency` with `docfreq` in the above code to create a plot with the emojis that appear in the highest number of comments.
+
+---
+
+# Plot most frequent emojis
+
+```{r lame emoji bar plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
+head(EmojiFreq, n = 10) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1,
+                                   vjust = 0.3)) +
+  labs(title = "Most frequent emojis in comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,800)) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+---
+
+# `r ji("sunglasses")` emoji frequency plot: Preparation 1
+
+The previous emoji frequency plot was a bit `r ji("sleepy_face")`. To make things prettier we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...
+
+As a first step, we need an emoji lookup table in which the values in the name column have the same format as the labels in the feature column of our `EmojiFreq` object.
+
+```{r emoji lookup table}
+emoji_lookup <- jis %>% 
+  select(runes, name) %>% 
+  mutate(runes = str_to_lower(runes),
+         name = str_to_lower(name)) %>% 
+  mutate(name = str_replace_all(name, " ", "")) %>% 
+  mutate(name = paste0("emoji_", name))
+```
+
+---
+
+# `r ji("sunglasses")` emoji frequency plot: Preparation 2
+
+The second step of preparation for the nicer emoji frequency plot is creating mappings of emojis to data points so that we can use emojis instead of points in a scatter plot.
+
+```{r emoji mappings}
+mapping1 <- do.call(geom_emoji,list(data = EmojiFreq[1,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[1,]$feature)])," ")[[1]][1]))
+mapping2 <- do.call(geom_emoji,list(data = EmojiFreq[2,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[2,]$feature)])," ")[[1]][1]))
+mapping3 <- do.call(geom_emoji,list(data = EmojiFreq[3,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[3,]$feature)])," ")[[1]][1]))
+mapping4 <- do.call(geom_emoji,list(data = EmojiFreq[4,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[4,]$feature)])," ")[[1]][1]))
+mapping5 <- do.call(geom_emoji,list(data = EmojiFreq[5,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[5,]$feature)])," ")[[1]][1]))
+mapping6 <- do.call(geom_emoji,list(data = EmojiFreq[6,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[6,]$feature)])," ")[[1]][1]))
+mapping7 <- do.call(geom_emoji,list(data = EmojiFreq[7,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[7,]$feature)])," ")[[1]][1]))
+mapping8 <- do.call(geom_emoji,list(data = EmojiFreq[8,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[8,]$feature)])," ")[[1]][1]))
+mapping9 <- do.call(geom_emoji,list(data = EmojiFreq[9,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[9,]$feature)])," ")[[1]][1]))
+mapping10 <- do.call(geom_emoji,list(data = EmojiFreq[10,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[10,]$feature)])," ")[[1]][1]))
+```
+
+---
+
+# `r ji("sunglasses")` emoji frequency plot
+
+.small[
+```{r cool emoji bar plot code, eval=F}
+head(EmojiFreq, n = 10) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity",
+           color = "black",
+           fill = "#FFCC4D") + 
+  geom_point() +
+  labs(title = "Most frequent emojis in comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,800)) +
+  theme(panel.grid.major.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  mapping1 +
+  mapping2 +
+  mapping3 +
+  mapping4 +
+  mapping5 +
+  mapping6 +
+  mapping7 +
+  mapping8 +
+  mapping9 +
+  mapping10
+```
+]
+
+---
+
+# `r ji("sunglasses")` emoji frequency plot
+
+```{r cool emoji bar plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
+head(EmojiFreq, n = 10) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity",
+           color = "black",
+           fill = "#FFCC4D") + 
+  geom_point() +
+  labs(title = "Most frequent emojis in comments",
+       subtitle = "Schmoyoho - OH MY DAYUM ft. Daym Drops
+       \nhttps://www.youtube.com/watch?v=DcJFdCmN98s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,800)) +
+  theme(panel.grid.major.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  mapping1 +
+  mapping2 +
+  mapping3 +
+  mapping4 +
+  mapping5 +
+  mapping6 +
+  mapping7 +
+  mapping8 +
+  mapping9 +
+  mapping10
 ```
 
 ---
