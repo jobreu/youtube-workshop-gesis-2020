@@ -1,0 +1,93 @@
+---
+title: 'Exercises Collecting data with the tuber package for R - Solutions'
+# title: 'Exercises Collecting data with the tuber package for R' 
+author: 'Julian Kohne, Johannes Breuer, M. Rohangis Mohseni'
+date: 'Automatic sampling and analysis of YouTubeData, February 10-11, 2020'
+output:
+  unilur::tutorial_html_solution: default
+  # unilur::tutorial_html: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(clues = list(box.title = "Clues",
+                                      box.body = list(fill = "#fff9dc", colour = "black"),
+                                      box.header = list(fill = "#ffec8b", colour = "black"),
+                                      box.icon = "fa-search",
+                                      box.collapse = TRUE))
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+In the following exercises we will collect and explore some data from *YouTube*.
+
+```{block, box.title = "1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Before we can start collecting data through the *YouTube* API, you first need to set up your API authorization.
+```
+
+```{block, opts.label = "clues"}
+To set up your *YouTube* API authorization you need to use the function `yt_outh` from the `tuber` package which requires the ID of your app as well as your app secret as arguments.
+```
+
+```{r API authorization, solution = TRUE, eval = F}
+library(tuber)
+
+yt_oauth(app_id = "my_app_id", # paste your app ID here
+         app_secret = "my_app_secret", # paste your app secret here
+         token="")
+```
+
+While going through the following exercises you might want to monitor your API quota usage via the *Google Cloud Platform* dashboard for your app (APIs & Services -> Dashboard -> Select YouTube Data API v3 -> Quotas) to see the query costs for the `tuber` function calls. 
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+How many view, subscribers, and videos does the channel of the *Pew Research Center* currently have?
+```
+
+```{block, opts.label = "clues"}
+To get channel statistics you can use the `get_channel_stats` function which requires the ID the channel (as a string) as its main argument.
+```
+
+```{r channel stats, solution = TRUE, eval = F}
+get_channel_stats("UCwbQkZf9gjqDvbK4_H6qAOw")
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+How many views, likes, and comments does the music video "Data Science" by Baba Brinkman have?
+```
+
+```{block, opts.label = "clues"}
+To answer this question you can use `get_stats` and need the ID of the video.
+```
+
+```{r video stats, solution = TRUE, eval = F}
+get_stats("uHGlCi9jOWY")
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Collect all comments (including replies) for the video on "The Census" by Last Week Tonight with John Oliver. As we want to use the comments for later exercises, please assign the results to an object called `comments_lwt_census`.
+```
+
+```{block, opts.label = "clues"}
+To get all comments including replies you need to use the function `get_all_comments`.
+```
+
+```{r get comments, solution = TRUE, eval = F}
+comments_lwt_census <- get_all_comments("1aheRpmurAo")
+```
+
+NB: If you check the comment count on the website of the video you will see that there are more comments than in the dataframe you just created. This is because `get_all_comments` only collects up to 5 replies per comment.
+
+```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
+As a final step we want to save the comments we just collected so we can use them again in the exercises for the following sessions. Please save the the comments as an .rds file.
+```
+
+```{block, opts.label = "clues"}
+To save an .rds file you can use the `base R` function `saveRDS`. Ideally, you should save the file in the folder containing the workshops materials. The code in the solution uses a relative path to save the file in your current working directory.
+```
+
+```{r save, solution = TRUE, eval = F}
+saveRDS(comments_lwt_census, "./Comments.rds")
+```
