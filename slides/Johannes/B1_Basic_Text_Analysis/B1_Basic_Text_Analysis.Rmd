@@ -68,18 +68,18 @@ install_github("hadley/emo")
 # Collect & parse the data
 
 ```{r get & parse comments, eval=F}
-Comments <- get_all_comments(c(video_id="DcJFdCmN98s"))
+Comments <- get_all_comments(c(video_id="DcJFdCmN98s")) # takes a while
 source("yt_parse.R") # yt_parse.R needs to be in the same directory
 FormattedComments <- yt_parse(Comments) # will take a while
 ```
 
 ```{r load data, echo=F}
-load("C:/Users/breuerjs/Nextcloud/YouTube-Workshop/Material/YouTubeComments-master/Data/ParsedCommentsUTF8.Rdata")
+load("../../../data/DayumParsedCommentsUTF8.Rdata")
 ```
 
 ---
 
-# Number of comments over time: Data wrangling `r ji("cowboy")`
+# Comments over time: Data wrangling `r ji("cowboy")`
 
 We want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
 
@@ -103,7 +103,7 @@ PercTimes <- round(quantile(cumsum(FormattedComments$counter),
 
 ---
 
-# Number of comments over time: Plot
+# Comments over time: Plot
 
 ```{r comments over time plot code, eval=F}
 weekly_comments %>% 
@@ -187,7 +187,7 @@ In the following, we will very briefly introduce some key terms and steps in tex
 
 ---
 
-# Text as data (in a nutshell)
+# Text as data (in a `r ji("chestnut")`)
 
 **Document** = collection of strings (+ metadata about the documents)
 
@@ -201,7 +201,7 @@ In the following, we will very briefly introduce some key terms and steps in tex
 
 ---
 
-# Preprocessing (in a nutshell)
+# Preprocessing (in a `r ji("chestnut")`)
 
 For our examples in this session, we will go through the following preprocessing steps:
 
@@ -437,7 +437,7 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 # `r ji("sunglasses")` emoji frequency plot: Preparation 1
 
-The previous emoji frequency plot was a bit `r ji("sleepy_face")`. To make things prettier we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...
+The previous emoji frequency plot was a bit `r ji("sleepy_face")`. To make things prettier we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...<sup>1</sup>
 
 As a first step, we need an emoji lookup table in which the values in the name column have the same format as the labels in the feature column of our `EmojiFreq` object.
 
@@ -450,6 +450,10 @@ emoji_lookup <- jis %>%
   mutate(name = paste0("emoji_", name))
 ```
 
+.footnote[
+[1] For an alternative approach to using emojis in `ggplot2` see this [blog post by Emil Hvitfeldt](https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/)
+]
+
 ---
 
 # `r ji("sunglasses")` emoji frequency plot: Preparation 2
@@ -457,16 +461,14 @@ emoji_lookup <- jis %>%
 The second step of preparation for the nicer emoji frequency plot is creating mappings of emojis to data points so that we can use emojis instead of points in a scatter plot.
 
 ```{r emoji mappings}
-mapping1 <- do.call(geom_emoji,list(data = EmojiFreq[1,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[1,]$feature)])," ")[[1]][1]))
-mapping2 <- do.call(geom_emoji,list(data = EmojiFreq[2,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[2,]$feature)])," ")[[1]][1]))
-mapping3 <- do.call(geom_emoji,list(data = EmojiFreq[3,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[3,]$feature)])," ")[[1]][1]))
-mapping4 <- do.call(geom_emoji,list(data = EmojiFreq[4,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[4,]$feature)])," ")[[1]][1]))
-mapping5 <- do.call(geom_emoji,list(data = EmojiFreq[5,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[5,]$feature)])," ")[[1]][1]))
-mapping6 <- do.call(geom_emoji,list(data = EmojiFreq[6,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[6,]$feature)])," ")[[1]][1]))
-mapping7 <- do.call(geom_emoji,list(data = EmojiFreq[7,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[7,]$feature)])," ")[[1]][1]))
-mapping8 <- do.call(geom_emoji,list(data = EmojiFreq[8,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[8,]$feature)])," ")[[1]][1]))
-mapping9 <- do.call(geom_emoji,list(data = EmojiFreq[9,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[9,]$feature)])," ")[[1]][1]))
-mapping10 <- do.call(geom_emoji,list(data = EmojiFreq[10,],emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[10,]$feature)])," ")[[1]][1]))
+top_emojis <- 1:10
+
+for(i in top_emojis){
+  name <- paste0("mapping", i)
+  assign(name,
+         do.call(geom_emoji,list(data = EmojiFreq[i,],
+                                 emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[i,]$feature)])," ")[[1]][1])))
+}
 ```
 
 ---

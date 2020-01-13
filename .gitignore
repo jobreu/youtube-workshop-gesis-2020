@@ -39,5 +39,8 @@ rsconnect/
 # README HTML
 README.html
 
-#OAuth token
+# OAuth token
 .httr-oauth
+
+# Data folder
+data/

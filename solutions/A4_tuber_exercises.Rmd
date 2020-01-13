@@ -2,7 +2,7 @@
 title: 'Exercises Collecting data with the tuber package for R - Solutions'
 # title: 'Exercises Collecting data with the tuber package for R' 
 author: 'Julian Kohne, Johannes Breuer, M. Rohangis Mohseni'
-date: 'Automatic sampling and analysis of YouTubeData, February 10-11, 2020'
+date: 'Automatic sampling and analysis of YouTube data, February 10-11, 2020'
 output:
   unilur::tutorial_html_solution: default
   # unilur::tutorial_html: default
@@ -29,7 +29,7 @@ Before we can start collecting data through the *YouTube* API, you first need to
 ```
 
 ```{block, opts.label = "clues"}
-To set up your *YouTube* API authorization you need to use the function `yt_outh` from the `tuber` package which requires the ID of your app as well as your app secret as arguments.
+To set up your *YouTube* API authorization you need to use the function `yt_oauth` from the `tuber` package which requires the ID of your app as well as your app secret as arguments.
 ```
 
 ```{r API authorization, solution = TRUE, eval = F}

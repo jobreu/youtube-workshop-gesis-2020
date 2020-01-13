@@ -123,11 +123,7 @@ pre {
 
 - Where do you work?  
 
-- What do you work on?  
-
-- What are your experiences with R?
-
-- What are your experiences with Tidyverse?
+- What is your experience with `R` (and the `tidyverse`)?
 
 
 ---
@@ -155,6 +151,38 @@ pre {
 
 ---
 
+# Base `R` vs. `tidyverse`
+
+In this course, we will use a mixture of base `R` and `tidyverse` code as Julian prefers base `R`, Johannes prefers the `tidyverse`, and Ro is agnostic.
+
+ICYC, here are some opinions [for](http://varianceexplained.org/r/teach-tidyverse/) and [against](https://blog.ephorie.de/why-i-dont-use-the-tidyverse) using/teaching the `tidyverse`.
+
+Johannes' experience with learning and teaching the `tidyverse` is something like this...
+```{r tidyverse meme, out.width = "60%"}
+include_graphics("./pics/tidyverse_vs_baseR_meme.jpg")
+```
+
+---
+
+# The `tidyverse`
+
+If you've never seen `tidyverse` code, the most important thing to know is the `%>%` (pipe) operator. Put briefly, the pipe operator takes an object (which can be the result of a previous function) and pipes it as the first argument into the next function. It may also be worthwhile to know/remember that `tidyverse` functions normally produce (and expect) [`tibbles`](https://tibble.tidyverse.org/) which are a special type of dataframe.
+
+If you want a short primer (or need a quick refresher) on the `tidyverse`, you can check out this blog [post by Martin Frigaard](http://www.storybench.org/getting-started-with-tidyverse-in-r/) or this [short webinar by Thomas Mock](https://resources.rstudio.com/webinars/a-gentle-introduction-to-tidy-statistics-in-r). For a more in-depth exploration you can, e.g., have a look at the materials for the workshop [*Data Wrangling & Exploration with the Tidyverse in R*](https://github.com/jobreu/tidyverse-workshop-gesis-2019) that Johannes taught together with Stefan Jünger at GESIS last year.
+
+---
+
+# What's in a name?
+
+Another thing you might notice when looking at our code is that we love `r ji("snake")` as much as `r ji("camel")`.
+
+```{r cases, out.width = "75%"}
+include_graphics("./pics/camel_snake_kebab.jpg")
+```
+.center[
+<small><small>Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
+]
+---
 # Course schedule
 
 .center[**Monday, February 10th, 2020**]
@@ -232,9 +260,9 @@ knitr::kable(
 
 # Your Research / Application
 
-- What are your experiences with YouTube data?  
+- What are your experiences with *YouTube* data?  
 
-- What do you want to use YouTube data for?
+- What do you want to use *YouTube* data for?
 
 ---
 
