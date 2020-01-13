@@ -69,9 +69,18 @@ options(stringsAsFactors = FALSE)
 
 # Excursus: Keep your secrets secret
 
-If you save your API credentials in an R script, anyone who has that script can potentially use your API key. This can affect your quota and might even cause costs for you.
+If you save your API credentials in an `R` script, anyone who has that script can potentially use your API key. This can affect your quota and might even cause costs for you.
 
-If you use R environment variables, your credentials won't be shared if you share your scripts. However, the information is still stored in a plain text file. You can run `usethis::edit_r_environ()` to see its contents.
+&lt;img src="./pics/Google_API_key_alert.png" width="60%" style="display: block; margin: auto;" /&gt;
+.center[
+&lt;small&gt;&lt;small&gt;Source: https://twitter.com/sil_aarts/status/1187352423796477953&lt;/small&gt;&lt;/small&gt;
+]
+
+---
+
+# Excursus: Keep your secrets secret
+
+If you use `R` environment variables, your credentials won't be shared if you share your scripts. However, the information is still stored in a plain text file. You can run `usethis::edit_r_environ()` to see its contents.
 
 One way of keeping your credentials safer is using the `keyring` package.
 
@@ -151,15 +160,13 @@ hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ```
 
 ```
-## Auto-refreshing stale OAuth token.
-```
-
-```
 ## Channel Title: Hadley Wickham 
-## No. of Views: 42729 
-## No. of Subscribers: 2680 
+## No. of Views: 44515 
+## No. of Subscribers: 2770 
 ## No. of Videos: 4
 ```
+
+Note: If you want additional data on channels/video creators and their performance on *YouTube*, you can also check out the statistics provided by [*Socialblade*](https://socialblade.com/youtube/).
 
 ---
 
@@ -183,7 +190,7 @@ hadley_stats_df
 ## # A tibble: 1 x 8
 ##   viewCount commentCount subscriberCount hiddenSubscribe~ videoCount
 ##       &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt; &lt;lgl&gt;                 &lt;dbl&gt;
-## 1     42729            0            2680 FALSE                     4
+## 1     44515            0            2770 FALSE                     4
 ## # ... with 3 more variables: channel_id &lt;chr&gt;, channel_name &lt;chr&gt;,
 ## #   channel_published &lt;chr&gt;
 ```
@@ -209,7 +216,7 @@ dayum_stats
 ## # A tibble: 1 x 6
 ##   id          viewCount likeCount dislikeCount favoriteCount commentCount
 ##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-## 1 DcJFdCmN98s  38661029    523654         6730             0        48335
+## 1 DcJFdCmN98s  38951178    529939         6786             0        48467
 ```
 
 ---
@@ -315,7 +322,7 @@ get_stats
 ##     stat_res &lt;- res$statistics
 ##     c(id = res$id, stat_res)
 ## }
-## &lt;bytecode: 0x000000001318e450&gt;
+## &lt;bytecode: 0x0000000012a22d90&gt;
 ## &lt;environment: namespace:tuber&gt;
 ```
 

@@ -70,9 +70,20 @@ options(stringsAsFactors = FALSE)
 
 # Excursus: Keep your secrets secret
 
-If you save your API credentials in an R script, anyone who has that script can potentially use your API key. This can affect your quota and might even cause costs for you.
+If you save your API credentials in an `R` script, anyone who has that script can potentially use your API key. This can affect your quota and might even cause costs for you.
 
-If you use R environment variables, your credentials won't be shared if you share your scripts. However, the information is still stored in a plain text file. You can run `usethis::edit_r_environ()` to see its contents.
+```{r cases, out.width = "60%", echo = F}
+include_graphics("./pics/Google_API_key_alert.png")
+```
+.center[
+<small><small>Source: https://twitter.com/sil_aarts/status/1187352423796477953</small></small>
+]
+
+---
+
+# Excursus: Keep your secrets secret
+
+If you use `R` environment variables, your credentials won't be shared if you share your scripts. However, the information is still stored in a plain text file. You can run `usethis::edit_r_environ()` to see its contents.
 
 One way of keeping your credentials safer is using the `keyring` package.
 
@@ -145,6 +156,8 @@ yt_oauth()
 ```{r channel stats}
 hadley_stats <- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ```
+
+Note: If you want additional data on channels/video creators and their performance on *YouTube*, you can also check out the statistics provided by [*Socialblade*](https://socialblade.com/youtube/).
 
 ---
 
