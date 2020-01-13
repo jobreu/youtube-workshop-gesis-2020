@@ -15,7 +15,7 @@ output:
 ---
 
 class: center, middle
-
+---
 # Overview
  
 ---
@@ -38,7 +38,6 @@ or send content to the database
 
 ![plot](Images/YouTube_better.png)
 ---
-
 # How do we get data from Websites?
 
 - Theoretically, we could gather all the information manually by clicking on the things that are
@@ -52,13 +51,11 @@ or send content to the database
  2)  **API-harvesting:** Sending requests directly to the database and only getting back the information that you want and need.
 
 ---
-
 class: center, middle
 
 # Screenscraping
 
 ---
-
 # Screenscraping
 
 - Screenscraping means that we are downloading the HTML textfile, which contains the content we are interested in but also a lot of unnecessary clutter that describes how the website should be rendered by the browser
@@ -69,7 +66,21 @@ class: center, middle
 
 ![plot](Images/BBC2.png)
 ---
+# Screenscraping: GETting Data
 
+- To automatically obtain data, we can use a so called [GET      request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
+
+- A GET request is an HTTP method for asking a server to send a specific resource (usually an HTML page) back
+to you local machine
+
+- You can try it out in your console with ```{r}GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol ```
+
+- This is the basic principle that all the Scraping packages build-on.
+
+- We will not use it directly and will let the higher-level applications handle this under the hood
+
+---
+---
 font-size: x-small
 
 # Screenscraping with Rvest
@@ -95,7 +106,6 @@ Description <- html_nodes(Website, xpath = Xp)
 html_attr(Description, name = "content")
 ```
 ---
-
 # Screenscraping
 
 - **Problem:** We only get part of the decsription, the text seems to cut off at a certain point
@@ -113,7 +123,6 @@ site changes without having to reload
 ![plot](Images/YouTube_better.png)
 
 ---
-
 # Screenscraping with RSelenium
 
 ```{r}
@@ -126,10 +135,13 @@ if ("RSelenium" %in% installed.packages() != TRUE) {
   install.packages("RSelenium")
 }
 
+# attaching package
+library(RSelenium)
+
 # opening docker container from system
 check <- system2("docker", args = "ps", stdout = TRUE)
 
-if (length(check) > 1) {
+if (length(check) == 1) {
   
   #start new container
   system2("docker", args = c("run", "-d", "-p", "4445:4444", "selenium/standalone-chrome"))
@@ -145,9 +157,6 @@ if (length(check) > 1) {
   
 }
 
-# attaching packages
-library(RSelenium)
-
 # Assigning google chrome docker session
 remDr <- RSelenium::remoteDriver(remoteServerAddr = "localhost",
                                  port = 4445L,
@@ -155,7 +164,6 @@ remDr <- RSelenium::remoteDriver(remoteServerAddr = "localhost",
 ```
 
 ---
-
 # Screenscraping with RSelenium
 
 - We can then navigate to the website and print a screenshot
@@ -170,14 +178,17 @@ remDr$navigate("https://www.youtube.com/watch?v=4PqdqWWSHJY")
 
 # take screenshot
 remDr$screenshot(display = TRUE)
+
+# saving Screenshot
+remDr$screenshot(file = 'Images/RSeleniumScreenshot.png')
 ```
 
 ---
+# Screenshot 
 
-# Insert Screenshot taken with rmDr here
+![plot](Images/RSeleniumScreenshot.png)
 
 ---
-
 # Screenscraping with RSelenium
 
  - We can then navigate to the "show more" button, and click it
@@ -195,13 +206,17 @@ element$clickElement()
 
 # take screenshot (we can see that the description box is now expanded)
 remDr$screenshot(display = TRUE, useViewer = TRUE)
+
+#save Screenshot
+remDr$screenshot(file = 'Images/RSeleniumScreenshot2.png')
+
 ```
 ---
+# Screenshot 
 
-# Insert Screenshot taken with rmDr here
+![plot](Images/RSeleniumScreenshot2.png)
 
 ---
-
 # Screenscraping with RSelenium
 
 - We can then extract the contents of the expanded description box
@@ -217,11 +232,10 @@ unlist(element2$getElementText())
 
 ```
 
-- INSERT TEXT CHUNK HERE
+- "Jeremy Corbyn has launched Labour's general election manifesto and vowed to transform the United Kingdom if they win. He unveiled the wide ranging plans in Birmingham promising what he called a 'green transformation of the economy and a 'manifesto for hope'.   There'd be big tax increases on higher earners and companies to pay for the plans.  The BBC's Political Editor, Laura Kuenssberg, Political Correspondent Alex Forsyth and Economics Editor Faisal Islam report. \nPlease subscribe HERE http://bit.ly/1rbfUog"
 
 ---
-
-# ScreenScraping
+# Screenscraping
 
 - Advantages of Screenscraping:
   + You can access everything that you are able to access from your browser
@@ -238,7 +252,6 @@ unlist(element2$getElementText())
   - Legal Gray Area (recent [court ruling](http://cdn.ca9.uscourts.gov/datastore/opinions/2019/09/09/17-16783.pdf) though)
 
 ---
-
 class: center, middle
 
 # API-Harvesting
@@ -256,7 +269,6 @@ class: center, middle
 ![plot](Images/API_harvesting.png)
 
 ---
-
 # API-harvesting
 
 - APIs can be used to:
@@ -290,7 +302,6 @@ class: center, middle
   - Not every API has a documentation
   
 ---
-
 class: inverse, middle, center
 
 # Screenscraping vs. API-harvesting
@@ -298,7 +309,6 @@ class: inverse, middle, center
 If you can, use an API, if you must, use Screenscraping instead
 
 ---
-
 class: center, middle
 
 # The YouTube API
@@ -324,7 +334,7 @@ class: center, middle
 
 ---
 
-# Getting started
+# Getting API Access
 
 - First of all, we need a Google account.
   - You can use an already existing one
@@ -341,7 +351,6 @@ class: center, middle
   - Create Authentification Credentials
 
 ---
-
 # Google Developer Console
 
 - Go to the [Developer Console](https://console.developers.google.com) and log in with your (new) Google Account
@@ -351,7 +360,6 @@ class: center, middle
 ![plot](Images/CreateProject.png)
 
 ---
-
 # Watch out
 
 - You only have a limited number of Projects that you can create, so be carefull not
@@ -360,14 +368,12 @@ class: center, middle
 - More information can be found [here](https://support.google.com/cloud/answer/6330231)
 
 ---
-
 # Creating a New Project
 
 - Specify a Project Name (you do not have to indicate an organisation) and click on create once you are done
 
 ![plot](Images/ProjectName.png)
 ---
-
 # Activate the YouTube Data v3 API
 
 - click on the button to "Activate APIs"
@@ -375,7 +381,6 @@ class: center, middle
 ![plot](Images/ActivateAPI.png)
 
 ---
-
 # Activate the YouTube Data and Analytics APIs
 
 - Enter "YouTube" in the search bar, click on the data API and then activate it by clicking on the "Activate" button
@@ -403,36 +408,60 @@ class: center, middle
 ![plot](Images/OtherApplication.png)
 
 ---
-
 class: center, middle
 
 # DONE!
 
 ---
-
 # What can we do with these Credentials now?
 
 - We can see what the API allows us to do in the [Google API Explorer](https://developers.google.com/apis-explorer/#p/)
 
 - Basically, you can automate any action and see all data that you
-  also would be able to see when logged into YT with your Google account
+  also would be able to see when logged into YouTube with your Google account
 
 - Fortunately for us, the YouTube API is very [well documented](https://developers.google.com/youtube/v3/docs/)
 
 ---
+# Let's check the API
 
-# Test
+- Google provides a sandbox for their API that we can use to get a grasp of how it operates
+
+- We can for example use our credentials to get search for videos with the keyword "Brexit"
+
+- ![Example](https://developers.google.com/youtube/v3/docs/search/list?apix_params=%7B%22part%22%3A%22snippet%22%2C%22q%22%3A%22Brexit%22%7D)
+
+- Keep in mind: We have to log in with our created Google account to use the API
+
+- What we get back is a JSON formatted response with the formats and information we requested in the Sandbox
 
 ---
+# Most important parameters:
 
-# Have a slide with an overview of most common parameters and which ones we are going to use
+- All possible parameters are listed ![here](https://developers.google.com/youtube/v3/docs/search/)
+
+- Keep in mind that some information is only visible to owners of a channel or author of a video
+
+- Keep in mind that not all information is necessarily available for all videos (e.g. live videos)
 
 ---
+# Using it in from R
 
-# Have a slide explaining what a GET Request it, how to execute it from the terminal and
+- We can simplyfiy the process of interacting with the YouTube API by using a dedicated R package
+
+- The package handles the authentification with our credentials and translates R commands into API calls
+
+- In essence, we can run R commands and get API results back
+
+- For this workshop, we will further use the tubeR package
+
+![plot](Images/MuchWin.jpeg)
 
 ---
+# Exercises
 
-# how to execute it from R
+- 
 
+---
+# Thank You
 ---
