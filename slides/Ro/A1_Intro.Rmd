@@ -63,13 +63,16 @@ pre {
 
 ### Julian Kohne
 
-- coordinator in the team XXX
+- M.Sc. in Social Psychology, University of Groningen (NL)
+
+- Scientific Adviser in GESIS presidentidal staff / CSS department P.hD.
   - main area: developments of GESIS in the area of digital behavioral data
 
-- MA in psychology, University of Groningen
-
-- research interests
-  - using digital data for quantifying human behavior, especially interpersonal relationships through text mining and the simulation of social systems
+- Research interests
+  - using digital data for quantifying human behavior
+  - text mining
+  - interpersonal relationships
+  - Social Network Analysis / Simulation
 
 [julian.kohne@gesis.org](mailto:julian.kohne@gesis.org)
 
@@ -84,7 +87,7 @@ pre {
 - senior researcher in the team Data Linking & Data Security at the GESIS Data Archive
     - main area: data linking  
     
-- Ph.D. in psychology, University of Cologne  
+- Ph.D. in Psychology, University of Cologne  
 
 - previously worked in several research projects investigating the use and effects of digital media (Cologne, Hohenheim, Münster, Tübingen)  
 
@@ -105,7 +108,7 @@ pre {
 
 - postdoctoral researcher (Media Psychology) at TU Ilmenau
 
-- Ph.D. in psychology, University Osnabrück
+- Ph.D. in Psychology, University Osnabrück
 
 - currently: habilitation "sexist online hate speech"
 
@@ -124,6 +127,8 @@ pre {
 - Where do you work?  
 
 - What is your experience with `R` (and the `tidyverse`)?
+
+- Why is YouTube data interesting for your field?
 
 
 ---
