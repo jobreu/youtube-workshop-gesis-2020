@@ -1,5 +1,5 @@
 ---
-title: "Automatic sampling and analysis of YouTubeData"
+title: "Automatic Sampling and Analysis of YouTube Data"
 subtitle: "The YouTube API"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: "2020-02-10"
@@ -13,10 +13,9 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-
 class: center, middle
----
-# Overview
+
+# The YouTube API
  
 ---
 
@@ -34,7 +33,7 @@ or send content to the database
 - The Youtube Website is
     - build in [HTML](https://de.wikipedia.org/wiki/Hypertext_Markup_Language), 
     - uses [CSS](https://de.wikipedia.org/wiki/Cascading_Style_Sheets) for the "styling"
-    - dynamically loads content using [Ajax](https://en.wikipedia.org/wiki/Ajax_(programming) ) from the Database
+    - dynamically loads content using [Ajax](https://en.wikipedia.org/wiki/Ajax) from the Database
 
 ![plot](Images/YouTube_better.png)
 ---
@@ -44,7 +43,7 @@ or send content to the database
  interesting to us and copy/pasting them. However, this is tedious and time-consuming.**We want a way
  of automatizing this task**
 
-- In general, there are two ways of getting data from a Website ( [Webscraping](https://en.wikipedia.org/wiki/Web_scraping))
+- [Webscraping](https://en.wikipedia.org/wiki/Web_scraping)
 
  1)  **Screenscraping:** Getting the HTML-code out of your browser, parsing & formatting it, then analyzing the data
   
@@ -71,15 +70,14 @@ class: center, middle
 - To automatically obtain data, we can use a so called [GET      request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
 
 - A GET request is an HTTP method for asking a server to send a specific resource (usually an HTML page) back
-to you local machine
+to your local machine
 
-- You can try it out in your console with ```{r}GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol ```
+- You can try it out in your console with ``` GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol ```
 
 - This is the basic principle that all the Scraping packages build-on.
 
-- We will not use it directly and will let the higher-level applications handle this under the hood
+- We will not use this directly and will let the higher-level applications handle this under the hood
 
----
 ---
 font-size: x-small
 
@@ -88,7 +86,8 @@ font-size: x-small
 - Lets try to get this information using screenscraping from R
 
 ```{r collapse = TRUE}
-# installing packages and attaching package
+
+# installingand attaching package
 if ("rvest" %in% installed.packages() != TRUE) {
   install.packages("rvest")};library(rvest)
 
@@ -105,6 +104,7 @@ Description <- html_nodes(Website, xpath = Xp)
 # printing description
 html_attr(Description, name = "content")
 ```
+
 ---
 # Screenscraping
 
@@ -161,6 +161,10 @@ if (length(check) == 1) {
 remDr <- RSelenium::remoteDriver(remoteServerAddr = "localhost",
                                  port = 4445L,
                                  browserName = "chrome")
+
+# Waiting for 5 seconds to finish initialization of docker session
+Sys.sleep(5)
+
 ```
 
 ---
@@ -168,7 +172,7 @@ remDr <- RSelenium::remoteDriver(remoteServerAddr = "localhost",
 
 - We can then navigate to the website and print a screenshot
 
-```{r}
+```{r, results = 'hide'}
 
 # Open remote connection
 remDr$open()
@@ -176,10 +180,14 @@ remDr$open()
 # Navigate to website
 remDr$navigate("https://www.youtube.com/watch?v=4PqdqWWSHJY")
 
-# take screenshot
-remDr$screenshot(display = TRUE)
+# Wait for 2 seconds for the website to load
+Sys.sleep(2)
 
-# saving Screenshot
+# Scrolling down a bit
+webElem <- remDr$findElement("css", "body")
+webElem$sendKeysToElement(list(key = "down_arrow"))
+
+# take screenshot
 remDr$screenshot(file = 'Images/RSeleniumScreenshot.png')
 ```
 
@@ -193,7 +201,7 @@ remDr$screenshot(file = 'Images/RSeleniumScreenshot.png')
 
  - We can then navigate to the "show more" button, and click it
 
-```{r results='hide'}
+```{r, results = 'hide'}
 
 # Xpath of "show more" button (using inspect element in Browser)
 xp <- '//*[@id="more"]/yt-formatted-string'
@@ -204,10 +212,11 @@ element <- remDr$findElement(using = 'xpath', xp)
 # click on button
 element$clickElement()
 
-# take screenshot (we can see that the description box is now expanded)
-remDr$screenshot(display = TRUE, useViewer = TRUE)
+# Scrolling down a bit
+webElem <- remDr$findElement("css", "body")
+webElem$sendKeysToElement(list(key = "down_arrow"))
 
-#save Screenshot
+# take screenshot (we can see that the description box is now expanded)
 remDr$screenshot(file = 'Images/RSeleniumScreenshot2.png')
 
 ```
@@ -221,7 +230,7 @@ remDr$screenshot(file = 'Images/RSeleniumScreenshot2.png')
 
 - We can then extract the contents of the expanded description box
 
-```{r}
+```{r, results = 'hide'}
 
 #navigating to description element
 xp2 <- '//*[@id="description"]/yt-formatted-string'
@@ -323,13 +332,6 @@ class: center, middle
 - To find an API for a given website, [Programmable Web](https://www.programmableweb.com) is
   a good starting point
 
-- Some prominent APIs:
-  - [Google Maps](https://www.programmableweb.com/api/google-maps-places)
-  - [Facebook](https://developers.facebook.com/docs/graph-api?locale=de_DE)
-  - [Twitter](https://developer.twitter.com/en/docs/basics/getting-started)
-  - [Instagram](https://www.instagram.com/developer/)
-  - [Wikipedia](https://de.wikipedia.org/wiki/Wikipedia:Technik/Datenbank/API)
-
 - We will use the [YouTube API](https://developers.google.com/youtube/v3/docs) today
 
 ---
@@ -429,7 +431,7 @@ class: center, middle
 
 - We can for example use our credentials to get search for videos with the keyword "Brexit"
 
-- ![Example](https://developers.google.com/youtube/v3/docs/search/list?apix_params=%7B%22part%22%3A%22snippet%22%2C%22q%22%3A%22Brexit%22%7D)
+- [Example](https://developers.google.com/youtube/v3/docs/search/list?apix_params=%7B%22part%22%3A%22snippet%22%2C%22q%22%3A%22Brexit%22%7D)
 
 - Keep in mind: We have to log in with our created Google account to use the API
 
@@ -438,14 +440,14 @@ class: center, middle
 ---
 # Most important parameters:
 
-- All possible parameters are listed ![here](https://developers.google.com/youtube/v3/docs/search/)
+- All possible parameters are listed [here](https://developers.google.com/youtube/v3/docs/search/)
 
 - Keep in mind that some information is only visible to owners of a channel or author of a video
 
 - Keep in mind that not all information is necessarily available for all videos (e.g. live videos)
 
 ---
-# Using it in from R
+# Using it from R
 
 - We can simplyfiy the process of interacting with the YouTube API by using a dedicated R package
 
@@ -453,9 +455,40 @@ class: center, middle
 
 - In essence, we can run R commands and get API results back
 
-- For this workshop, we will further use the tubeR package
+.center[![plot](Images/MuchWin.jpeg)]
 
-![plot](Images/MuchWin.jpeg)
+- For this workshop, we will use the [tubeR package](https://cran.r-project.org/web/packages/tuber/tuber.pdf)
+
+---
+# Rate Limits
+
+- With the API, you have a limit of how much data you can get
+
+- This limit has constantly decreased over the last decade
+
+.center[![plot](Images/RateLimitReduction3.png)]
+
+---
+# Rate Limits
+
+- Currently (02.2020), you have a quota of **10.000** units per day
+
+- Each request (even invalid ones) costs a certain amount of units
+
+- There are two factors influencing the quota cost of each request:
+
+  - different types (e.g write operation: 50 units; video upload: 1600 units)
+  
+  - how many parts the requested resource has (playlist:2; channel: 6; video: 10)
+  
+**You should only request parts that you absolutely need to make the most of your units** 
+  
+---
+
+# Can I increase my Rate Limit?
+
+.center[![plot](Images/Odyssey4.jpg)]
+
 
 ---
 # Exercises
@@ -463,5 +496,7 @@ class: center, middle
 - 
 
 ---
+class: center, middle
+
 # Thank You
 ---
