@@ -30,13 +30,6 @@ layout: true
   &lt;div style="text-align: center;"&gt;&lt;span&gt;Basic text analysis of user comments&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;style type="text/css"&gt;
-
-pre {
-  font-size: 10px
-}
-&lt;/style&gt;
-
 ---
 
 # Required libraries for this session
@@ -136,6 +129,8 @@ An introduction to text mining is beyond the scope of this workshop, but there a
 - [Tutorials for the package `quanteda`](https://tutorials.quanteda.io/)
 
 - [Text mining for humanists and social scientists in R](https://tm4ss.github.io/docs/) by Andreas Niekler &amp; Gregor Wiedemann
+
+- [Text Mining in R](https://www.kirenz.com/post/2019-09-16-r-text-mining/) by Jan Kirenz
 
 - [Automatisierte Inhaltsanalyse mit `R`](http://inhaltsanalyse-mit-r.de/) by Cornelius Puschmann
 
@@ -429,7 +424,7 @@ for(i in top_emojis){
   name &lt;- paste0("mapping", i)
   assign(name,
          do.call(geom_emoji,list(data = EmojiFreq[i,],
-                                 emoji = strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[i,]$feature)])," ")[[1]][1])))
+                                 emoji = gsub("^0{2}","", strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[i,]$feature)])," ")[[1]][1]))))
 }
 ```
 

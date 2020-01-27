@@ -67,7 +67,105 @@ Which are the 20 most frequently used words in the comments on the video "The Ce
 You can use the function `textstat_frequency()` from the `quanteda` package to answer this question.
 ```
 
-```{r term freq, solution = TRUE}
+```{r termfreq, solution = TRUE}
 term_freq <- textstat_frequency(comments_dfm)
 head(term_freq, 20)
+```
+
+```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Instead of the raw frequency we can also look at the number of comments that a particular word appears in. This metric takes into account that words might be used multiple times in the same comment. What are the 10 words that are used in the highest number of comments on the video "The Census" by Last Week Tonight with John Oliver?
+```
+
+```{block, opts.label = "clues"}
+You should use the variable `docfreq` from the `term_freq` object you created in the previous task.
+```
+
+```{r docfreq, solution = TRUE}
+term_freq  %>% 
+  arrange(-docfreq) %>% 
+  head(10)
+```
+
+We also want to look at the emojis that were used in the comments on the video "The Census" by Last Week Tonight with John Oliver. Similar to what we did for the comment text without emojis, we first need to wrangle the data (remove missings, tokenize emojis, create DFM).
+
+```{r wrangle emoji data}
+emoji_toks <- comments %>% 
+  mutate_at(c("Emoji"), list(~na_if(., "NA"))) %>%
+  mutate (Emoji = str_trim(Emoji)) %>% 
+  filter(!is.na(Emoji)) %>% 
+  pull(Emoji) %>% 
+  tokens()
+
+EmojiDfm <- dfm(emoji_toks)
+```
+
+```{block, box.title = "3", box.body = list(fill = "white"), box.icon = "fa-star"}
+What were the 10 most frequently used emojis comments on the video "The Census" by Last Week Tonight with John Oliver?
+```
+
+```{block, opts.label = "clues"}
+The solution is essentially the same as the one for the first task in this exercise (word frequencies).
+```
+
+```{r emoji freq, solution = TRUE}
+EmojiFreq <- textstat_frequency(EmojiDfm)
+head(EmojiFreq, n = 10)
+```
+
+```{block, box.title = "4", box.body = list(fill = "white"), box.icon = "fa-star"}
+The ranking based on raw counts of emojis might be affected by *YouTube* users "spamming" emojis in their comments (i.e., using the same emojis many times in the same comment). Hence, it makes sense to also look at the number of unique comments that an emoji appears in. What are the 10 emojis that appear in the highest number of comments on the video "The Census" by Last Week Tonight with John Oliver?
+```
+
+```{block, opts.label = "clues"}
+The solution is essentially the same as the one for the second task in this exercise (docfreq for words).
+```
+
+```{r emoji docfreq, solution = TRUE}
+EmojiFreq  %>% 
+  arrange(-docfreq) %>% 
+  head(10)
+```
+
+```{block, box.title = "Bonus", box.body = list(fill = "white"), box.icon = "fa-star"}
+If you're finished with tasks 1-4 and/or want to do/try out something else, you can create an emoji plot similar to the one you saw in the lecture slides for the video "The Census" by Last Week Tonight with John Oliver. We have created a script containing a function for the emoji mapping which you can source with the following code (NB: you probably have to adjust the path to the script in the code below). You might also want to have a look at the comments in the `emoji_mapping_function.R` file.
+```
+
+```{r source mapping function}
+source("../scripts/emoji_mapping_function.R")
+```
+
+
+```{block, opts.label = "clues"}
+You need to add the mapping objects to your plot. To see how you can construct the plot, you can have a look at slide #25 from the session on *Basic Text Analysis of User Comments*.
+```
+
+```{r emoji plot, solution = TRUE}
+create_emoji_mappings(EmojiFreq, 10)
+
+head(EmojiFreq, n = 10) %>% 
+ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
+  geom_bar(stat="identity",
+           color = "black",
+           fill = "#FFCC4D") + 
+  geom_point() +
+  labs(title = "Most frequent emojis in comments",
+       subtitle = "The Census: Last Week Tonight with John Oliver (HBO)
+       \nhttps://www.youtube.com/watch?v=1aheRpmurAo&t=33s",
+       x = "",
+       y = "Frequency") +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0,150)) +
+  theme(panel.grid.major.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  mapping1 +
+  mapping2 +
+  mapping3 +
+  mapping4 +
+  mapping5 +
+  mapping6 +
+  mapping7 +
+  mapping8 +
+  mapping9 +
+  mapping10
 ```
