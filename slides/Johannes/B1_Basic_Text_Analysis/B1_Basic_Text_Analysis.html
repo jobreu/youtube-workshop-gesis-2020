@@ -414,7 +414,7 @@ emoji_lookup &lt;- jis %&gt;%
 
 # 😎 emoji frequency plot: Preparation 2
 
-The second step of preparation for the nicer emoji frequency plot is creating mappings of emojis to data points so that we can use emojis instead of points in a scatter plot.
+The second step of preparation for the nicer emoji frequency plot is creating mappings of emojis to data points so that we can use emojis instead of points in a scatter plot.&lt;sup&gt;1&lt;/sup&gt;
 
 
 ```r
@@ -427,6 +427,10 @@ for(i in top_emojis){
                                  emoji = gsub("^0{2}","", strsplit(tolower(emoji_lookup$runes[emoji_lookup$name == as.character(EmojiFreq[i,]$feature)])," ")[[1]][1]))))
 }
 ```
+
+.footnote[
+[1] Please note that this code has not been tested systematically. We only used it with a few videos. Depending on which emojis are the most frequent for the video you look at, this might not work because a) one of the emojis is not included in the emoji lookup table (which uses the `jis` data frame from the [`emo` package](https://github.com/hadley/emo)) or b) the content in the `runes` column does not match the format/code that the `emoji` argument in the `geom_emoji` function from the [`emoGG` package](https://github.com/dill/emoGG) expects.
+]
 
 ---
 
