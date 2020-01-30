@@ -1,62 +1,50 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Getting Access to the YouTube API</title>
+    <title>Setting up access to the YouTube API</title>
     <meta charset="utf-8" />
     <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
-    <meta name="date" content="2020-02-10" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../workshop.css" type="text/css" />
+    <link rel="stylesheet" href="..\workshop.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Getting Access to the YouTube API
-## Preliminary Workshop Preperation
+# Setting up access to the YouTube API
 ### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
-### 2020-02-10
 
 ---
 
-# Setting up API Access
+# Setting up API access to the *YouTube* API
 
-- To effectively work with YouTube data, we need access to it's Application Programming Interface (API)
-
-- As this process can be quite tedious, we prepared this preliminary tutorial so nobody
-  has to spend time troubleshooting their API access during the workshop
+To effectively work with *YouTube* data, we need access to its Application Programming Interface (API). As this process, unfortunately, can be a bit tedious, we prepared this preliminary tutorial so you don't have to spend time setting up your API access during the workshop. Please follow this tutorial and check if the setup works before the workshop. If your setup does not work, feel free to contact us before the workshop (the sooner the better) and we'll try to assist you in setting up access to the *YouTube* API. If, for some reason, setting up access to the API does not work for you and we don't find a solution or if you cannot access the API during the workshop, we will have some data prepared that you can then work with in the workshop.
   
-- Please follow this tutorial and check if the setup works before the workshop
-
-- If your setup does not work, feel free to contact us in a timely manner for assistance with trouble shooting
-
-- In case API access is suspended or fails for some participants, we will have prepared datasets on site that
-  you can still work with
-  
-- [HINT](https://en.wikipedia.org/wiki/YouTube): Pink texts are hyperlinks to the respective website that you can simply click on
+[HINT](https://en.wikipedia.org/wiki/YouTube): Pink texts are hyperlinks to the respective website that you can simply click on
 
 ---
 # Setting up API Access
   
-- First of all, we need a Google account.
-- You can use an already existing one or create a new one
-- For safety reasons, we advise you to create a new account
-  (If you accidentally share your login credentials, people using the credentials only
-  have access to your Bot account and not your personal or work account)
+- For starters, you need a *Google* account
+- You can use an existing one or create a new one
+- We suggest that you create a new account (if you accidentally share your login credentials, people using the credentials only have access to this account and not your personal or work account)
+
 - You can create a new account [here](https://accounts.google.com/signup/v2/webcreateaccount?service=mail&amp;continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&amp;ltmpl=googlemail&amp;gmb=exp&amp;biz=false&amp;flowName=GlifWebSignIn&amp;flowEntry=SignUp)
 
-- Second, we need to:
-  - Sign up for the Google developer console
-  - Create a new Project
-  - Activate the YouTube Data API
-  - Create Authentification Credentials
+- Next, we need to:
+  - Sign up for the *Google* developer console
+  - Create a new project
+  - Activate the *YouTube* Data API
+  - Create authentification credentials
   - Test the credentials
+
+We will explain these steps in detail on the following slides.
 
 ---
 # Google Developer Console
   
-- Go to the [Developer Console](https://console.developers.google.com) and log in with your new Google Account
+- Go to the [Developer Console](https://console.developers.google.com) and log in with your (new) *Google* Account
 
 ![plot](PrepImag/1.png)
 ![plot](PrepImag/2.png)
@@ -64,29 +52,29 @@ class: center, middle, inverse, title-slide
 ---
 # Google Developer Console
 
-- Create a new Project by clicking on the "Create" button on the top right Corner
+- Create a new project by clicking the "Create" button in the top right corner
 
 ![plot](PrepImag/3.png)
 
 ---
-# Watch out!
+# Project limit
   
-- You only have a limited number of Projects that you can create, so be carefull not
+- You only have a limited number of Projects that you can create, so be careful not
 to constantly delete and create new ones!
 
-- More information on project limitations can be found [here](https://support.google.com/cloud/answer/6330231)
+- More information on project limits can be found [here](https://support.google.com/cloud/answer/6330231)
 
 ---
 # Creating a New Project
   
-- Specify a project name (you do not have to indicate an organisation) and click on "create" once you are done
+- Specify a project name (you do not have to specify an organisation) and click "create" once you are done
 
 ![plot](PrepImag/4.png)
 
 ---
 # Activate the YouTube Data v3 API
   
-- Click on the button to "Enable APIs and Services" on the top of your screen
+- Click the button "Enable APIs and Services"
 
 ![plot](PrepImag/5.png)
 
@@ -107,49 +95,45 @@ to constantly delete and create new ones!
 ---
 # Activate the YouTube Data v3 API
 
-- Activate the API by clicking on the "Enable" button
+- Activate the API by clicking the "Enable" button
 
 ![plot](PrepImag/9.png)
----
-class: center, middle
-
-# The API is now enabled! But we still need credentials to use it.
 
 ---
-# Obtaining OAuth Credentials
+# Obtaining OAuth credentials
+
+- The API is now enabled, but we still need credentials to use it
 
 - Click on the "Credentials" pane in the menu on the left side
 
 ![plot](PrepImag/10.png)
 
 ---
-# Obtaining OAuth Credentials
+# Obtaining OAuth credentials
 
-- Click on the "+ Create Credentials" button on the top of your screen and select "OAuth Client ID" from the drop
-  down menu
+- Click the "+ Create Credentials" button and select "OAuth Client ID" from the dropdown menu
 
 ![plot](PrepImag/12.png)
 
 ---
-# Obtaining OAuth Credentials
+# Obtaining OAuth credentials
 
-- To be able to create new credentials, we first need to configure a consent screen for our "App"
+- To be able to create new credentials, we first need to configure a consent screen for our "app"
 
-- Click on the blue button saying "Configure Consent Screen" on the right side of your screen
+- Click the blue "Configure Consent Screen" button on the right side of your screen
 
 ![plot](PrepImag/13.png)
 
 ---
-# Configuring Consent Screen
+# Configuring the consent screen
 
-- Fill the field "application name" with a name for your "App", scroll to the bottom of the page 
-  and click "save"
+- Enter the name of your "app" in the the field "application name", scroll to the bottom of the page, and click "save"
 
 ![plot](PrepImag/14.png)
 
 
 ---
-# Obtaining OAuth Credentials
+# Obtaining OAuth credentials
 
 - On the following screen, select the "Credentials" pane again from the menu on the left side of your screen
 
@@ -158,42 +142,36 @@ class: center, middle
 ---
 # Obtaining OAuth Credentials
 
-- We can now specify our credentials! Select the application type "other" and enter a name for your
-  set of credentials. Afterwards, click on "create".
+- Select the application type "other" and enter a name for your set of credentials. Afterwards, click "create".
 
 ![plot](PrepImag/17.png)
 
 ---
-# Success!
+# OAuth credentials obtained
 
-- We now have our first set of OAuth credentials for using the YouTube API!
+- You now have our first set of OAuth credentials for using the YouTube API
 
 - Don't worry about closing the window, we can access them again anytime
 
 ![plot](PrepImag/18.png)
 
 ---
-# Words of Advice
+# A few words of advice on handling your *YouTube* API access
 
-- Have one account and project ready for the workshop that you know works but do not use too excessively in advance to
-  not get it suspended before the workshop
+- Have one account and project ready for the workshop for which you know that it works
+- Do not use your API access too excessively before the workshop to avoid any risk of it being suspended
   
-- Never ever share your login credentials! This can easily happen by accident when
+- Never share your OAuth login credentials! This can easily happen by accident when
   - saving code in a GitHub Repo
-  - sending scripts to colleages
-  - Troubleshooting someone elses code
-  - For added security, you can use the [Keyring package](https://cran.r-project.org/web/packages/keyring/keyring.pdf) (more info in workshop)
+  - sending scripts to colleagues
+  - troubleshooting someone elses code
+  - for added security you can use the [`keyring` package](https://cran.r-project.org/web/packages/keyring/keyring.pdf) (we'll say a bit more about this in the workshop)
   
----
-class: center, middle
-
-# The API is now ready to use, but we still need to test if everything is working
-
 ---
 # Testing Access
 
-- You can try whether your account works as intendend without using it too excessively by running the 
-  following commands in R. This should open a browser window:
+- You can try whether your *YouTube* API access works as intendend by running the 
+  following commands in `R`:
 
 
 ```r
@@ -219,34 +197,34 @@ yt_oauth(ID,secret)
 ---
 # Login 
 
-- Select the Google Account that you used to set up the credentials
+- Select the *Google* Account that you used to set up the credentials
 
 ![plot](PrepImag/20.png)
 ---
-# Access "unsecure App"
+# Granting access to your "unsecure app"
 
-- We did not verify our "App", this is why Google labels it as "unsecure". Because we're the only ones using it,
-  this doesn't bother us. Click on "Advanced" on the bottom left
+- As we did not verify our "App", *Google* labels it as "unsecure"
+- Because we're the only ones using it, this shouldn't bother us. Click "Advanced" on the bottom left.
 
 ![plot](PrepImag/21.png)
 ---
-# Access "unsecure App"
+# Granting access to your "unsecure app"
 
-- Click on "Go to [Name of your App] (unsafe)" on the bottom left of your screen
+- Click "Go to [Name of your App] (unsafe)" on the bottom left of your screen
 
 ![plot](PrepImag/22.png)
 
 ---
-# Access "unsecure App"
+# Granting access to your "unsecure app"
 
-- Click on "Allow"
+- Click "Allow"
 
 ![plot](PrepImag/23.png)
 
 ---
 # Access "unsecure App"
 
-- Click on "Allow" again to confirm your choice
+- Click "Allow" again to confirm your choice
 
 ![plot](PrepImag/24.png)
 ---
@@ -259,7 +237,7 @@ yt_oauth(ID,secret)
 ---
 # Test API call
 
-- To check if everything worked, lets try to get some info about a video
+- To check if everything worked, let's try to collect some data about a video
 
 
 ```r
@@ -295,12 +273,10 @@ $commentCount
 ---
 class: center, middle
 
-# We are looking forward to seeing you in Cologne!
-
----
+# We hope that you are now all set up and look forward to seeing you in Cologne!
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
@@ -344,24 +320,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
+})();</script>
 
 <script>
 (function() {

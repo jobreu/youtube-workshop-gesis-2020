@@ -1,10 +1,16 @@
 if (!require(easypackages)) install.packages("easypackages")
-library(easypackages)
 
-packages("tidyverse",
-         "lubridate",
-         "hadley/emo",
-         "tuber",
-         "dill/emoGG",
-         "quanteda",
-         prompt = F)
+easypackages::packages("tidyverse",
+                       "devtools",
+                       "tuber",
+                       "quanteda",
+                       "qdapRegex",
+                       "tm",
+                       "stm",
+                       "syuzhet",
+                       "lexicon",
+                       "keyring",
+                       "hadley/emo",
+                       "dill/emoGG",
+                       "fkeck/subtools",
+                       prompt = F)
