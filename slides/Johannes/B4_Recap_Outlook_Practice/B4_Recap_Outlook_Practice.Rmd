@@ -48,8 +48,8 @@ tribble(
   ~"Session", ~"Example content", 
   "Introduction", "Why is YouTube data interesting for research?",
   "The YouTube API", "API access, API requests, quota limits",
-  "Tools for the automatic sampling of YouTube data", "YouTube Data Tools, Webometric Analyst, tuber",
-  "Collecting data with the tuber package for R", "collecting channel/video stats & viewer comments", 
+  "Tools for the automatic sampling of YouTube data", "YouTube Data Tools (+Demo), Webometric Analyst, tuber",
+  "Collecting data with the tuber package for R", "Collecting channel/video stats & viewer comments", 
   "Processing and cleaning user comments", "Character encoding, string operations, emoji dictionaries"
 ) %>% 
 kable(
@@ -68,9 +68,9 @@ kable(
 ```{r recap 2, echo = F}
 tribble(
   ~"Session", ~"Example content", 
-  "Basic text analysis of user comments", "counting and visualizing the frequencies of words and emojis in comments",
-  "Sentiment analysis of user comments", "assigning sentiment scores to words and emojis",
-  "Excursus: Retrieving video subtitles", "Retrieving and parsing YouTube video subtitles"
+  "Basic text analysis of user comments", "Counting and visualizing the frequencies of words and emojis in comments",
+  "Sentiment analysis of user comments", "Assigning sentiment scores to words and emojis",
+  "Excursus: Retrieving video subtitles", "Retrieving and parsing YouTube video subtitles (+Demo)"
 ) %>% 
 kable(
     format = "html"
@@ -85,11 +85,11 @@ kable(
 
 Some topics that we did not cover or only briefly touched upon that you might want to explore next/further:
 
-- analyses for more than one video: use for-loops, functions from the `apply` family or `map` functions from the [`purrr` package](https://purrr.tidyverse.org/)
+- Analyses for more than one video: use for-loops, functions from the `apply` family or `map` functions from the [`purrr` package](https://purrr.tidyverse.org/)
 
-- advanced text mining and NLP: check out the introductions/tutorials mentioned in the session on basic text analysis and/or the *GESIS* workshop ["Research Factory for Text Mining in the Social Sciences"](https://training.gesis.org/?site=pDetails&child=full&pID=0x7C279142645144CB854441D0AD613445), March 23-25, Cologne
+- Advanced text mining and NLP: check out the introductions/tutorials mentioned in the session on basic text analysis and/or the *GESIS* workshop ["Research Factory for Text Mining in the Social Sciences"](https://training.gesis.org/?site=pDetails&child=full&pID=0x7C279142645144CB854441D0AD613445), March 23-25, Cologne
 
-- topic models: have a look at the introductions/tutorials by [Julia Silge](https://juliasilge.com/blog/sherlock-holmes-stm/) and the [*Pew Research Center*](https://medium.com/pew-research-center-decoded/an-intro-to-topic-models-for-text-analysis-de5aa3e72bdb)
+- Topic models: have a look at the introductions/tutorials by [Julia Silge](https://juliasilge.com/blog/sherlock-holmes-stm/) and the [*Pew Research Center*](https://medium.com/pew-research-center-decoded/an-intro-to-topic-models-for-text-analysis-de5aa3e72bdb)
 
 ---
 
