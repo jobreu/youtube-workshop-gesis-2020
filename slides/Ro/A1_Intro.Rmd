@@ -51,11 +51,11 @@ pre {
 
 # About this course `r ji("cowboy")`
 
-- learn how to use YouTube data for research
+- Learn how to use YouTube data for research
 
-- learn about tools for collecting YouTube data, their advantages and disadvantages
+- Learn about tools for collecting YouTube data, their advantages and disadvantages
 
-- be able to
+- Be able to
   - automatically collect YouTube data,
   - process/clean it,
   - and do some basic (exploratory) analyses of user comments
@@ -71,12 +71,12 @@ pre {
 - M.Sc. in Social Psychology, University of Groningen (NL)
 
 - Scientific Adviser in GESIS presidentidal staff / CSS department P.hD.
-  - main area: developments of GESIS in the area of digital behavioral data
+  - Main area: developments of GESIS in the area of digital behavioral data
 
 - Research interests
-  - using digital data for quantifying human behavior
-  - text mining
-  - interpersonal relationships
+  - Using digital data for quantifying human behavior
+  - Text mining
+  - Interpersonal relationships
   - Social Network Analysis / Simulation
 
 [julian.kohne@gesis.org](mailto:julian.kohne@gesis.org)
@@ -89,17 +89,17 @@ pre {
 
 ### Johannes Breuer
 
-- senior researcher in the team Data Linking & Data Security at the GESIS Data Archive
-    - main area: data linking  
+- Senior researcher in the team Data Linking & Data Security at the GESIS Data Archive
+    - Main area: data linking  
     
 - Ph.D. in Psychology, University of Cologne  
 
-- previously worked in several research projects investigating the use and effects of digital media (Cologne, Hohenheim, Muenster, Tuebingen)  
+- Previously worked in several research projects investigating the use and effects of digital media (Cologne, Hohenheim, Muenster, Tuebingen)  
 
-- other research interests
-    - methods of media (effects) research
-    - data management
-    - open science
+- Other research interests
+    - Methods of media (effects) research
+    - Data management
+    - Open science
 
 [johannes.breuer@gesis.org](mailto:johannes.breuer@gesis.org), [@MattEagle09](https://twitter.com/MattEagle09)
 
@@ -111,15 +111,15 @@ pre {
 
 ### M. Rohangis Mohseni 
 
-- postdoctoral researcher (Media Psychology) at TU Ilmenau
+- Postdoctoral researcher (Media Psychology) at TU Ilmenau
 
 - Ph.D. in Psychology, University Osnabrueck
 
-- ongoing habilitation "sexist online hate speech" `r ji("imp")`
+- Ongoing habilitation "sexist online hate speech" `r ji("imp")`
 
-- other research interests
-  - electronic media effects
-  - moral behavior
+- Other research interests
+  - Electronic media effects
+  - Moral behavior
 
 [rohangis.mohseni@tu-ilmenau.de](mailto:rohangis.mohseni@tu-ilmenau.de), [@romohseni](https://twitter.com/romohseni)
 
@@ -280,11 +280,3 @@ knitr::kable(
 class: center, middle
 
 # Any questions?
-
----
-
-class: center, middle
-
-Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
-
-The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
