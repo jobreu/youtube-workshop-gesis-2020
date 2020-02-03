@@ -102,6 +102,14 @@ knitr::kable(
 
 ---
 
+# Time for a Live Demonstration
+
+```{r cases, out.width = "75%"}
+include_graphics("./pics/youtubedatatools.jpg")
+```
+
+---
+
 # How to retrieve comments with YouTube Data Tools
 
 - [Identify relevant videos](https://www.channelcrawler.com/)
