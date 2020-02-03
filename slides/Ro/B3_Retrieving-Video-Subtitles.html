@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
@@ -51,24 +51,29 @@ pre {
 
 # Retrieving Video Subtitles -2
 
-- Retrieve a list of subtitles with `tuber::list_caption_tracks`
+- Retrieve a list of subtitles with `tuber::list_caption_tracks` (costs around 52 quota)
+
+- Videos with automatically created subtitle (&lt;i&gt;ASR&lt;/i&gt;)
+
+  - Always in English, even if video language is non-English
+
+  - Can be downloaded, but text quality can be bad (especially if translated)
+
 
 - Videos without any subtitles
 
-  - Error XXX
+  - Not sure if even possible because there always seems to be an &lt;i&gt;ASR&lt;/i&gt;
+  
+- Videos with more than one subtitle
+
+  - Examples: &lt;i&gt;ASR&lt;/i&gt; and regular subtitle, more than one language, more than one subtitle for the same language
+
+  - Can be downloaded, but subtitle for analysis must be selected
 
 - Videos with [deactivated 3rd party contribution](https://stackoverflow.com/questions/30653865/downloading-captions-always-returns-a-403)
   
   - Error 403
   
-- Videos with more than one subtitle for same language
-
-  - Can be downloaded, but must be selected
-
-- Videos with automatically created subtitle
-
-  - Can be downloaded, but text quality can be bad
-
 ---
 
 # Retrieving Video Subtitles -3
@@ -79,7 +84,9 @@ pre {
 
 - Next, we need to get the ID of the subtitle and convert it to a string
 
-  `ID &lt;- toString(caption_list["id"]) # extracts the id and converts it to string`
+  `ID &lt;- toString(caption_list[1,"id"])`
+  
+- Adapt the number to select the subtitle that you want (ASR = automatic sub)
 
 - After that, we need to retrieve the subtitles and convert them from raw to char
 
@@ -99,23 +106,25 @@ pre {
 
 - We can read the format with the package `subtools`
 
- `subs &lt;- read.subtitles("Captions.sbv", format = "subviewer")`
+ `subs &lt;- read_subtitles("Captions.sbv", format = "subviewer")`
  
 - With subtools, we can also retrieve the text from the subtitles
 
-  `subtext &lt;- rawText(Subs)`
+  `subtext &lt;- get_raw_text(Subs)`
 
 - Now the text is ready for text analysis
+
+---
+
+# Time for a Live Demonstration
+
+&lt;img src="./pics/youtubesubtitles.jpg" width="75%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 class: center, middle
 
 # Any questions?
-
-Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
-
-The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
