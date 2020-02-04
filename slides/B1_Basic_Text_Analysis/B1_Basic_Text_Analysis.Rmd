@@ -67,7 +67,7 @@ FormattedComments <- yt_parse(Comments) # will take a while
 ```
 
 ```{r load data, echo=F}
-load("../../../data/DayumParsedCommentsUTF8.Rdata")
+load("../../data/DayumParsedCommentsUTF8.Rdata")
 ```
 
 ---
