@@ -33,13 +33,6 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
   <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
 </div>
 
-<style type="text/css">
-
-pre {
-  font-size: 10px
-}
-</style>
-
 ---
 
 # The `tuber` package

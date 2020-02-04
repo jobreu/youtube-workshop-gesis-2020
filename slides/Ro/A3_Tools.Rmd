@@ -102,6 +102,14 @@ knitr::kable(
 
 ---
 
+# Time for a Live Demonstration
+
+```{r cases, out.width = "75%"}
+include_graphics("./pics/youtubedatatools.jpg")
+```
+
+---
+
 # How to retrieve comments with YouTube Data Tools
 
 - [Identify relevant videos](https://www.channelcrawler.com/)
@@ -127,7 +135,3 @@ knitr::kable(
 class: center, middle
 
 # Any questions?
-
-Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
-
-The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).

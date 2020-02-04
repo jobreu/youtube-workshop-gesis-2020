@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Automatic sampling and analysis of YouTubeData</title>
     <meta charset="utf-8" />
@@ -52,11 +52,11 @@ layout: true
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Tools for the automatic sampling of YouTube data &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; YouTube Data Tools, Webometric Analyst, tuber &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; YouTube Data Tools (+Demo), Webometric Analyst, tuber &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Collecting data with the tuber package for R &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; collecting channel/video stats &amp; viewer comments &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Collecting channel/video stats &amp; viewer comments &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Processing and cleaning user comments &lt;/td&gt;
@@ -81,15 +81,15 @@ layout: true
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Basic text analysis of user comments &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; counting and visualizing the frequencies of words and emojis in comments &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Counting and visualizing the frequencies of words and emojis in comments &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Sentiment analysis of user comments &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; assigning sentiment scores to words and emojis &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Assigning sentiment scores to words and emojis &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Excursus: Retrieving video subtitles &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Retrieving and parsing YouTube video subtitles &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Retrieving and parsing YouTube video subtitles (+Demo) &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -100,11 +100,11 @@ layout: true
 
 Some topics that we did not cover or only briefly touched upon that you might want to explore next/further:
 
-- analyses for more than one video: use for-loops, functions from the `apply` family or `map` functions from the [`purrr` package](https://purrr.tidyverse.org/)
+- Analyses for more than one video: use for-loops, functions from the `apply` family or `map` functions from the [`purrr` package](https://purrr.tidyverse.org/)
 
-- advanced text mining and NLP: check out the introductions/tutorials mentioned in the session on basic text analysis and/or the *GESIS* workshop ["Research Factory for Text Mining in the Social Sciences"](https://training.gesis.org/?site=pDetails&amp;child=full&amp;pID=0x7C279142645144CB854441D0AD613445), March 23-25, Cologne
+- Advanced text mining and NLP: check out the introductions/tutorials mentioned in the session on basic text analysis and/or the *GESIS* workshop ["Research Factory for Text Mining in the Social Sciences"](https://training.gesis.org/?site=pDetails&amp;child=full&amp;pID=0x7C279142645144CB854441D0AD613445), March 23-25, Cologne
 
-- topic models: have a look at the introductions/tutorials by [Julia Silge](https://juliasilge.com/blog/sherlock-holmes-stm/) and the [*Pew Research Center*](https://medium.com/pew-research-center-decoded/an-intro-to-topic-models-for-text-analysis-de5aa3e72bdb)
+- Topic models: have a look at the introductions/tutorials by [Julia Silge](https://juliasilge.com/blog/sherlock-holmes-stm/) and the [*Pew Research Center*](https://medium.com/pew-research-center-decoded/an-intro-to-topic-models-for-text-analysis-de5aa3e72bdb)
 
 ---
 
@@ -112,7 +112,7 @@ Some topics that we did not cover or only briefly touched upon that you might wa
 
 All slides were created with the `R` package [`xaringan`](https://github.com/yihui/xaringan) which builds on [`remark.js`](https://remarkjs.com), [`knitr`](http://yihui.name/knitr), and [`R Markdown`](https://rmarkdown.rstudio.com). The exercises were created with the [`unilur` package](https://github.com/koncina/unilur).  
 
-The `workshop.css` file we used for the layout of the slides includes elements from `CSS` files for `xaringan` presentations by [Frederik Aust](https://github.com/crsh) and [David Zimmer](https://github.com/DavZim).  
+The original inspiration for our emoji parsing and analyses came from a [blog post](http://opiateforthemass.es/articles/emoji-analysis/) by [Jessica Peterka-Bonetta](https://github.com/today-is-a-good-day). The `workshop.css` file we used for the layout of the slides includes elements from `CSS` files for `xaringan` presentations by [Frederik Aust](https://github.com/crsh) and [David Zimmer](https://github.com/DavZim).  
 
 We thank Laura Rüwe and the *GESIS* Training team for taking good care of the organization of this workshop, and all of you for participating!
 
@@ -174,7 +174,24 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 (function() {

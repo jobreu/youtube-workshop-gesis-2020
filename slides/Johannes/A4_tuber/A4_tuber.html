@@ -31,13 +31,6 @@ layout: true
   &lt;div style="text-align: center;"&gt;&lt;span&gt;Collecting data with the tuber package for R&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;style type="text/css"&gt;
-
-pre {
-  font-size: 10px
-}
-&lt;/style&gt;
-
 ---
 
 # The `tuber` package
@@ -160,9 +153,13 @@ hadley_stats &lt;- get_channel_stats("UCxOhDvtaoXDAB336AolWs3A")
 ```
 
 ```
+## Auto-refreshing stale OAuth token.
+```
+
+```
 ## Channel Title: Hadley Wickham 
-## No. of Views: 44515 
-## No. of Subscribers: 2770 
+## No. of Views: 44972 
+## No. of Subscribers: 2780 
 ## No. of Videos: 4
 ```
 
@@ -190,7 +187,7 @@ hadley_stats_df
 ## # A tibble: 1 x 8
 ##   viewCount commentCount subscriberCount hiddenSubscribe~ videoCount
 ##       &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt; &lt;lgl&gt;                 &lt;dbl&gt;
-## 1     44515            0            2770 FALSE                     4
+## 1     44972            0            2780 FALSE                     4
 ## # ... with 3 more variables: channel_id &lt;chr&gt;, channel_name &lt;chr&gt;,
 ## #   channel_published &lt;chr&gt;
 ```
@@ -216,7 +213,7 @@ dayum_stats
 ## # A tibble: 1 x 6
 ##   id          viewCount likeCount dislikeCount favoriteCount commentCount
 ##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
-## 1 DcJFdCmN98s  38951178    529939         6786             0        48467
+## 1 DcJFdCmN98s  39026693    531369         6791             0        48603
 ```
 
 ---
@@ -322,7 +319,7 @@ get_stats
 ##     stat_res &lt;- res$statistics
 ##     c(id = res$id, stat_res)
 ## }
-## &lt;bytecode: 0x0000000012a22d90&gt;
+## &lt;bytecode: 0x000000001a0384a0&gt;
 ## &lt;environment: namespace:tuber&gt;
 ```
 
