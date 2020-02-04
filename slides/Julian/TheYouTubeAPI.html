@@ -23,9 +23,8 @@ class: center, middle, inverse, title-slide
 class: center, middle
 
 # The YouTube API
- 
----
 
+---
 # Overview
 
 - All data on YouTube is stored in a [MySQL](https://en.wikipedia.org/wiki/MySQL) database
@@ -58,7 +57,6 @@ or send content to the database
 
 ---
 class: center, middle
-
 # Screenscraping
 
 ---
@@ -67,35 +65,34 @@ class: center, middle
 - Screenscraping means that we are downloading the HTML textfile, which contains the content we are interested in but also a lot of unnecessary clutter that describes how the website should be rendered by the browser
 
 ![plot](Images/Screenscraping_2.png)
+
 ---
 # Screenscraping
 
 ![plot](Images/BBC2.png)
----
-# Screenscraping: GETting Data
 
-- To automatically obtain data, we can use a so called [GET      request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
+---
+# Screenscraping
+
+- To automatically obtain data, we can use a so called [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
 
 - A GET request is an HTTP method for asking a server to send a specific resource (usually an HTML page) back
 to your local machine
 
-- You can try it out in your console with ``` GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol ```
+- You can try it out in your console with the command:
+  
+  .small[GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol]
 
 - This is the basic principle that all the Scraping packages build-on.
 
 - We will not use this directly and will let the higher-level applications handle this under the hood
 
 ---
-font-size: x-small
-
 # Screenscraping with Rvest
-
-- Lets try to get this information using screenscraping from R
 
 
 ```r
-
-# installingand attaching package
+# installing and attaching package
 if ("rvest" %in% installed.packages() != TRUE) {
   install.packages("rvest")};library(rvest)
 ## Loading required package: xml2
@@ -112,16 +109,16 @@ Description &lt;- html_nodes(Website, xpath = Xp)
 
 # printing description
 html_attr(Description, name = "content")
-## [1] "The Conservatives and Labour have been outlining their main pitch to voters. The Prime Minister Boris Johson in his first major speech of the campaign said a..."
 ```
+"The Conservatives and Labour have been outlining their main pitch to voters.
+The Prime Minister Boris Johson in his first major speech of the campaign said a..."
 
 ---
 # Screenscraping
 
 - **Problem:** We only get part of the decsription, the text seems to cut off at a certain point
 
-- This happens because on Youtube, you have to click on "show more" to see the full description. Youtube is a **dynamic** website that loads new content based on what users do on the website. With each action, the HTML of the
-site changes without having to reload
+- This happens because on Youtube is a **dynamic** website that loads new content based on what users do on the website. With some actions, the HTML of the site changes without having to reload:
     - More comments only load when you scroll down
     - You have to click on "show more" to see the video description
     - you have to click on "show answers" to see more comment replies
@@ -150,7 +147,13 @@ library(RSelenium)
 
 # opening docker container from system
 check &lt;- system2("docker", args = "ps", stdout = TRUE)
+```
+---
+# Screenscraping with RSelenium
 
+
+```r
+# opening new container (and killing old ones)
 if (length(check) == 1) {
   
   #start new container
@@ -166,7 +169,12 @@ if (length(check) == 1) {
   system2("docker", args = c("run", "-d", "-p", "4445:4444", "selenium/standalone-chrome"))
   
 }
+```
+---
+# Screenscraping with RSelenium
 
+
+```r
 # Assigning google chrome docker session
 remDr &lt;- RSelenium::remoteDriver(remoteServerAddr = "localhost",
                                  port = 4445L,
@@ -179,7 +187,7 @@ Sys.sleep(5)
 ---
 # Screenscraping with RSelenium
 
-- We can then navigate to the website and print a screenshot
+- We can now navigate to a website and print a screenshot
 
 
 ```r
@@ -248,7 +256,7 @@ element2 &lt;- remDr$findElement(using = 'xpath', xp2)
 unlist(element2$getElementText())
 ```
 
-- "Jeremy Corbyn has launched Labour's general election manifesto and vowed to transform the United Kingdom if they win. He unveiled the wide ranging plans in Birmingham promising what he called a 'green transformation of the economy and a 'manifesto for hope'.   There'd be big tax increases on higher earners and companies to pay for the plans.  The BBC's Political Editor, Laura Kuenssberg, Political Correspondent Alex Forsyth and Economics Editor Faisal Islam report. \nPlease subscribe HERE http://bit.ly/1rbfUog"
+"Jeremy Corbyn has launched Labour's general election manifesto and vowed to transform the United Kingdom if they win. He unveiled the wide ranging plans in Birmingham promising what he called a 'green transformation of the economy and a 'manifesto for hope'.   There'd be big tax increases on higher earners and companies to pay for the plans.  The BBC's Political Editor, Laura Kuenssberg, Political Correspondent Alex Forsyth and Economics Editor Faisal Islam report. \nPlease subscribe HERE http://bit.ly/1rbfUog"
 
 ---
 # Screenscraping
@@ -269,11 +277,9 @@ unlist(element2$getElementText())
 
 ---
 class: center, middle
-
 # API-Harvesting
 
 ---
-
 # API-harvesting
 
 - An [**A**pplication **P**rogramming **I**nterface]([API](https://en.wikipedia.org/wiki/Application_programming_interface)) is:
@@ -302,7 +308,6 @@ class: center, middle
   - [Google Maps](https://www.programmableweb.com/api/google-maps-places)
 
 ---
-
 # API-harvesting
 
 - Advantages of API-harvesting:
@@ -319,18 +324,15 @@ class: center, middle
   
 ---
 class: inverse, middle, center
-
 # Screenscraping vs. API-harvesting
 
 If you can, use an API, if you must, use Screenscraping instead
 
 ---
 class: center, middle
-
 # The YouTube API
 
 ---
-
 # Summary
 
 - Fortunately, YouTube has their own, well-documented API
@@ -340,96 +342,6 @@ class: center, middle
   a good starting point
 
 - We will use the [YouTube API](https://developers.google.com/youtube/v3/docs) today
-
----
-
-# Getting API Access
-
-- First of all, we need a Google account.
-  - You can use an already existing one
-  - you can create a new one
-  - For safety reasons, we advise you to create a new account
-    (If you accidentally share your login credentials, people using the credentials only
-     have access to your Bot account and not your personal or work account)
-  - You can create a new account [here](https://accounts.google.com/signup/v2/webcreateaccount?service=mail&amp;continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&amp;ltmpl=googlemail&amp;gmb=exp&amp;biz=false&amp;flowName=GlifWebSignIn&amp;flowEntry=SignUp)
-
-- Second, we need to:
-  - Sign up for the Google developer console
-  - Create a new Project
-  - Activate the YouTube Data API
-  - Create Authentification Credentials
-
----
-# Google Developer Console
-
-- Go to the [Developer Console](https://console.developers.google.com) and log in with your (new) Google Account
-
-- Create a new Project by clicking on the "Create" button on the top right Corner
-
-![plot](Images/CreateProject.png)
-
----
-# Watch out
-
-- You only have a limited number of Projects that you can create, so be carefull not
-  to constantly delete and create new ones
-
-- More information can be found [here](https://support.google.com/cloud/answer/6330231)
-
----
-# Creating a New Project
-
-- Specify a Project Name (you do not have to indicate an organisation) and click on create once you are done
-
-![plot](Images/ProjectName.png)
----
-# Activate the YouTube Data v3 API
-
-- click on the button to "Activate APIs"
-
-![plot](Images/ActivateAPI.png)
-
----
-# Activate the YouTube Data and Analytics APIs
-
-- Enter "YouTube" in the search bar, click on the data API and then activate it by clicking on the "Activate" button
-
-![plot](Images/APIs.png)
-
----
-
-![plot](Images/Activate.png)
-
----
-
-![plot](Images/AuthentificationButton.png)
-
----
-
-![plot](Images/UserAgreement.png)
-
----
-
-![plot](Images/CreateOAuth.png)
-
----
-
-![plot](Images/OtherApplication.png)
-
----
-class: center, middle
-
-# DONE!
-
----
-# What can we do with these Credentials now?
-
-- We can see what the API allows us to do in the [Google API Explorer](https://developers.google.com/apis-explorer/#p/)
-
-- Basically, you can automate any action and see all data that you
-  also would be able to see when logged into YouTube with your Google account
-
-- Fortunately for us, the YouTube API is very [well documented](https://developers.google.com/youtube/v3/docs/)
 
 ---
 # Let's check the API
@@ -495,16 +407,7 @@ class: center, middle
 ---
 # Can I increase my Rate Limit?
 
-![video](https://www.youtube.com/watch?v=BwSts2s4ba4)
-
-&lt;video src="https://www.youtube.com/watch?v=BwSts2s4ba4"&gt;"No"&lt;/video&gt;
-
----
-
-# Can I increase my Rate Limit?
-
 .center[![plot](Images/Odyssey4.jpg)]
-
 
 ---
 # Exercises
@@ -515,7 +418,6 @@ class: center, middle
 class: center, middle
 
 # Thank You
----
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

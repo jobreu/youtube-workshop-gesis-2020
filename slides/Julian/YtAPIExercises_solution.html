@@ -392,11 +392,13 @@ summary {
 
 <h1 class="title toc-ignore">Webscraping in R</h1>
 <h4 class="author">Julian Kohne</h4>
-<h4 class="date">20 January, 2020</h4>
+<h4 class="date">04 February, 2020</h4>
 
 </div>
 
 
+<div id="exercise-1" class="section level1">
+<h1>Exercise 1</h1>
 <p>Install and attach the <code>Rvest</code> package. You can find more information about the package <a href="https://cran.r-project.org/web/packages/rvest/rvest.pdf">here</a></p>
 <div class="panel-group">
 <div class="panel" style="background-color:rgba(172, 255, 175, 0.3); border:2px solid rgba(172, 255, 175, 1);">
@@ -408,21 +410,18 @@ summary {
 <div id="unnamed-chunk-1" class="panel-collapse collapse in">
 <div class="panel-body" style="color:rgba(0, 0, 0, 1)!important;">
 <pre class="r"><code># installing package
-install.packages(&quot;rvest&quot;)</code></pre>
-<pre><code>## Installing package into '/home/kohnejn/R/x86_64-pc-linux-gnu-library/3.6'
-## (as 'lib' is unspecified)</code></pre>
-<pre class="r"><code># attaching package
-library(rvest)</code></pre>
-<pre><code>## Loading required package: xml2</code></pre>
+install.packages(&quot;rvest&quot;, quiet = TRUE)
+
+# attaching package
+library(rvest, warn.conflicts = FALSE, quietly = TRUE)</code></pre>
 </div>
 </div>
 </div>
 </div>
-<p>Use the knit dropdown menu on the knit button to generate the desired output:</p>
-<ul>
-<li>Using <code>unilur::tutorial_pdf_solution</code> or <code>unilur::tutorial_html_solution</code> will show the solution boxes.</li>
-<li>Using <code>unilur::tutorial_pdf</code> or <code>unilur::tutorial_html</code> will hide them from the output.</li>
-</ul>
+</div>
+<div id="exercise-2" class="section level1">
+<h1>Exercise 2</h1>
+<p>Go to the Wikipedia Entry of YouTube in your <code>https://en.wikipedia.org/wiki/YouTube</code> Browser and find the Xpath that corresponds to the whole table on the right side of the screen.</p>
 <div class="panel-group">
 <div class="panel" style="background-color:rgba(173, 216, 230, 1); border:2px solid rgba(138, 173, 184, 1);">
 <div class="panel-heading" style="background-color:rgba(138, 173, 184, 1); color:rgba(0, 0, 0, 1)!important;">
@@ -431,7 +430,65 @@ Tip
 </h4>
 </div>
 <div class="panel-body" style="color:rgba(0, 0, 0, 1)!important;">
-You can also include custom boxes to highlight some content. Read the <a href="http://koncina.github.io/unilur/articles/custom-boxes.html">article</a> to learn more about how to customize the appearance.
+You can do this in Google Chrome by going to the website, right clicking on the page and clicking on <strong>inspect</strong>. Alternatively, you can just press <strong>Ctrl + Alt + I</strong>. By expanding the containers and hovering your mouse over them, you can see which elements on the website they correpsond to. To copy the Xpath of an element, right-click on the container and select <strong>copy</strong> -&gt; <strong>Copy full Xpath</strong>. Be carefull to select the HTML that encompasses the entire table and not only parts of it
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 255, 175, 0.3); border:2px solid rgba(172, 255, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 255, 175, 1); color:rgba(69, 102, 70, 1)!important;">
+<h4 class="panel-title">
+<a class style="color: rgba(69, 102, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-3">solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-3" class="panel-collapse collapse in">
+<div class="panel-body" style="color:rgba(0, 0, 0, 1)!important;">
+<pre class="r"><code>TablePath &lt;- &quot;/html/body/div[3]/div[3]/div[4]/div/table[1]&quot;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="exercise-3" class="section level1">
+<h1>Exercise 3</h1>
+<p>Using the Xpath extract the information from the table</p>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(173, 216, 230, 1); border:2px solid rgba(138, 173, 184, 1);">
+<div class="panel-heading" style="background-color:rgba(138, 173, 184, 1); color:rgba(0, 0, 0, 1)!important;">
+<h4 class="panel-title">
+Tip
+</h4>
+</div>
+<div class="panel-body" style="color:rgba(0, 0, 0, 1)!important;">
+Use the <code>read_html()</code>, <code>html_nodes()</code> and <code>html_table()</code> functions. You can read more about them in the Help panel in R studio or by calling them preceded by two question marks, e.g. <code>??read_html()</code>.
+</div>
+</div>
+</div>
+<div class="panel-group">
+<div class="panel" style="background-color:rgba(172, 255, 175, 0.3); border:2px solid rgba(172, 255, 175, 1);">
+<div class="panel-heading" style="background-color:rgba(172, 255, 175, 1); color:rgba(69, 102, 70, 1)!important;">
+<h4 class="panel-title">
+<a class style="color: rgba(69, 102, 70, 1);" data-toggle="collapse" href="#unnamed-chunk-5">solution</a>
+</h4>
+</div>
+<div id="unnamed-chunk-5" class="panel-collapse collapse in">
+<div class="panel-body" style="color:rgba(0, 0, 0, 1)!important;">
+<pre class="r"><code># Setting URL
+url &lt;- &quot;https://en.wikipedia.org/wiki/YouTube&quot;
+
+# Reading HTML from URL
+html &lt;- read_html(url)
+
+# Navigating to the HTML node with the table object
+Node &lt;- html_nodes(html, xpath = TablePath)
+
+# Extracting the table to R-object
+Table &lt;- html_table(Node)
+
+# unlisting dataframe
+YouTubeData &lt;- Table[[1]]</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

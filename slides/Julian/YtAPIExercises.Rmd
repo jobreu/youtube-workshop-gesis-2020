@@ -16,47 +16,49 @@ Install and attach the `Rvest` package. You can find more information about the 
 ```{r, results = 'hide', solution = TRUE}
 
 # installing package
-install.packages("rvest")
+install.packages("rvest", quiet = TRUE)
 
 # attaching package
-library(rvest)
+library(rvest, warn.conflicts = FALSE, quietly = TRUE)
 
 ```
 
 # Exercise 2
 
-Go to this YouTube Video in your `https://www.youtube.com/watch?v=DcJFdCmN98s` Browser and find the Xpath that correpsonds to the number of comments the video has
+Go to the Wikipedia Entry of YouTube in your `https://en.wikipedia.org/wiki/YouTube` Browser and find the Xpath that corresponds to the whole table on the right side of the screen.
 
-
-```{block, solution = TRUE}
+```{block, box.title = "Tip", box.body = list(fill = "lightblue")}
 You can do this in Google Chrome by going to the website, right clicking on the page and clicking on
 **inspect**. Alternatively, you can just press **Ctrl + Alt + I**. By expanding the containers and hovering your mouse over them, you can see which elements on the website they correpsond to. To copy the Xpath of an element, right-click
-on the container and select **copy** -> **Copy full Xpath**.
+on the container and select **copy** -> **Copy full Xpath**. Be carefull to select the HTML that encompasses the entire table and not only parts of it
 ```
 
-
-/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[4]/div[1]/div/ytd-comments/ytd-item-section-renderer/div[1]/ytd-comments-header-renderer/div[1]/h2/yt-formatted-string
-
-/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[4]/div[1]/div/ytd-comments/ytd-item-section-renderer
-
-#count > yt-formatted-string
-
-<yt-formatted-string class="count-text style-scope ytd-comments-header-renderer">48.540&nbsp;Kommentare</yt-formatted-string>
+```{r, results = 'hide', solution = TRUE}
+TablePath <- "/html/body/div[3]/div[3]/div[4]/div/table[1]"
+```
 
 # Exercise 3
 
-Using the Xpath extract the number of comments the video has with the rvest package
+Using the Xpath extract the information from the table
 
 ```{block, box.title = "Tip", box.body = list(fill = "lightblue")}
-Use the `read_html()`, `html_nodes()` and `html_text()` functions. You can read more about them in the Help panel in R studio or by calling them preceded by two question marks, e.g. `??read_html()`.
+Use the `read_html()`, `html_nodes()` and `html_table()` functions. You can read more about them in the Help panel in R studio or by calling them preceded by two question marks, e.g. `??read_html()`.
 ```
 
-```{r, solution = TRUE}
-url <- "https://www.youtube.com/watch?v=DcJFdCmN98s"
-url %>%
-  read_html %>%
-  html_nodes(xpath = "//*[@id='count']/yt-formatted-string") %>%
-  html_text
-```
+```{r, results = 'hide' ,solution = TRUE}
+# Setting URL
+url <- "https://en.wikipedia.org/wiki/YouTube"
 
-path1 <- "//*[@id="count"]/yt-formatted-string"
+# Reading HTML from URL
+html <- read_html(url)
+
+# Navigating to the HTML node with the table object
+Node <- html_nodes(html, xpath = TablePath)
+
+# Extracting the table to R-object
+Table <- html_table(Node)
+
+# unlisting dataframe
+YouTubeData <- Table[[1]]
+
+```
