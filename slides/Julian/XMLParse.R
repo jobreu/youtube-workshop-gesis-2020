@@ -25,7 +25,7 @@ Description <- html_nodes(Website, xpath = Xp)
 # printing description
 html_attr(Description, name = "content")
 
-########################## RSELENIUM SOLUTOIN
+########################## RSELENIUM SOLUTION
 
 
 # We first have to configure docker and open an docker container:

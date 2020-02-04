@@ -1,0 +1,62 @@
+---
+title: 'Webscraping in R'
+author: 'Julian Kohne'
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  unilur::tutorial_html_solution: default
+  unilur::tutorial_pdf_solution: default
+  unilur::tutorial_pdf: default
+  unilur::tutorial_html: default
+---
+
+# Exercise 1
+
+Install and attach the `Rvest` package. You can find more information about the package [here](https://cran.r-project.org/web/packages/rvest/rvest.pdf)
+
+```{r, results = 'hide', solution = TRUE}
+
+# installing package
+install.packages("rvest")
+
+# attaching package
+library(rvest)
+
+```
+
+# Exercise 2
+
+Go to this YouTube Video in your `https://www.youtube.com/watch?v=DcJFdCmN98s` Browser and find the Xpath that correpsonds to the number of comments the video has
+
+
+```{block, solution = TRUE}
+You can do this in Google Chrome by going to the website, right clicking on the page and clicking on
+**inspect**. Alternatively, you can just press **Ctrl + Alt + I**. By expanding the containers and hovering your mouse over them, you can see which elements on the website they correpsond to. To copy the Xpath of an element, right-click
+on the container and select **copy** -> **Copy full Xpath**.
+```
+
+
+/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[4]/div[1]/div/ytd-comments/ytd-item-section-renderer/div[1]/ytd-comments-header-renderer/div[1]/h2/yt-formatted-string
+
+/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[4]/div[1]/div/ytd-comments/ytd-item-section-renderer
+
+#count > yt-formatted-string
+
+<yt-formatted-string class="count-text style-scope ytd-comments-header-renderer">48.540&nbsp;Kommentare</yt-formatted-string>
+
+# Exercise 3
+
+Using the Xpath extract the number of comments the video has with the rvest package
+
+```{block, box.title = "Tip", box.body = list(fill = "lightblue")}
+Use the `read_html()`, `html_nodes()` and `html_text()` functions. You can read more about them in the Help panel in R studio or by calling them preceded by two question marks, e.g. `??read_html()`.
+```
+
+```{r, solution = TRUE}
+url <- "https://www.youtube.com/watch?v=DcJFdCmN98s"
+url %>%
+  read_html %>%
+  html_nodes(xpath = "//*[@id='count']/yt-formatted-string") %>%
+  html_text
+```
+
+path1 <- "//*[@id="count"]/yt-formatted-string"

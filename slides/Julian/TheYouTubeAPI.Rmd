@@ -455,7 +455,7 @@ class: center, middle
 
 - In essence, we can run R commands and get API results back
 
-.center[![plot](Images/MuchWin.jpeg)]
+<!--  .center[![plot](Images/MuchWin.jpeg)] --> 
 
 - For this workshop, we will use the [tubeR package](https://cran.r-project.org/web/packages/tuber/tuber.pdf)
 
@@ -481,14 +481,14 @@ class: center, middle
   
   - how many parts the requested resource has (playlist:2; channel: 6; video: 10)
   
-**You should only request parts that you absolutely need to make the most of your units** 
+- **You should only request parts that you absolutely need to make the most of your units** 
+
+- **BEWARE: Sending one wrong request can fill up your daily quota**
   
 ---
-
 # Can I increase my Rate Limit?
 
 .center[![plot](Images/Odyssey4.jpg)]
-
 
 ---
 # Exercises
