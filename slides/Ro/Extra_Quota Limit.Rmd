@@ -1,0 +1,240 @@
+--- 
+title: "Automatic Sampling and Analysis of YouTube Data"
+author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
+date: '2020-02-10'
+output:
+  xaringan::moon_reader:
+    css:
+    - default.css
+    - default-fonts.css
+    - workshop.css
+    lib_dir: libs
+    nature:
+      countIncrementalSlides: no
+      highlightLines: yes
+      highlightStyle: github
+  pdf_document: default
+  html_document:
+    df_print: paged
+subtitle: Raising the Quota Limit for YouTube
+location: GESIS, Cologne, Germany
+---
+
+layout: true
+
+```{r setup, include = F}
+if (!require(easypackages)) install.packages("easypackages")
+library(easypackages)
+
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt = F)
+
+options(htmltools.dir.version = FALSE)
+
+opts_chunk$set(echo = FALSE, fig.align = "center")
+
+```
+
+<div class="my-footer">
+  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
+  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
+  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
+</div>
+
+<style type="text/css">
+
+pre {
+  font-size: 10px
+}
+</style>
+
+---
+
+# Raising the Quota Limit for YouTube `r ji("cowboy")`
+
+- Study planned that needs large datasets in short amounts of time
+
+- RQ: Is there a u-shaped relationship between success and number of uploads?
+
+- Sample: 600 popular channels (identified via SocialBlade) 
+
+- Request for higher quota (October 11, 2019)
+
+- Problem: Same application form for (web) apps and research
+
+- Hard to figure what applies to research and what to write into the form
+
+---
+
+# 31/10/2019 First Response
+
+- Provide us with the information from where the 600 accounts have been acquired?
+
+- How many accounts from YouTube are used for your research?
+
+- Kindly provide us a visual reference of how the data is sampled and analysis is performed on the respective accounts.
+
+- Answer in 3 business days.
+
+---
+
+# 31/10/2019 My (shortened) Reply
+
+- We want to investigate if the success of YouTube “channels” changes over time. For this purpose, we will create a list of 600 channels (“social media stars”) in order to compare them with each other. We will probably use a ranking service like Socialblade for that purpose.
+
+- We are using RStudio for the data collection. Within RStudio, we installed an R package called “tuber”. Tuber offers certain functions to collect data via the YouTube API. Tuber can connect via OAUTH if it is provided with credentials. We want to use the credentials from my personal Google account for that purpose. Thus, a single account will be used.
+
+- I am not sure what you mean by “visual” reference. We want to use the tuber package within R for data sampling by calling the following tuber functions for each of the channels that shall be investigated: get_channel_stats, get_video_details, and get_all_channel_video_stats. We also want to use R for data analysis. We had another project in which we created an R script that can analyze YouTube comments. It is “visualized” in form of a Jupiter notebook. Maybe this can illustrate what we want to do for our current project. However, the new code will be way less complex, but will be run once a week in order to collect a time series.
+
+---
+
+# 11/11/2019 Second Response
+
+-	How is the Data being compared and how is the Ranking service performed?
+
+- What kind of Analytics are being performed on the API client website?
+
+- Please provide us with detailed screenshots and screencast of the API use case. 
+
+- Answer in 3 business days.
+
+---
+
+# 11/11/2019 My Reply
+
+- The comparisons that we want to perform are statistical tests (descriptive and inferential statistics) that we conduct in order to answer our research questions. For instance, we want to know if the popularity of the channels depends on the number of uploads. We would gather data on the number of video uploads, the number of video likes, channel likes etc. with the tuber package, and then perform statistical tests like multiple linear regressions. You can do this with any statistical program like SPSS, Stata etc. We will use R for that purpose because R can also collect the data we need via the tuber package.
+
+- In order to figure from which channels we want to collect data, we will probably use some pre-existing ranking service like SocialBlade. We will go to their website (socialblade.com), check out some of the TOP channel lists (https://socialblade.com/youtube/top/500), and manually create a spreadsheet of 600 channels that may be of interest to us. We will then fill in the YouTube IDs of the channels. The IDs will help us to collect the data via the tuber package.
+
+- There is no such thing as a website. The API client “tuber” is a package within the (Windows/Linux/Mac) desktop program “RStudio”. The data we collect is never displayed via any service to anyone. It will only be used to perform the statistical tests.
+
+---
+
+# 12/11/2019 Third Response
+
+- Violation:  API Client is storing data for more than 30 days.
+
+- Fix in 3 business days.
+
+---
+
+# 12/11/2019 My Reply
+
+- I am not sure how to comply with the policy
+  - because I cannot tell for sure what you consider to be the API client and
+  - because we did not implement anything by now (we are talking about a future implementation).
+
+- Right now, our planned pipeline looks like this YouTube data -> YouTube data API -> tuber package (a “plugin” for R that runs in R) -> RStudio (a desktop program for statistical analyses).
+
+- Would you consider tuber or RStudio to be the API client? If you think RStudio is the API client, would it suffice to automatically remove the data from RStudio within 30 days?
+
+---
+
+# 18/12/2019 Fourth Response
+
+- Please share a detailed step by step screencast (Video recording) of how the analysis of channels are performed along with the end result to verify the use case. 
+
+- Answer in 3 business days.
+
+---
+
+# My Reply
+
+- Guys, it's holiday season (just a thought, no actual reply)
+
+---
+
+# 06/01/2020 Fifth Response
+
+- Please share a detailed step by step screencast (Video recording) of how the analysis of channels are performed along with the end result to verify the use case. 
+
+- Answer in 3 business days.
+
+---
+
+# 06/01/2020 My Reply
+
+- You can download the requested screencast using the following link:
+
+---
+
+# 13/01/2020 Sixth Response
+
+- Violation:  API Client is storing data for more than 30 days.
+
+- Fix in 3 business days.
+
+---
+
+# 13/01/2020 My Reply
+
+- The exact same issue was already raised by you in November. I already replied to it, but I never got a response. Therefore, could you please be more specific to what you actually mean with “API client”?
+
+- As stated in the screencast, our planned pipeline looks like this:
+  - YouTube data -> YouTube data API -> tuber package (a “plugin” for R that runs in R) -> RStudio (a desktop program for statistical analyses which could be considered the API client) -> transfer the data from the computer that downloaded it to a computer that will run the statistical tests (in another RStudio). This will be done once per week if possible so the data stored on the “API client” will be overwritten anyway.
+  - Therefore, the data would not remain very long on the computer that downloaded it, probably not more than one day. Also, it is not accessible by anyone but us anyway.
+
+- If you do not think this is sufficient, could you please explain in more detail why this is the case?
+
+---
+
+# 13/01/2020 Sixth Response
+
+- Violation: API Clients must not replace API Data with similar, independently calculated data, or use API Data to create new or derived data or metrics
+
+  - Providing  ranking to channels based on views,subscribers,comments on a sample data from 600 accounts on a weekly base to figure if the number of weekly uploads impacts the popularity of the account.
+
+- Fix in 3 business days.
+
+---
+
+# 21/01/2020 My Reply (1)
+<ul>
+<li>Please excuse the delayed reply. I had to think a little bit about how to reply because the correct short answer “we don’t replace data” will probably be not very helpful to you.</li>
+<li>Therefore, I will again try to explain what we want to do and why this request (and probably most of the other compliance rules) do not make sense in our use case.</li>
+</ul>
+
+<ol start = "1">
+<li>We want to conduct a scientific study. That means that we do not want to provide any service of any kind.</li>
+<li>We are using the website Socialblade to see which channels are popular because we want to investigate popular channels.</li>
+<li>We do not alter Socialblade rankings or create our own rankings based on Socialblade. We only need it to identify which channels are currently popular.</li>
+<li>For our study, we now want to collect data about these channels, like the number of video uploads, channel likes, video likes and so own.</li>
+<li>With this data, we want to investigate if the number of uploads has some impact on the success of the channel. This is an important academic question.</li>
+</ol>
+
+---
+
+# 21/01/2020 My Reply (2)
+<ol start = "6">
+<li>We need to collect the data via the API because collecting it manually will be practically infeasible due to the large sample size of 600 channels.</li>
+<li>We could collect the data with different tools, for instance, YouTube Data Tools (https://tools.digitalmethods.net/netvizz/youtube/), Facepager (https://github.com/strohne/Facepager), or the tuber package in R.</li>
+<li>We decided to use the tuber package because we want to sample the 600 channels on the same day and ideally without any larger time differences between each channel.</li>
+<li>Therefore, it is again very unpractical to use anything but the tuber package because YouTube Data Tools and Facepager would give us more than 600 files (at least one for each channel) each time, and the sampling with these tools would introduce time differences because it cannot be completely automated .
+<li>If we would use YouTube Data Tools, you would not demand any form of compliance from us.</li>
+<li>The interesting thing is now that R cannot only collect the data, but also do all the necessary significance tests.</li>
+</ol>
+
+---
+
+# 21/01/2020 My Reply (3)
+<ol start ="12">
+<li>Significance tests do not alter the data, they test if a certain pattern in the data exists that cannot be explained by chance alone (https://en.wikipedia.org/wiki/Statistical_significance), for instance, a u-shaped relationship between two variables.</li>
+<li>So again, if we would use YouTube Data Tools to collect the data and then perform the significance tests, no form of compliance would be requested from us.</li>
+<li>Coming back to your request, you ask that “API Clients must not replace API Data with similar, independently calculated data, or use API Data to create new or derived data or metrics”.</li>
+<li>If you now believe that significance tests are violating this request, you actually prohibit ANY KIND OF RESEARCH based on data that was collected with the API.</li>
+<li>This does not seem to make sense because (a) providing a form for research requests would not make sense, (b) this rule is not enforced when using other tools like YouTube Data Tools or Facepager, (c) significance tests do not alter the data, and (d) significance tests do not provide the data to anybody like a service would.</li>
+</ol>
+
+---
+
+# 21/01/2020 My Reply (4)
+<ol start = "17">
+<li>Also, one could argue that after sampling the data, we are no longer within the scope of the API client (that is why I asked two times what you define as the API client in our use case) because if we would sample the data with YouTube Data Tools and then analyze it in R, YouTube Data Tools would be the API client, but R would not. We could actually use a completely different statistical software package like SPSS or STATA and perform the same significance tests.</li>
+<li>I assume that your request does only make sense if we are talking about an API client that is providing a service (like Socialblade). But we do not want to provide such a service. We only want to analyze the data for ourselves.</li>
+<li>This is why we filled in the form for research requests. However, I have the feeling that our research request is constantly confused with some kind of web service request.</li>
+</ol>
+
+---
+
+class: center, middle
+
+# Any questions?
