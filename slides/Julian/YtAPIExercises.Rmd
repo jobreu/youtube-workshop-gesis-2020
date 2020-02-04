@@ -3,10 +3,10 @@ title: 'Webscraping in R'
 author: 'Julian Kohne'
 date: '`r format(Sys.time(), "%d %B, %Y")`'
 output:
-  unilur::tutorial_html_solution: default
+  unilur::tutorial_html: default
   unilur::tutorial_pdf_solution: default
   unilur::tutorial_pdf: default
-  unilur::tutorial_html: default
+  unilur::tutorial_html_solution: default
 ---
 
 # Exercise 1
