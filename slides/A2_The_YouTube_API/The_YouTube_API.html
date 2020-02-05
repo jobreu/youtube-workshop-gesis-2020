@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Automatic Sampling and Analysis of YouTube Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
+    <meta name="date" content="2020-02-10" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Automatic Sampling and Analysis of YouTube Data
+## The YouTube API
+### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
+### 2020-02-10
+
+---
+
+class: center, middle
+
+# The YouTube API
+
+---
+# Overview
+
+- All data on YouTube is stored in a [MySQL](https://en.wikipedia.org/wiki/MySQL) database
+ 
+- The website itself is an HTML page, which loads content from this database
+
+- The HTML is rendered by a webbrowser so the user can interact with it
+
+- Through interacting with the rendered website, we can either retrieve content from the database
+or send content to the database
+
+- The Youtube Website is
+    - build in [HTML](https://de.wikipedia.org/wiki/Hypertext_Markup_Language), 
+    - uses [CSS](https://de.wikipedia.org/wiki/Cascading_Style_Sheets) for the "styling"
+    - dynamically loads content using [Ajax](https://en.wikipedia.org/wiki/Ajax) from the Database
+
+![plot](Images/YouTube_better.png)
+---
+# How do we get data from Websites?
+
+- Theoretically, we could gather all the information manually by clicking on the things that are
+ interesting to us and copy/pasting them. However, this is tedious and time-consuming.**We want a way
+ of automatizing this task**
+
+- [Webscraping](https://en.wikipedia.org/wiki/Web_scraping)
+
+ 1)  **Screenscraping:** Getting the HTML-code out of your browser, parsing &amp; formatting it, then analyzing the data
+  
+ 2)  **API-harvesting:** Sending requests directly to the database and only getting back the information that you want and need.
+
+---
+class: center, middle
+# Screenscraping
+
+---
+# Screenscraping
+
+- Screenscraping means that we are downloading the HTML textfile, which contains the content we are interested in but also a lot of unnecessary clutter that describes how the website should be rendered by the browser
+
+![plot](Images/Screenscraping_2.png)
+
+---
+# Screenscraping
+
+![plot](Images/BBC2.png)
+
+---
+# Screenscraping
+
+- To automatically obtain data, we can use a so called [GET request](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol)
+
+- A GET request is an HTTP method for asking a server to send a specific resource (usually an HTML page) back
+to your local machine
+
+- You can try it out in your console with the command:
+  
+  .small[GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol]
+
+- This is the basic principle that all the Scraping packages build-on.
+
+- We will not use this directly and will let the higher-level applications handle this under the hood
+
+---
+# Screenscraping with Rvest
+
+
+```r
+# installing and attaching package
+if ("rvest" %in% installed.packages() != TRUE) {
+  install.packages("rvest")};library(rvest)
+## Loading required package: xml2
+
+# defining website and Xpath from inspect function in browser
+page &lt;- "https://www.youtube.com/watch?v=1aheRpmurAo&amp;"
+Xp &lt;- "/html/body/div[2]/div[4]/div/div[5]/div[2]/div[2]/div/div[2]/meta[2]"
+
+# getting page
+Website &lt;- read_html(page)
+
+# getting node containing the description
+Description &lt;- html_nodes(Website, xpath = Xp)
+
+# printing description
+html_attr(Description, name = "content")
+```
+"John Oliver discusses the census, why it matters, and the consequences of an undercount.
+Connect with Last Week Tonight online.Subscribe to the Last Week ..."
+
+---
+# Screenscraping
+
+- **Problem:** We only get part of the decsription, the text seems to cut off at a certain point
+
+- This happens because on Youtube is a **dynamic** website that loads new content based on what users do on the website. With some actions, the HTML of the site changes without having to reload:
+    - More comments only load when you scroll down
+    - You have to click on "show more" to see the video description
+    - you have to click on "show answers" to see more comment replies
+  
+- This makes screenscraping **a lot** harder
+
+- Most social media websites and websites with multimedia content are dynamic
+
+![plot](Images/YouTube_better.png)
+
+---
+# Screenscraping with RSelenium
+
+
+```r
+# We first have to configure docker and open a docker container:
+# https://callumgwtaylor.github.io/blog/2018/02/01/using-rselenium-and-docker-to-webscrape-in-r-using-the-who-snake-database/
+
+# installing packages
+if ("RSelenium" %in% installed.packages() != TRUE) {
+  install.packages("RSelenium")
+}
+
+# attaching package
+library(RSelenium)
+
+# opening docker container from system
+check &lt;- system2("docker", args = "ps", stdout = TRUE)
+```
+---
+# Screenscraping with RSelenium
+
+
+```r
+# opening new container (and killing old ones)
+if (length(check) == 1) {
+  
+  #start new container
+  system2("docker", args = c("run", "-d", "-p", "4445:4444", "selenium/standalone-chrome"))
+  
+} else {
+  
+  # kill old container
+  DockerName &lt;- trimws(strsplit(check[2],"tcp")[[1]][2])
+  system2("docker", args = c("kill",DockerName))
+  
+  # start new container
+  system2("docker", args = c("run", "-d", "-p", "4445:4444", "selenium/standalone-chrome"))
+  
+}
+```
+---
+# Screenscraping with RSelenium
+
+
+```r
+# Assigning google chrome docker session
+remDr &lt;- RSelenium::remoteDriver(remoteServerAddr = "localhost",
+                                 port = 4445L,
+                                 browserName = "chrome")
+
+# Waiting for 5 seconds to finish initialization of docker session
+Sys.sleep(5)
+```
+
+---
+# Screenscraping with RSelenium
+
+- We can now navigate to a website and print a screenshot
+
+
+```r
+# Open remote connection
+remDr$open()
+
+# Navigate to website
+remDr$navigate("https://www.youtube.com/watch?v=1aheRpmurAo&amp;")
+
+# Wait for 2 seconds for the website to load
+Sys.sleep(2)
+
+# Scrolling down a bit
+webElem &lt;- remDr$findElement("css", "body")
+for (i in 20){
+  webElem$sendKeysToElement(list(key = "down_arrow"))
+}
+
+
+# take screenshot
+remDr$screenshot(file = 'Images/RSeleniumScreenshot.png')
+```
+
+---
+# Screenshot 
+
+![plot](Images/RSeleniumScreenshot.png)
+
+---
+# Screenscraping with RSelenium
+
+ - We can then navigate to the "show more" button, and click it
+
+
+```r
+# Xpath of "show more" button (using inspect element in Browser)
+xp &lt;- '//*[@id="more"]/yt-formatted-string'
+
+# navigating to button element
+element &lt;- remDr$findElement(using = 'xpath', xp)
+
+# click on button
+element$clickElement()
+
+# Scrolling down a bit
+webElem &lt;- remDr$findElement("css", "body")
+for (i in 20){
+  webElem$sendKeysToElement(list(key = "down_arrow"))
+}
+
+# take screenshot (we can see that the description box is now expanded)
+remDr$screenshot(file = 'Images/RSeleniumScreenshot2.png')
+```
+---
+# Screenshot 
+
+![plot](Images/RSeleniumScreenshot2.png)
+
+---
+# Screenscraping with RSelenium
+
+- We can then extract the contents of the expanded description box
+
+
+```r
+#navigating to description element
+xp2 &lt;- '//*[@id="description"]/yt-formatted-string'
+element2 &lt;- remDr$findElement(using = 'xpath', xp2)
+
+# get element text
+unlist(element2$getElementText())
+```
+
+"John Oliver discusses the census, why it matters, and the consequences of an undercount.\n\nConnect with Last Week Tonight online... \n\nSubscribe to the Last Week Tonight YouTube channel for more almost news as it almost happens: www.youtube.com/lastweektonight \n\nFind Last Week Tonight on Facebook like your mom would: www.facebook.com/lastweektonight \n\nFollow us on Twitter for news about jokes and jokes about news: www.twitter.com/lastweektonight \n\nVisit our official site for all that other stuff at once: www.hbo.com/lastweektonight"
+
+---
+# Screenscraping
+
+- Advantages of Screenscraping:
+  + You can access everything that you are able to access from your browser
+  + You are (theoretically) not restricted in how much data you can get
+  + (Theoretically) Independent from API-restrictions
+
+- Disadvantages of Screenscraping:
+  - Extremely tedious to get information out of HTML-pages
+  - You have to manually look up the Xpaths/CSS/HTML containers to get specific information
+  - Reproducibility: The website might be tailored to stuff in your Cache, Cookies, Accounts etc.
+  - There is no guarantee that even pages that look the same have the same underlying HTML structure
+  - You have to manually check the website and your data to make sure that you're getting what you want
+  - If the website changes anything in their styling, your scripts won't work anymore
+  - Legal Gray Area (recent [court ruling](http://cdn.ca9.uscourts.gov/datastore/opinions/2019/09/09/17-16783.pdf) though)
+
+---
+class: center, middle
+# API-Harvesting
+
+---
+# API-harvesting
+
+- An [**A**pplication **P**rogramming **I**nterface]([API](https://en.wikipedia.org/wiki/Application_programming_interface)) is:
+  - system build for developers
+  - directly communicate with the database
+  - Voluntary service of the website
+  - they can dictate what information is accessible, to whom, how, and in which quantities.
+
+![plot](Images/API_harvesting.png)
+
+---
+# API-harvesting
+
+- APIs can be used to:
+
+  - embed content in other applications
+  - create Bots that do something automatically
+  - scheduling/moderation for content creators
+  - collect data for (market) research purposes
+
+- Not every website has their own API. However, most large Social Media Websites do
+  - [Facebook](https://developers.facebook.com/docs/graph-api?locale=de_DE)
+  - [Twitter](https://developer.twitter.com/en/docs/basics/getting-started)
+  - [Instagram](https://www.instagram.com/developer/)
+  - [Wikipedia](https://de.wikipedia.org/wiki/Wikipedia:Technik/Datenbank/API)
+  - [Google Maps](https://www.programmableweb.com/api/google-maps-places)
+
+---
+# API-harvesting
+
+- Advantages of API-harvesting:
+  + No need to interact with HTML files, you only get the information you asked for
+  + The data you get is already nicely formatted (usually JSON files)
+  + You can be sure that what you do is perfectly legal and in line with ToS
+
+- Disadvantages of API-harvesting:
+  - Not every website has an API
+  - You can only get what the company allows you to get
+  - There are often restricting quotas (querys per day)
+  - there is no standard language to make querys, you have to check the documentation
+  - Not every API has a documentation
+  
+---
+class: inverse, middle, center
+# Screenscraping vs. API-harvesting
+
+If you can, use an API, if you must, use Screenscraping instead
+
+---
+class: center, middle
+# The YouTube API
+
+---
+# Summary
+
+- Fortunately, YouTube has their own, well-documented API
+  that developers can use to interact with their database (Most Google Services do)
+
+- To find an API for a given website, [Programmable Web](https://www.programmableweb.com) is
+  a good starting point
+
+- We will use the [YouTube API](https://developers.google.com/youtube/v3/docs) today
+
+---
+# Let's check the API
+
+- Google provides a sandbox for their API that we can use to get a grasp of how it operates
+
+- We can for example use our credentials to get search for videos with the keyword "Brexit"
+
+- [Example](https://developers.google.com/youtube/v3/docs/search/list?apix_params=%7B%22part%22%3A%22snippet%22%2C%22q%22%3A%22Brexit%22%7D)
+
+- Keep in mind: We have to log in with our created Google account to use the API
+
+- What we get back is a JSON formatted response with the formats and information we requested in the Sandbox
+
+---
+# Most important parameters:
+
+- All possible parameters are listed [here](https://developers.google.com/youtube/v3/docs/search/)
+
+- Keep in mind that some information is only visible to owners of a channel or author of a video
+
+- Keep in mind that not all information is necessarily available for all videos (e.g. live videos)
+
+---
+# Using it from R
+
+- We can simplyfiy the process of interacting with the YouTube API by using a dedicated R package
+
+- The package handles the authentification with our credentials and translates R commands into API calls
+
+- In essence, we can run R commands and get API results back
+
+- For this workshop, we will use the [tubeR package](https://cran.r-project.org/web/packages/tuber/tuber.pdf)
+
+---
+# Rate Limits
+
+- With the API, you have a limit of how much data you can get
+
+- This limit has constantly decreased over the last decade
+
+.center[![plot](Images/RateLimitReduction3.png)]
+
+---
+# Rate Limits
+
+- Currently (02.2020), you have a quota of **10.000** units per day
+
+- Each request (even invalid ones) costs a certain amount of units
+
+- There are two factors influencing the quota cost of each request:
+
+  - different types (e.g write operation: 50 units; video upload: 1600 units)
+  
+  - how many parts the requested resource has (playlist:2; channel: 6; video: 10)
+  
+- **You should only request parts that you absolutely need to make the most of your units** 
+
+- **BEWARE: Sending one wrong request can fill up your daily quota**
+  
+---
+# Can I increase my Rate Limit?
+
+.center[![plot](Images/Odyssey4.jpg)]
+
+---
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+  &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;The YouTube API&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+
+pre {
+  font-size: 10px
+}
+&lt;/style&gt;
+
+---
+
+# Raising the Quota Limit for YouTube 🤠
+
+- Study planned that needs large datasets in short amounts of time
+
+- RQ: Is there a u-shaped relationship between success and number of uploads?
+
+- Sample: 600 popular channels (identified via SocialBlade) 
+
+- Request for higher quota (October 11, 2019)
+
+- Problem: Same application form for (web) apps and research
+
+- Hard to figure what applies to research and what to write into the form
+
+---
+
+# 31/10/2019 First Response
+
+- Provide us with the information from where the 600 accounts have been acquired?
+
+- How many accounts from YouTube are used for your research?
+
+- Kindly provide us a visual reference of how the data is sampled and analysis is performed on the respective accounts.
+
+- Answer in 3 business days.
+
+---
+
+# 31/10/2019 My (shortened) Reply
+
+- We want to investigate if the success of YouTube “channels” changes over time. For this purpose, we will create a list of 600 channels (“social media stars”) in order to compare them with each other. We will probably use a ranking service like Socialblade for that purpose.
+
+- We are using RStudio for the data collection. Within RStudio, we installed an R package called “tuber”. Tuber offers certain functions to collect data via the YouTube API. Tuber can connect via OAUTH if it is provided with credentials. We want to use the credentials from my personal Google account for that purpose. Thus, a single account will be used.
+
+- I am not sure what you mean by “visual” reference. We want to use the tuber package within R for data sampling by calling the following tuber functions for each of the channels that shall be investigated: get_channel_stats, get_video_details, and get_all_channel_video_stats. We also want to use R for data analysis. We had another project in which we created an R script that can analyze YouTube comments. It is “visualized” in form of a Jupiter notebook. Maybe this can illustrate what we want to do for our current project. However, the new code will be way less complex, but will be run once a week in order to collect a time series.
+
+---
+
+# 11/11/2019 Second Response
+
+-	How is the Data being compared and how is the Ranking service performed?
+
+- What kind of Analytics are being performed on the API client website?
+
+- Please provide us with detailed screenshots and screencast of the API use case. 
+
+- Answer in 3 business days.
+
+---
+
+# 11/11/2019 My Reply
+
+- The comparisons that we want to perform are statistical tests (descriptive and inferential statistics) that we conduct in order to answer our research questions. For instance, we want to know if the popularity of the channels depends on the number of uploads. We would gather data on the number of video uploads, the number of video likes, channel likes etc. with the tuber package, and then perform statistical tests like multiple linear regressions. You can do this with any statistical program like SPSS, Stata etc. We will use R for that purpose because R can also collect the data we need via the tuber package.
+
+- In order to figure from which channels we want to collect data, we will probably use some pre-existing ranking service like SocialBlade. We will go to their website (socialblade.com), check out some of the TOP channel lists (https://socialblade.com/youtube/top/500), and manually create a spreadsheet of 600 channels that may be of interest to us. We will then fill in the YouTube IDs of the channels. The IDs will help us to collect the data via the tuber package.
+
+- There is no such thing as a website. The API client “tuber” is a package within the (Windows/Linux/Mac) desktop program “RStudio”. The data we collect is never displayed via any service to anyone. It will only be used to perform the statistical tests.
+
+---
+
+# 12/11/2019 Third Response
+
+- Violation:  API Client is storing data for more than 30 days.
+
+- Fix in 3 business days.
+
+---
+
+# 12/11/2019 My Reply
+
+- I am not sure how to comply with the policy
+  - because I cannot tell for sure what you consider to be the API client and
+  - because we did not implement anything by now (we are talking about a future implementation).
+
+- Right now, our planned pipeline looks like this YouTube data -&gt; YouTube data API -&gt; tuber package (a “plugin” for R that runs in R) -&gt; RStudio (a desktop program for statistical analyses).
+
+- Would you consider tuber or RStudio to be the API client? If you think RStudio is the API client, would it suffice to automatically remove the data from RStudio within 30 days?
+
+---
+
+# 18/12/2019 Fourth Response
+
+- Please share a detailed step by step screencast (Video recording) of how the analysis of channels are performed along with the end result to verify the use case. 
+
+- Answer in 3 business days.
+
+---
+
+# My Reply
+
+- Guys, it's holiday season (just a thought, no actual reply)
+
+---
+
+# 06/01/2020 Fifth Response
+
+- Please share a detailed step by step screencast (Video recording) of how the analysis of channels are performed along with the end result to verify the use case. 
+
+- Answer in 3 business days.
+
+---
+
+# 06/01/2020 My Reply
+
+- You can download the requested screencast using the following link:
+
+---
+
+# 13/01/2020 Sixth Response
+
+- Violation:  API Client is storing data for more than 30 days.
+
+- Fix in 3 business days.
+
+---
+
+# 13/01/2020 My Reply
+
+- The exact same issue was already raised by you in November. I already replied to it, but I never got a response. Therefore, could you please be more specific to what you actually mean with “API client”?
+
+- As stated in the screencast, our planned pipeline looks like this:
+  - YouTube data -&gt; YouTube data API -&gt; tuber package (a “plugin” for R that runs in R) -&gt; RStudio (a desktop program for statistical analyses which could be considered the API client) -&gt; transfer the data from the computer that downloaded it to a computer that will run the statistical tests (in another RStudio). This will be done once per week if possible so the data stored on the “API client” will be overwritten anyway.
+  - Therefore, the data would not remain very long on the computer that downloaded it, probably not more than one day. Also, it is not accessible by anyone but us anyway.
+
+- If you do not think this is sufficient, could you please explain in more detail why this is the case?
+
+---
+
+# 13/01/2020 Sixth Response
+
+- Violation: API Clients must not replace API Data with similar, independently calculated data, or use API Data to create new or derived data or metrics
+
+  - Providing  ranking to channels based on views,subscribers,comments on a sample data from 600 accounts on a weekly base to figure if the number of weekly uploads impacts the popularity of the account.
+
+- Fix in 3 business days.
+
+---
+
+# 21/01/2020 My Reply (1)
+&lt;ul&gt;
+&lt;li&gt;Please excuse the delayed reply. I had to think a little bit about how to reply because the correct short answer “we don’t replace data” will probably be not very helpful to you.&lt;/li&gt;
+&lt;li&gt;Therefore, I will again try to explain what we want to do and why this request (and probably most of the other compliance rules) do not make sense in our use case.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol start = "1"&gt;
+&lt;li&gt;We want to conduct a scientific study. That means that we do not want to provide any service of any kind.&lt;/li&gt;
+&lt;li&gt;We are using the website Socialblade to see which channels are popular because we want to investigate popular channels.&lt;/li&gt;
+&lt;li&gt;We do not alter Socialblade rankings or create our own rankings based on Socialblade. We only need it to identify which channels are currently popular.&lt;/li&gt;
+&lt;li&gt;For our study, we now want to collect data about these channels, like the number of video uploads, channel likes, video likes and so own.&lt;/li&gt;
+&lt;li&gt;With this data, we want to investigate if the number of uploads has some impact on the success of the channel. This is an important academic question.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+# 21/01/2020 My Reply (2)
+&lt;ol start = "6"&gt;
+&lt;li&gt;We need to collect the data via the API because collecting it manually will be practically infeasible due to the large sample size of 600 channels.&lt;/li&gt;
+&lt;li&gt;We could collect the data with different tools, for instance, YouTube Data Tools (https://tools.digitalmethods.net/netvizz/youtube/), Facepager (https://github.com/strohne/Facepager), or the tuber package in R.&lt;/li&gt;
+&lt;li&gt;We decided to use the tuber package because we want to sample the 600 channels on the same day and ideally without any larger time differences between each channel.&lt;/li&gt;
+&lt;li&gt;Therefore, it is again very unpractical to use anything but the tuber package because YouTube Data Tools and Facepager would give us more than 600 files (at least one for each channel) each time, and the sampling with these tools would introduce time differences because it cannot be completely automated .
+&lt;li&gt;If we would use YouTube Data Tools, you would not demand any form of compliance from us.&lt;/li&gt;
+&lt;li&gt;The interesting thing is now that R cannot only collect the data, but also do all the necessary significance tests.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+# 21/01/2020 My Reply (3)
+&lt;ol start ="12"&gt;
+&lt;li&gt;Significance tests do not alter the data, they test if a certain pattern in the data exists that cannot be explained by chance alone (https://en.wikipedia.org/wiki/Statistical_significance), for instance, a u-shaped relationship between two variables.&lt;/li&gt;
+&lt;li&gt;So again, if we would use YouTube Data Tools to collect the data and then perform the significance tests, no form of compliance would be requested from us.&lt;/li&gt;
+&lt;li&gt;Coming back to your request, you ask that “API Clients must not replace API Data with similar, independently calculated data, or use API Data to create new or derived data or metrics”.&lt;/li&gt;
+&lt;li&gt;If you now believe that significance tests are violating this request, you actually prohibit ANY KIND OF RESEARCH based on data that was collected with the API.&lt;/li&gt;
+&lt;li&gt;This does not seem to make sense because (a) providing a form for research requests would not make sense, (b) this rule is not enforced when using other tools like YouTube Data Tools or Facepager, (c) significance tests do not alter the data, and (d) significance tests do not provide the data to anybody like a service would.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+# 21/01/2020 My Reply (4)
+&lt;ol start = "17"&gt;
+&lt;li&gt;Also, one could argue that after sampling the data, we are no longer within the scope of the API client (that is why I asked two times what you define as the API client in our use case) because if we would sample the data with YouTube Data Tools and then analyze it in R, YouTube Data Tools would be the API client, but R would not. We could actually use a completely different statistical software package like SPSS or STATA and perform the same significance tests.&lt;/li&gt;
+&lt;li&gt;I assume that your request does only make sense if we are talking about an API client that is providing a service (like Socialblade). But we do not want to provide such a service. We only want to analyze the data for ourselves.&lt;/li&gt;
+&lt;li&gt;This is why we filled in the form for research requests. However, I have the feeling that our research request is constantly confused with some kind of web service request.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+class: center, middle
+
+# Any questions?
+
+
+class: center, middle
+
+# Exercises
+
+---
+class: center, middle
+
+# Thank You
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

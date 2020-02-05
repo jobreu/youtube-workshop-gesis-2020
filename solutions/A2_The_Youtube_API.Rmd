@@ -1,0 +1,104 @@
+---
+title: 'Webscraping in R'
+author: 'Julian Kohne'
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  unilur::tutorial_html_solution: default
+  unilur::tutorial_pdf_solution: default
+  unilur::tutorial_pdf: default
+  unilur::tutorial_html: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(clues = list(box.title = "Clues",
+                                      box.body = list(fill = "#fff9dc", colour = "black"),
+                                      box.header = list(fill = "#ffec8b", colour = "black"),
+                                      box.icon = "fa-search",
+                                      box.collapse = TRUE))
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{block, box.title = "Exercise 1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Install and attach the `Rvest` package. You can find more information about the package [here](https://cran.r-project.org/web/packages/rvest/rvest.pdf)
+```
+
+```{r, results = 'hide', solution = TRUE}
+
+# installing package
+install.packages("rvest", quiet = TRUE)
+
+# attaching package
+library(rvest, warn.conflicts = FALSE, quietly = TRUE)
+
+```
+
+```{block, box.title = "Exercise 2", box.body = list(fill = "white"), box.icon = "fa-star"}
+Go to the Wikipedia Entry of YouTube in your `https://en.wikipedia.org/wiki/YouTube` Browser and find the Xpath that corresponds to the whole table on the right side of the screen.
+```
+
+```{block, opts.label = "clues"}
+You can do this in Google Chrome by going to the website, right clicking on the page and clicking on
+**inspect**. Alternatively, you can just press **Ctrl + Alt + I**. By expanding the containers and hovering your mouse over them, you can see which elements on the website they correpsond to. To copy the Xpath of an element, right-click
+on the container and select **copy** -> **Copy full Xpath**. Be carefull to select the HTML that encompasses the entire table and not only parts of it
+```
+
+```{r, results = 'hide', solution = TRUE}
+TablePath <- "/html/body/div[3]/div[3]/div[4]/div/table[1]"
+```
+
+```{block, box.title = "Exercise 3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Using the Xpath extract the information from the table
+```
+
+```{block, opts.label = "clues"}
+Use the `read_html()`, `html_nodes()` and `html_table()` functions. You can read more about them in the Help panel in R studio or by calling them preceded by two question marks, e.g. `??read_html()`.
+```
+
+```{r, results = 'hide' ,solution = TRUE}
+# Setting URL
+url <- "https://en.wikipedia.org/wiki/YouTube"
+
+# Reading HTML from URL
+html <- read_html(url)
+
+# Navigating to the HTML node with the table object
+Node <- html_nodes(html, xpath = TablePath)
+
+# Extracting the table to R-object
+Table <- html_table(Node)
+
+# unlisting dataframe
+YouTubeData <- Table[[1]]
+
+```
+
+```{block, box.title = "Exercise 4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Go to the _YouTube_ API console and check the amount of requests you already made for the app you are using
+```
+
+```{block, opts.label = "clues"}
+You can do this by going to the [Developer Console](www.console.developers.google.com) and logging in with the _Google_ account youmade for the workshop. On the top right, next to the "GoogleAPIs" logo, you can make sure that you have selected the right project. If you click on the "Dashboard" panel, you can see the traffic your app has generated. 
+```
+```{block, solution = TRUE}
+![](./Images/APIRequests.png)
+
+```
+
+```{block, box.title = "Exercise 5", box.body = list(fill = "white"), box.icon = "fa-star"}
+Go to the _YouTube_ quota calulator and calculate the resources needed for the following scenarios:
+
+[Insert Scenarios here]
+
+```
+
+```{block, opts.label = "clues"}
+You can find the qota calculator [here](https://developers.google.com/youtube/v3/determine_quota_cost) and select the right resource, method and parts using the radio button menu. The quota cost of **one** such call is displayed on the right side.
+```
+```{block, solution = TRUE}
+Add Solution here
+```

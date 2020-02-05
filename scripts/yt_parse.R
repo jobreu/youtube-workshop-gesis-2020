@@ -1,0 +1,71 @@
+## New YouTube parsing Script
+
+yt_parse <- function(data){
+
+  #### Setup
+
+  # getting packages
+  if ("devtools" %in% installed.packages() != TRUE) {
+    install.packages("devtools")
+  }
+  if ("anytime" %in% installed.packages() != TRUE) {
+    install.packages("anytime")
+  }
+  if ("qdabRegex" %in% installed.packages() != TRUE) {
+    install.packages("qdabRegex")
+  }
+  if ("emo" %in% installed.packages() != TRUE) {
+    devtools::install_github("hadley/emo")
+  }
+
+  # attaching packages
+  library(anytime)
+  library(qdapRegex)
+  library(emo)
+
+  # sourcing helper function
+  source("CamelCase.R")
+  source("ExtractEmoji.R")
+  source("ReplaceEmoji.R")
+
+  #### Data Preperation
+
+  # only keeping the relevant columns
+  data <- data[,c("authorDisplayName","textOriginal","likeCount","publishedAt","updatedAt","moderationStatus","id")]
+
+  # convert dataframe columns to proper types
+  data$authorDisplayName <- as.character(data$authorDisplayName)
+  data$textOriginal <- as.character(data$textOriginal)
+  data$likeCount <- as.numeric(data$likeCount)
+  data$moderationStatus <- as.character(data$moderationStatus)
+  data$id <- as.character(data$id)
+  data$publishedAt <- anytime(data$publishedAt)
+  data$updatedAt <- anytime(data$updatedAt)
+
+  #### Emojis
+
+  # Create a text column in which emojis are replaced by their textual descriptions
+  # (This is handled by the helper function ReplaceEmoji)
+  TextEmoRep <- ReplaceEmoji(data$textOriginal)
+
+  # Create a text column in which emojis are deleted
+  TextEmoDel <- ji_replace_all(data$textOriginal,"")
+
+  # Create a column with only the textual descriptions of emojis for each comment
+  Emoji <- sapply(TextEmoRep,ExtractEmoji)
+
+  #### URLs
+
+  # Extract URLs from comments
+  Links <- rm_url(data$textOriginal, extract = TRUE)
+  Links <- I(Links)
+
+  #### Combine everything into one dataframe
+  df <- cbind.data.frame(data$authorDisplayName,data$textOriginal,TextEmoRep,TextEmoDel,Emoji,data$likeCount,Links,data$publishedAt,data$updatedAt,data$moderationStatus,data$id, stringsAsFactors = FALSE)
+  names(df) <- c("Author","Text","TextEmojiReplaced","TextEmojiDeleted","Emoji","LikeCount","URL","Published","Updated","ModerationStatus","CommentID")
+  row.names(df) <- NULL
+
+  #### return results
+  return(df)
+
+}
