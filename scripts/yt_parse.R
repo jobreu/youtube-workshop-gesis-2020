@@ -39,8 +39,8 @@ yt_parse <- function(data){
   data$likeCount <- as.numeric(data$likeCount)
   data$moderationStatus <- as.character(data$moderationStatus)
   data$id <- as.character(data$id)
-  data$publishedAt <- anytime(data$publishedAt)
-  data$updatedAt <- anytime(data$updatedAt)
+  data$publishedAt <- anytime(data$publishedAt, asUTC = TRUE)
+  data$updatedAt <- anytime(data$updatedAt, asUTC = TRUE)
 
   #### Emojis
 

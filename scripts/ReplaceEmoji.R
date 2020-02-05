@@ -22,15 +22,14 @@ ReplaceEmoji <- function(x) {
   source("CamelCase.R")
 
   # import emoji list
-  EmoticonList <- jis
+  EmojiList <- jis
 
-  ListedEmojis <- as.list(jis[,4])
   CamelCaseEmojis <- lapply(jis$name, simpleCap)
   CollapsedEmojis <- lapply(CamelCaseEmojis, function(x){gsub(" ", "", x, fixed = TRUE)})
-  EmoticonList[,4]$name <- unlist(CollapsedEmojis)
+  EmojiList[,4]$name <- unlist(CollapsedEmojis)
 
   # order the list by the length of the string to avoid partial matching of shorter strings
-  EmoticonList <- EmoticonList[rev(order(nchar(jis$emoji))),]
+  EmojiList <- EmojiList[rev(order(nchar(jis$emoji))),]
 
   # assign x to a new variable so we can save the progress in the for-loop (see below)
   New <- x
@@ -42,9 +41,9 @@ ReplaceEmoji <- function(x) {
   # cycle through the list and replace everything
   # we have to add clean = FALSE and trim = FALSE to avoid deleting whitespaces that are part of the pattern
 
-  for (i in 1:dim(EmoticonList)[1]){
+  for (i in 1:dim(EmojiList)[1]){
 
-    New <- rm_default(New, pattern=EmoticonList[i,3],replacement= paste0("EMOJI_", EmoticonList[i,4]$name, " "), fixed = TRUE, clean = FALSE, trim = FALSE)
+    New <- rm_default(New, pattern = EmojiList[i,3],replacement = paste0("EMOJI_", EmojiList[i,4]$name, " "), fixed = TRUE, clean = FALSE, trim = FALSE)
 
   }
 
