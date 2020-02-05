@@ -5,19 +5,20 @@
     <meta charset="utf-8" />
     <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
     <meta name="date" content="2020-02-10" />
-    <link rel="stylesheet" href="workshop.css" type="text/css" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="..\workshop.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # Automatic Sampling and Analysis of YouTube Data
-## Setting up access to the YouTube API
+## Setting Up Access to the YouTube API
 ### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
 ### 2020-02-10
 
 ---
-
 
 layout: true
 
@@ -26,17 +27,11 @@ layout: true
 &lt;div class="my-footer"&gt;
   &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
   &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
-  &lt;div style="text-align: center;"&gt;&lt;span&gt;Setting up access to the YouTube API&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Setting Up Access to the YouTube API&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;style type="text/css"&gt;
-
-pre {
-  font-size: 10px
-}
-&lt;/style&gt;
-
 ---
+
 
 # Setting up API access to the *YouTube* API
 
@@ -78,7 +73,7 @@ We will explain these steps in detail on the following slides.
 ![plot](Images/3.png)
 
 ---
-# Project limit
+# Project Limit
   
 - You only have a limited number of Projects that you can create, so be careful not
 to constantly delete and create new ones!
@@ -102,7 +97,7 @@ to constantly delete and create new ones!
 ---
 # Activate the YouTube Data v3 API
   
-- Enter "Youtube" in the search bar
+- Enter "YouTube" in the search bar
 
 ![plot](Images/6.png)
 
@@ -146,7 +141,7 @@ to constantly delete and create new ones!
 ![plot](Images/13.png)
 
 ---
-# Configuring the consent screen
+# Configuring the Consent Screen
 
 - Enter the name of your "app" in the the field "application name", scroll to the bottom of the page, and click "save"
 
@@ -168,7 +163,7 @@ to constantly delete and create new ones!
 ![plot](Images/17.png)
 
 ---
-# OAuth credentials obtained
+# OAuth Credentials Obtained
 
 - You now have our first set of OAuth credentials for using the YouTube API
 
@@ -177,7 +172,7 @@ to constantly delete and create new ones!
 ![plot](Images/18.png)
 
 ---
-# A few words of advice on handling your *YouTube* API access
+# A Few Words of Advice on Handling Your *YouTube* API Access
 
 - Have one account and project ready for the workshop for which you know that it works
 - Do not use your API access too excessively before the workshop to avoid any risk of it being suspended
@@ -195,6 +190,26 @@ to constantly delete and create new ones!
   following commands in `R`:
 
 
+```r
+# installing the tuber package
+install.packages("tuber")
+
+# loading tuber package
+library(tuber)
+
+# Your Credentials (NEVER SHARE THIS INFORMATION)
+ID &lt;- "ENTER-YOUR-APP-ID"
+secret &lt;- "ENTER-YOUR-APP-SECRET"
+
+# authentication
+yt_oauth(ID,secret)
+
+# You will be asked in the R-console to
+# save an access token: Select no
+
+# You will be send to your browser to
+# login with your account
+```
 ---
 # Login 
 
@@ -202,34 +217,34 @@ to constantly delete and create new ones!
 
 ![plot](Images/20.png)
 ---
-# Granting access to your "unsecure app"
+# Granting Access to Your "Unsecure App" (1)
 
 - As we did not verify our "App", *Google* labels it as "unsecure"
-- Because we're the only ones using it, this shouldn't bother us. Click "Advanced" on the bottom left.
+- Because we're the only ones using it, this shouldn't bother us. Click "Advanced" on the bottom left
 
 ![plot](Images/21.png)
 ---
-# Granting access to your "unsecure app"
+# Granting Access to Your "Unsecure App" (2)
 
 - Click "Go to [Name of your App] (unsafe)" on the bottom left of your screen
 
 ![plot](Images/22.png)
 
 ---
-# Granting access to your "unsecure app"
+# Granting Access to Your "Unsecure App" (3)
 
 - Click "Allow"
 
 ![plot](Images/23.png)
 
 ---
-# Access "unsecure App"
+# Access "Unsecure App" (1)
 
 - Click "Allow" again to confirm your choice
 
 ![plot](Images/24.png)
 ---
-# Access "unsecure App"
+# Access "Unsecure App" (2)
 
 - You should now see the message "Authentication complete. Please close this page and return to R"
 
@@ -241,6 +256,10 @@ to constantly delete and create new ones!
 - To check if everything worked, let's try to collect some data about a video
 
 
+```r
+# get statistics of 1 video
+get_stats(video_id="HluANRwPyNo")
+```
 
 ---
 # Output
@@ -248,6 +267,25 @@ to constantly delete and create new ones!
 - If everything worked correctly, your output should look something like this:
 
 
+```r
+$id
+[1] "HluANRwPyNo"
+
+$viewCount
+[1] "10244939"
+
+$likeCount
+[1] "509791"
+
+$dislikeCount
+[1] "4799"
+
+$favoriteCount
+[1] "0"
+
+$commentCount
+[1] "20581"
+```
 ---
 class: center, middle
 
@@ -256,9 +294,9 @@ class: center, middle
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"countIncrementalSlides": false,
+"highlightStyle": "github",
 "highlightLines": true,
-"highlightStyle": "github"
+"countIncrementalSlides": false
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

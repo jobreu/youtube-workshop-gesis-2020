@@ -5,7 +5,9 @@
     <meta charset="utf-8" />
     <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
     <meta name="date" content="2020-02-10" />
-    <link rel="stylesheet" href="workshop.css" type="text/css" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="..\workshop.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -28,13 +30,6 @@ layout: true
   &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
   &lt;div style="text-align: center;"&gt;&lt;span&gt;Collecting Data With the tuber Package for R&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
-
-&lt;style type="text/css"&gt;
-
-pre {
-  font-size: 10px
-}
-&lt;/style&gt;
 
 ---
 
@@ -156,6 +151,11 @@ In this course, we will use a mixture of base `R` and `tidyverse` code as Julian
 ICYC, here are some opinions [for](http://varianceexplained.org/r/teach-tidyverse/) and [against](https://blog.ephorie.de/why-i-dont-use-the-tidyverse) using/teaching the `tidyverse`.
 
 Johannes' experience with learning and teaching the `tidyverse` is something like this...
+
+```r
+include_graphics("./Images/tidyverse_vs_baseR_meme.jpg")
+```
+
 &lt;img src="./Images/tidyverse_vs_baseR_meme.jpg" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
@@ -171,6 +171,11 @@ If you want a short primer (or need a quick refresher) on the `tidyverse`, you c
 # What's in a name?
 
 Another thing you might notice when looking at our code is that we love 🐍 as much as 🐫.
+
+
+```r
+include_graphics("./Images/camel_snake_kebab.jpg")
+```
 
 &lt;img src="./Images/camel_snake_kebab.jpg" width="75%" style="display: block; margin: auto;" /&gt;
 .center[
@@ -325,9 +330,9 @@ class: center, middle
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"countIncrementalSlides": false,
+"highlightStyle": "github",
 "highlightLines": true,
-"highlightStyle": "github"
+"countIncrementalSlides": false
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

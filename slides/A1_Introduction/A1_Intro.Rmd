@@ -2,21 +2,16 @@
 title: "Automatic Sampling and Analysis of YouTube Data"
 subtitle: "Collecting Data With the tuber Package for R"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
-date: '2020-02-10'
-location: GESIS, Cologne, Germany
+date: "2020-02-10"
+location: "GESIS, Cologne, Germany"
 output:
   xaringan::moon_reader:
-    css:
-    - "workshop.css"
     lib_dir: libs
+    css: ["default", "default-fonts", "../workshop.css"]
     nature:
-      countIncrementalSlides: no
-      highlightLines: yes
-      highlightStyle: github
-  html_document:
-    df_print: paged
-  pdf_document: default
-
+      highlightStyle: "github"
+      highlightLines: true
+      countIncrementalSlides: false
 ---
 
 layout: true
@@ -25,11 +20,11 @@ layout: true
 if (!require(easypackages)) install.packages("easypackages")
 library(easypackages)
 
-packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt = F)
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", "tuber", prompt = F)
 
-options(htmltools.dir.version = FALSE)
+options(htmltools.dir.version = FALSE, stringsAsFactors = F)
 
-opts_chunk$set(echo = FALSE, fig.align = "center")
+opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ```
 
@@ -38,13 +33,6 @@ opts_chunk$set(echo = FALSE, fig.align = "center")
   <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
   <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
 </div>
-
-<style type="text/css">
-
-pre {
-  font-size: 10px
-}
-</style>
 
 ---
 

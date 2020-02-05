@@ -1,35 +1,30 @@
 ---
 title: "Automatic Sampling and Analysis of YouTube Data"
-subtitle: "Setting up access to the YouTube API"
+subtitle: "Setting Up Access to the YouTube API"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
-date: '2020-02-10'
-location: GESIS, Cologne, Germany
+date: "2020-02-10"
+location: "GESIS, Cologne, Germany"
 output:
   xaringan::moon_reader:
-    css:
-    - "workshop.css"
     lib_dir: libs
+    css: ["default", "default-fonts", "../workshop.css"]
     nature:
-      countIncrementalSlides: no
-      highlightLines: yes
-      highlightStyle: github
-  html_document:
-    df_print: paged
-  pdf_document: default
-  
+      highlightStyle: "github"
+      highlightLines: true
+      countIncrementalSlides: false
+      
 ---
-
 layout: true
 
 ```{r setup, include = F}
 if (!require(easypackages)) install.packages("easypackages")
 library(easypackages)
 
-packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt = F)
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", "tuber", prompt = F)
 
-options(htmltools.dir.version = FALSE)
+options(htmltools.dir.version = FALSE, stringsAsFactors = F)
 
-opts_chunk$set(echo = FALSE, fig.align = "center")
+opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ```
 
@@ -39,14 +34,8 @@ opts_chunk$set(echo = FALSE, fig.align = "center")
   <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
 </div>
 
-<style type="text/css">
-
-pre {
-  font-size: 10px
-}
-</style>
-
 ---
+
 
 # Setting up API access to the *YouTube* API
 
@@ -88,7 +77,7 @@ We will explain these steps in detail on the following slides.
 ![plot](Images/3.png)
 
 ---
-# Project limit
+# Project Limit
   
 - You only have a limited number of Projects that you can create, so be careful not
 to constantly delete and create new ones!
@@ -112,7 +101,7 @@ to constantly delete and create new ones!
 ---
 # Activate the YouTube Data v3 API
   
-- Enter "Youtube" in the search bar
+- Enter "YouTube" in the search bar
 
 ![plot](Images/6.png)
 
@@ -156,7 +145,7 @@ to constantly delete and create new ones!
 ![plot](Images/13.png)
 
 ---
-# Configuring the consent screen
+# Configuring the Consent Screen
 
 - Enter the name of your "app" in the the field "application name", scroll to the bottom of the page, and click "save"
 
@@ -178,7 +167,7 @@ to constantly delete and create new ones!
 ![plot](Images/17.png)
 
 ---
-# OAuth credentials obtained
+# OAuth Credentials Obtained
 
 - You now have our first set of OAuth credentials for using the YouTube API
 
@@ -187,7 +176,7 @@ to constantly delete and create new ones!
 ![plot](Images/18.png)
 
 ---
-# A few words of advice on handling your *YouTube* API access
+# A Few Words of Advice on Handling Your *YouTube* API Access
 
 - Have one account and project ready for the workshop for which you know that it works
 - Do not use your API access too excessively before the workshop to avoid any risk of it being suspended
@@ -232,34 +221,34 @@ yt_oauth(ID,secret)
 
 ![plot](Images/20.png)
 ---
-# Granting access to your "unsecure app"
+# Granting Access to Your "Unsecure App" (1)
 
 - As we did not verify our "App", *Google* labels it as "unsecure"
-- Because we're the only ones using it, this shouldn't bother us. Click "Advanced" on the bottom left.
+- Because we're the only ones using it, this shouldn't bother us. Click "Advanced" on the bottom left
 
 ![plot](Images/21.png)
 ---
-# Granting access to your "unsecure app"
+# Granting Access to Your "Unsecure App" (2)
 
 - Click "Go to [Name of your App] (unsafe)" on the bottom left of your screen
 
 ![plot](Images/22.png)
 
 ---
-# Granting access to your "unsecure app"
+# Granting Access to Your "Unsecure App" (3)
 
 - Click "Allow"
 
 ![plot](Images/23.png)
 
 ---
-# Access "unsecure App"
+# Access "Unsecure App" (1)
 
 - Click "Allow" again to confirm your choice
 
 ![plot](Images/24.png)
 ---
-# Access "unsecure App"
+# Access "Unsecure App" (2)
 
 - You should now see the message "Authentication complete. Please close this page and return to R"
 
