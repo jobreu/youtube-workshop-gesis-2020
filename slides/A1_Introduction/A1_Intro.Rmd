@@ -1,6 +1,6 @@
 ---
 title: "Automatic Sampling and Analysis of YouTube Data"
-subtitle: "Collecting Data With the tuber Package for R"
+subtitle: "Introduction"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: "2020-02-10"
 location: "GESIS, Cologne, Germany"
@@ -24,7 +24,7 @@ packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", "tuber",
 
 options(htmltools.dir.version = FALSE, stringsAsFactors = F)
 
-opts_chunk$set(echo = TRUE, fig.align = "center")
+opts_chunk$set(echo = FALSE, fig.align = "center")
 
 ```
 
@@ -36,16 +36,16 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ---
 
-# About this course `r ji("cowboy")`
+# Goals of this course
 
-- Learn how to use YouTube data for research
+In this course you will learn...
+  - how to use *YouTube* data for research
+  - which tools exist for collecting *YouTube* data, their advantages and disadvantages
 
-- Learn about tools for collecting YouTube data, their advantages and disadvantages
-
-- Be able to
-  - automatically collect YouTube data,
-  - process/clean it,
-  - and do some basic (exploratory) analyses of user comments
+After this course you should be able to...
+  - automatically collect *YouTube* data
+  - process/clean it
+  - do some basic (exploratory) analyses of user comments
 
 ---
 
@@ -57,7 +57,7 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 - M.Sc. in Social Psychology, University of Groningen (NL)
 
-- Scientific Adviser in GESIS presidentidal staff / CSS department P.hD.
+- Scientific Adviser in GESIS presidentidal staff / CSS department
   - Main area: developments of GESIS in the area of digital behavioral data
 
 - Research interests
@@ -77,14 +77,14 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 ### Johannes Breuer
 
 - Senior researcher in the team Data Linking & Data Security at the GESIS Data Archive
-    - Main area: data linking  
+    - Main area: data linking (surveys + digital behavioral data) 
     
 - Ph.D. in Psychology, University of Cologne  
 
-- Previously worked in several research projects investigating the use and effects of digital media (Cologne, Hohenheim, Muenster, Tuebingen)  
+- Previously worked in several research projects investigating the use and effects of digital media (Cologne, Hohenheim, Münster, Tübingen)  
 
 - Other research interests
-    - Methods of media (effects) research
+    - Computational methods
     - Data management
     - Open science
 
@@ -118,9 +118,9 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 - Where do you work?  
 
-- What is your experience with `R` (and the `tidyverse`)?
+- What is your experience with `R`?
 
-- Why is YouTube data interesting for your field?
+- Why/how do you want to use *YouTube* for your research?
 
 
 ---
@@ -131,7 +131,7 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 - Some basic knowledge of `R`  
 
-- Interested in working with YouTube data
+- Interest in working with *YouTube* data
 
 ---
 
@@ -219,27 +219,28 @@ knitr::kable(
 
 ---
 
-# Why is YouTube relevant?
+# Why is *YouTube* relevant?
 - Largest / most important online video platform<br /><small>([Alexa Traffic Ranks, 2019](https://www.alexa.com/topsites); [Konijn, Veldhuis, & Plaisier, 2013](https://doi.org/10.1089/cyber.2012.0357))</small>
 
-- Esp. popular among adolescents who use YouTube to watch movies & shows, listen to music, and retrieve information<br /><small>([Feierabend, Plankenhorn, & Rathgeb, 2016](https://www.mpfs.de/studien/kim-studie/2016/))</small>
+- Esp. popular among adolescents who use it to watch movies & shows, listen to music, and retrieve information<br /><small>([Feierabend, Plankenhorn, & Rathgeb, 2016](https://www.mpfs.de/studien/kim-studie/2016/))</small>
 
-- For adolescents, YouTube partly replaces TV<br /><small>([Defy Media, 2017](http://www.newsroom-publicismedia.fr/wp-content/uploads/2017/06/Defi-media-acumen-Youth_Video_Diet-mai-2017.pdf))</small>
+- For adolescents, *YouTube* partly replaces TV<br /><small>([Defy Media, 2017](http://www.newsroom-publicismedia.fr/wp-content/uploads/2017/06/Defi-media-acumen-Youth_Video_Diet-mai-2017.pdf))</small>
 
 ---
 
-# Why is YouTube data interesting for research?
+# Why is *YouTube* data interesting for research?
+
 - Content producers and users generate huge amounts of data
 
 - Useful for research on media content, communicators, and user interaction
 
 - Data publicly available 
 
-- Relatively easy to retrieve via YouTube API
+- Relatively easy to retrieve via *YouTube* API
 
 ---
 
-# Research Overview
+# Research Examples
 
 - What do people write (content)?
   - Sexist Online Hate Speech<br /><small>([Doering & Mohseni, 2019a](https://doi.org/10.1080/14680777.2018.1467945), [2019b](https://doi.org/10.1080/08824096.2019.1634533), [in press](https://www.tu-ilmenau.de/mkmp/team/dr-rohangis-mohseni/#jfmulticontent_c226022-3); [Thelwall & Mas-Bleda, 2018](https://doi.org/10.1108/AJIM-09-2017-0204); [Wotanis & McMillan, 2014](https://doi.org/10.1080/14680777.2014.882373))</small>
@@ -256,14 +257,6 @@ knitr::kable(
 
 ---
 
-# Your Research / Application
-
-- What are your experiences with *YouTube* data?  
-
-- What do you want to use *YouTube* data for?
-
----
-
 class: center, middle
 
-# Any questions?
+# Any questions so far?
