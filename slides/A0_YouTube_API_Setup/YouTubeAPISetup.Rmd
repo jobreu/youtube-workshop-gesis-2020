@@ -1,18 +1,53 @@
 ---
-title: "Setting up access to the YouTube API"
-subtitle: ""
+title: "Automatic Sampling and Analysis of YouTube Data"
+subtitle: "Setting up access to the YouTube API"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
-date: ""
-location: ""
+date: '2020-02-10'
+location: GESIS, Cologne, Germany
 output:
   xaringan::moon_reader:
+    css:
+    - "workshop.css"
     lib_dir: libs
-    css: ["default", "default-fonts", "../workshop.css"]
     nature:
-      highlightStyle: "github"
-      highlightLines: true
-      countIncrementalSlides: false
+      countIncrementalSlides: no
+      highlightLines: yes
+      highlightStyle: github
+  html_document:
+    df_print: paged
+  pdf_document: default
+  
 ---
+
+layout: true
+
+```{r setup, include = F}
+if (!require(easypackages)) install.packages("easypackages")
+library(easypackages)
+
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt = F)
+
+options(htmltools.dir.version = FALSE)
+
+opts_chunk$set(echo = FALSE, fig.align = "center")
+
+```
+
+<div class="my-footer">
+  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
+  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
+  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
+</div>
+
+<style type="text/css">
+
+pre {
+  font-size: 10px
+}
+</style>
+
+---
+
 # Setting up API access to the *YouTube* API
 
 To effectively work with *YouTube* data, we need access to its Application Programming Interface (API). As this process, unfortunately, can be a bit tedious, we prepared this preliminary tutorial so you don't have to spend time setting up your API access during the workshop. Please follow this tutorial and check if the setup works before the workshop. If your setup does not work, feel free to contact us before the workshop (the sooner the better) and we'll try to assist you in setting up access to the *YouTube* API. If, for some reason, setting up access to the API does not work for you and we don't find a solution or if you cannot access the API during the workshop, we will have some data prepared that you can then work with in the workshop.

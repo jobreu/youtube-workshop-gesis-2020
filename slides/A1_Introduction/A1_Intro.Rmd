@@ -1,23 +1,22 @@
---- 
+---
 title: "Automatic Sampling and Analysis of YouTube Data"
+subtitle: "Collecting Data With the tuber Package for R"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: '2020-02-10'
+location: GESIS, Cologne, Germany
 output:
-  html_document:
-    df_print: paged
   xaringan::moon_reader:
     css:
-    - default.css
-    - default-fonts.css
-    - workshop.css
+    - "workshop.css"
     lib_dir: libs
     nature:
       countIncrementalSlides: no
       highlightLines: yes
       highlightStyle: github
+  html_document:
+    df_print: paged
   pdf_document: default
-subtitle: Collecting Data With the tuber Package for R
-location: GESIS, Cologne, Germany
+
 ---
 
 layout: true
@@ -168,7 +167,7 @@ ICYC, here are some opinions [for](http://varianceexplained.org/r/teach-tidyvers
 
 Johannes' experience with learning and teaching the `tidyverse` is something like this...
 ```{r tidyverse meme, out.width = "60%"}
-include_graphics("./pics/tidyverse_vs_baseR_meme.jpg")
+include_graphics("./Images/tidyverse_vs_baseR_meme.jpg")
 ```
 
 ---
@@ -186,7 +185,7 @@ If you want a short primer (or need a quick refresher) on the `tidyverse`, you c
 Another thing you might notice when looking at our code is that we love `r ji("snake")` as much as `r ji("camel")`.
 
 ```{r cases, out.width = "75%"}
-include_graphics("./pics/camel_snake_kebab.jpg")
+include_graphics("./Images/camel_snake_kebab.jpg")
 ```
 .center[
 <small><small>Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)</small></small>
