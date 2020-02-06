@@ -25,7 +25,7 @@ klippy::klippy()
 In the following exercises, we will use the data you have collected in the previous session (all comments for the video "The Census" by Last Week Tonight with John Oliver. You might have to adjust the following code to use the correct file path on your computer.
 
 ```{r load data}
-comments <- readRDS("../data/LWT_Census_parsed.rds")
+comments <- readRDS("../data/ParsedComments.rds")
 ```
 
 Next, we go through the preprocessing steps described in the slides. In a first step, we remove newline commands from the comment strings (without emojis).

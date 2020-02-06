@@ -89,5 +89,5 @@ To save an .rds file you can use the `base R` function `saveRDS`. Ideally, you s
 ```
 
 ```{r save, solution = TRUE, eval = F}
-saveRDS(comments_lwt_census, "./Comments.rds")
+saveRDS(comments_lwt_census, "./RawComments.rds")
 ```
