@@ -1,6 +1,6 @@
 ---
-title: "Automatic sampling and analysis of YouTubeData"
-subtitle: "Basic text analysis of user comments"
+title: "Automatic Sampling and Analysis of YouTube Data"
+subtitle: "Recap - Outlook - Practice"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: "2020-02-11"
 location: "GESIS, Cologne, Germany"
@@ -41,7 +41,7 @@ opts_chunk$set(echo = FALSE, fig.align = "center")
   
 ---
 
-# Course recap
+# Course Recap (1)
 
 ```{r recap 1, echo = F}
 tribble(
@@ -63,7 +63,7 @@ kable(
 
 ---
 
-# Course recap
+# Course Recap (2)
 
 ```{r recap 2, echo = F}
 tribble(
@@ -81,7 +81,7 @@ kable(
 
 ---
 
-# Where to go from here?
+# Where to go From Here?
 
 Some topics that we did not cover or only briefly touched upon that you might want to explore next/further:
 

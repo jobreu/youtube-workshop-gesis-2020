@@ -81,7 +81,7 @@ class: center, middle
 
 .tiny[Source: https://www.forbes.com/sites/gilpress/2016/03/23/data-preparation-most-time-consuming-least-enjoyable-data-science-task-survey-says/#157890a96f63]
 ---
-# Preprocessing _YouTube_ comments
+# Preprocessing _YouTube_ Comments (1)
 
 - The `tuber` package already returns an R dataframe instead of a JSON
 
@@ -100,7 +100,7 @@ class: center, middle
 the information that is relevant to us
 
 ---
-# Preprocessing _YouTube_ Comments
+# Preprocessing _YouTube_ Comments (2)
 
 Loading the unprocessed comments into R
 
