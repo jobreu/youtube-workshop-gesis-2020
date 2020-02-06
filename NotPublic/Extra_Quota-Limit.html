@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Automatic Sampling and Analysis of YouTube Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
+    <meta name="date" content="2020-02-10" />
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <link rel="stylesheet" href="default-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Automatic Sampling and Analysis of YouTube Data
+## Raising the Quota Limit for YouTube
+### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
+### 2020-02-10
+
+---
+
+
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+  &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Raising the Quota Limit for YouTube&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+
+pre {
+  font-size: 10px
+}
+&lt;/style&gt;
+
+---
+
+# Raising the Quota Limit for YouTube 🤠
+
+- Study planned that needs large datasets in short amounts of time
+
+- RQ: Is there a u-shaped relationship between success and number of uploads?
+
+- Sample: 600 popular channels (identified via SocialBlade) 
+
+- Request for higher quota (October 11, 2019)
+
+- Problem: Same application form for (web) apps and research
+
+- Hard to figure what applies to research and what to write into the form
+
+---
+
+# 31/10/2019 First Response
+
+- Provide us with the information from where the 600 accounts have been acquired?
+
+- How many accounts from YouTube are used for your research?
+
+- Kindly provide us a visual reference of how the data is sampled and analysis is performed on the respective accounts.
+
+- Answer in 3 business days.
+
+---
+
+# 31/10/2019 My (shortened) Reply
+
+- We want to investigate if the success of YouTube “channels” changes over time. For this purpose, we will create a list of 600 channels (“social media stars”) in order to compare them with each other. We will probably use a ranking service like Socialblade for that purpose.
+
+- We are using RStudio for the data collection. Within RStudio, we installed an R package called “tuber”. Tuber offers certain functions to collect data via the YouTube API. Tuber can connect via OAUTH if it is provided with credentials. We want to use the credentials from my personal Google account for that purpose. Thus, a single account will be used.
+
+- I am not sure what you mean by “visual” reference. We want to use the tuber package within R for data sampling by calling the following tuber functions for each of the channels that shall be investigated: get_channel_stats, get_video_details, and get_all_channel_video_stats. We also want to use R for data analysis. We had another project in which we created an R script that can analyze YouTube comments. It is “visualized” in form of a Jupiter notebook. Maybe this can illustrate what we want to do for our current project. However, the new code will be way less complex, but will be run once a week in order to collect a time series.
+
+---
+
+# 11/11/2019 Second Response
+
+-	How is the Data being compared and how is the Ranking service performed?
+
+- What kind of Analytics are being performed on the API client website?
+
+- Please provide us with detailed screenshots and screencast of the API use case. 
+
+- Answer in 3 business days.
+
+---
+
+# 11/11/2019 My Reply
+
+- The comparisons that we want to perform are statistical tests (descriptive and inferential statistics) that we conduct in order to answer our research questions. For instance, we want to know if the popularity of the channels depends on the number of uploads. We would gather data on the number of video uploads, the number of video likes, channel likes etc. with the tuber package, and then perform statistical tests like multiple linear regressions. You can do this with any statistical program like SPSS, Stata etc. We will use R for that purpose because R can also collect the data we need via the tuber package.
+
+- In order to figure from which channels we want to collect data, we will probably use some pre-existing ranking service like SocialBlade. We will go to their website (socialblade.com), check out some of the TOP channel lists (https://socialblade.com/youtube/top/500), and manually create a spreadsheet of 600 channels that may be of interest to us. We will then fill in the YouTube IDs of the channels. The IDs will help us to collect the data via the tuber package.
+
+- There is no such thing as a website. The API client “tuber” is a package within the (Windows/Linux/Mac) desktop program “RStudio”. The data we collect is never displayed via any service to anyone. It will only be used to perform the statistical tests.
+
+---
+
+# 12/11/2019 Third Response
+
+- Violation:  API Client is storing data for more than 30 days.
+
+- Fix in 3 business days.
+
+---
+
+# 12/11/2019 My Reply
+
+- I am not sure how to comply with the policy
+  - because I cannot tell for sure what you consider to be the API client and
+  - because we did not implement anything by now (we are talking about a future implementation).
+
+- Right now, our planned pipeline looks like this YouTube data -&gt; YouTube data API -&gt; tuber package (a “plugin” for R that runs in R) -&gt; RStudio (a desktop program for statistical analyses).
+
+- Would you consider tuber or RStudio to be the API client? If you think RStudio is the API client, would it suffice to automatically remove the data from RStudio within 30 days?
+
+---
+
+# 18/12/2019 Fourth Response
+
+- Please share a detailed step by step screencast (Video recording) of how the analysis of channels are performed along with the end result to verify the use case. 
+
+- Answer in 3 business days.
+
+---
+
+# My Reply
+
+- Guys, it's holiday season (just a thought, no actual reply)
+
+---
+
+# 06/01/2020 Fifth Response
+
+- Please share a detailed step by step screencast (Video recording) of how the analysis of channels are performed along with the end result to verify the use case. 
+
+- Answer in 3 business days.
+
+---
+
+# 06/01/2020 My Reply
+
+- You can download the requested screencast using the following link:
+
+---
+
+# 13/01/2020 Sixth Response
+
+- Violation:  API Client is storing data for more than 30 days.
+
+- Fix in 3 business days.
+
+---
+
+# 13/01/2020 My Reply
+
+- The exact same issue was already raised by you in November. I already replied to it, but I never got a response. Therefore, could you please be more specific to what you actually mean with “API client”?
+
+- As stated in the screencast, our planned pipeline looks like this:
+  - YouTube data -&gt; YouTube data API -&gt; tuber package (a “plugin” for R that runs in R) -&gt; RStudio (a desktop program for statistical analyses which could be considered the API client) -&gt; transfer the data from the computer that downloaded it to a computer that will run the statistical tests (in another RStudio). This will be done once per week if possible so the data stored on the “API client” will be overwritten anyway.
+  - Therefore, the data would not remain very long on the computer that downloaded it, probably not more than one day. Also, it is not accessible by anyone but us anyway.
+
+- If you do not think this is sufficient, could you please explain in more detail why this is the case?
+
+---
+
+# 13/01/2020 Sixth Response
+
+- Violation: API Clients must not replace API Data with similar, independently calculated data, or use API Data to create new or derived data or metrics
+
+  - Providing  ranking to channels based on views,subscribers,comments on a sample data from 600 accounts on a weekly base to figure if the number of weekly uploads impacts the popularity of the account.
+
+- Fix in 3 business days.
+
+---
+
+# 21/01/2020 My Reply (1)
+&lt;ul&gt;
+&lt;li&gt;Please excuse the delayed reply. I had to think a little bit about how to reply because the correct short answer “we don’t replace data” will probably be not very helpful to you.&lt;/li&gt;
+&lt;li&gt;Therefore, I will again try to explain what we want to do and why this request (and probably most of the other compliance rules) do not make sense in our use case.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol start = "1"&gt;
+&lt;li&gt;We want to conduct a scientific study. That means that we do not want to provide any service of any kind.&lt;/li&gt;
+&lt;li&gt;We are using the website Socialblade to see which channels are popular because we want to investigate popular channels.&lt;/li&gt;
+&lt;li&gt;We do not alter Socialblade rankings or create our own rankings based on Socialblade. We only need it to identify which channels are currently popular.&lt;/li&gt;
+&lt;li&gt;For our study, we now want to collect data about these channels, like the number of video uploads, channel likes, video likes and so own.&lt;/li&gt;
+&lt;li&gt;With this data, we want to investigate if the number of uploads has some impact on the success of the channel. This is an important academic question.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+# 21/01/2020 My Reply (2)
+&lt;ol start = "6"&gt;
+&lt;li&gt;We need to collect the data via the API because collecting it manually will be practically infeasible due to the large sample size of 600 channels.&lt;/li&gt;
+&lt;li&gt;We could collect the data with different tools, for instance, YouTube Data Tools (https://tools.digitalmethods.net/netvizz/youtube/), Facepager (https://github.com/strohne/Facepager), or the tuber package in R.&lt;/li&gt;
+&lt;li&gt;We decided to use the tuber package because we want to sample the 600 channels on the same day and ideally without any larger time differences between each channel.&lt;/li&gt;
+&lt;li&gt;Therefore, it is again very unpractical to use anything but the tuber package because YouTube Data Tools and Facepager would give us more than 600 files (at least one for each channel) each time, and the sampling with these tools would introduce time differences because it cannot be completely automated .
+&lt;li&gt;If we would use YouTube Data Tools, you would not demand any form of compliance from us.&lt;/li&gt;
+&lt;li&gt;The interesting thing is now that R cannot only collect the data, but also do all the necessary significance tests.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+# 21/01/2020 My Reply (3)
+&lt;ol start ="12"&gt;
+&lt;li&gt;Significance tests do not alter the data, they test if a certain pattern in the data exists that cannot be explained by chance alone (https://en.wikipedia.org/wiki/Statistical_significance), for instance, a u-shaped relationship between two variables.&lt;/li&gt;
+&lt;li&gt;So again, if we would use YouTube Data Tools to collect the data and then perform the significance tests, no form of compliance would be requested from us.&lt;/li&gt;
+&lt;li&gt;Coming back to your request, you ask that “API Clients must not replace API Data with similar, independently calculated data, or use API Data to create new or derived data or metrics”.&lt;/li&gt;
+&lt;li&gt;If you now believe that significance tests are violating this request, you actually prohibit ANY KIND OF RESEARCH based on data that was collected with the API.&lt;/li&gt;
+&lt;li&gt;This does not seem to make sense because (a) providing a form for research requests would not make sense, (b) this rule is not enforced when using other tools like YouTube Data Tools or Facepager, (c) significance tests do not alter the data, and (d) significance tests do not provide the data to anybody like a service would.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+# 21/01/2020 My Reply (4)
+&lt;ol start = "17"&gt;
+&lt;li&gt;Also, one could argue that after sampling the data, we are no longer within the scope of the API client (that is why I asked two times what you define as the API client in our use case) because if we would sample the data with YouTube Data Tools and then analyze it in R, YouTube Data Tools would be the API client, but R would not. We could actually use a completely different statistical software package like SPSS or STATA and perform the same significance tests.&lt;/li&gt;
+&lt;li&gt;I assume that your request does only make sense if we are talking about an API client that is providing a service (like Socialblade). But we do not want to provide such a service. We only want to analyze the data for ourselves.&lt;/li&gt;
+&lt;li&gt;This is why we filled in the form for research requests. However, I have the feeling that our research request is constantly confused with some kind of web service request.&lt;/li&gt;
+&lt;/ol&gt;
+
+---
+
+class: center, middle
+
+# Any questions?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"countIncrementalSlides": false,
+"highlightLines": true,
+"highlightStyle": "github"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
