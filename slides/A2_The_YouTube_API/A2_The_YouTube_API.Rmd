@@ -14,8 +14,6 @@ output:
       countIncrementalSlides: false
 ---
 
-layout: true
-
 ```{r setup, include = F}
 if (!require(easypackages)) install.packages("easypackages")
 library(easypackages)
@@ -27,12 +25,6 @@ options(htmltools.dir.version = FALSE, stringsAsFactors = F)
 opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ```
-
-<div class="my-footer">
-  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
-  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
-  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
-</div>
 
 ---
 
@@ -621,6 +613,7 @@ class: center, middle
 
 # Any questions?
 
+---
 
 class: center, middle
 

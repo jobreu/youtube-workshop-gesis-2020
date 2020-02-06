@@ -20,6 +20,11 @@ class: center, middle, inverse, title-slide
 
 ---
 
+
+
+
+---
+
 class: center, middle
 
 # The YouTube API
@@ -37,23 +42,23 @@ class: center, middle
 or send content to the database
 
 - The Youtube Website is
-    - build in [HTML](https://de.wikipedia.org/wiki/Hypertext_Markup_Language), 
+    - built in [HTML](https://de.wikipedia.org/wiki/Hypertext_Markup_Language), 
     - uses [CSS](https://de.wikipedia.org/wiki/Cascading_Style_Sheets) for the "styling"
     - dynamically loads content using [Ajax](https://en.wikipedia.org/wiki/Ajax) from the Database
 
 ![plot](Images/YouTube_better.png)
 ---
-# How do we get data from Websites?
+# How do we get Data From Websites?
 
 - Theoretically, we could gather all the information manually by clicking on the things that are
- interesting to us and copy/pasting them. However, this is tedious and time-consuming.**We want a way
+ interesting to us and copy/pasting them. However, this is tedious and time-consuming. **We want a way
  of automatizing this task**
 
 - [Webscraping](https://en.wikipedia.org/wiki/Web_scraping)
 
- 1)  **Screenscraping:** Getting the HTML-code out of your browser, parsing &amp; formatting it, then analyzing the data
+  1) **Screenscraping:** Getting the HTML-code out of your browser, parsing &amp; formatting it, then analyzing the data
   
- 2)  **API-harvesting:** Sending requests directly to the database and only getting back the information that you want and need.
+  2) **API-harvesting:** Sending requests directly to the database and only getting back the information that you want and need.
 
 ---
 class: center, middle
@@ -96,6 +101,14 @@ to your local machine
 if ("rvest" %in% installed.packages() != TRUE) {
   install.packages("rvest")};library(rvest)
 ## Loading required package: xml2
+## 
+## Attaching package: 'rvest'
+## The following object is masked from 'package:purrr':
+## 
+##     pluck
+## The following object is masked from 'package:readr':
+## 
+##     guess_encoding
 
 # defining website and Xpath from inspect function in browser
 page &lt;- "https://www.youtube.com/watch?v=1aheRpmurAo&amp;"
@@ -116,12 +129,12 @@ Connect with Last Week Tonight online.Subscribe to the Last Week ..."
 ---
 # Screenscraping
 
-- **Problem:** We only get part of the decsription, the text seems to cut off at a certain point
+- **Problem:** We only get part of the description, the text seems to cut off at a certain point
 
-- This happens because on Youtube is a **dynamic** website that loads new content based on what users do on the website. With some actions, the HTML of the site changes without having to reload:
+- This happens because on YouTube is a **dynamic** website that loads new content based on what users do on the website. With some actions, the HTML of the site changes without having to reload:
     - More comments only load when you scroll down
     - You have to click on "show more" to see the video description
-    - you have to click on "show answers" to see more comment replies
+    - You have to click on "show answers" to see more comment replies
   
 - This makes screenscraping **a lot** harder
 
@@ -285,7 +298,7 @@ class: center, middle
 # API-Harvesting
 
 ---
-# API-harvesting
+# API-Harvesting
 
 - An [**A**pplication **P**rogramming **I**nterface]([API](https://en.wikipedia.org/wiki/Application_programming_interface)) is:
   - system build for developers
@@ -296,7 +309,7 @@ class: center, middle
 ![plot](Images/API_harvesting.png)
 
 ---
-# API-harvesting
+# API-Harvesting
 
 - APIs can be used to:
 
@@ -313,14 +326,14 @@ class: center, middle
   - [Google Maps](https://www.programmableweb.com/api/google-maps-places)
 
 ---
-# API-harvesting
+# API-Harvesting
 
-- Advantages of API-harvesting:
+- Advantages of API-Harvesting:
   + No need to interact with HTML files, you only get the information you asked for
   + The data you get is already nicely formatted (usually JSON files)
   + You can be sure that what you do is perfectly legal and in line with ToS
 
-- Disadvantages of API-harvesting:
+- Disadvantages of API-Harvesting:
   - Not every website has an API
   - You can only get what the company allows you to get
   - There are often restricting quotas (querys per day)
@@ -329,7 +342,7 @@ class: center, middle
   
 ---
 class: inverse, middle, center
-# Screenscraping vs. API-harvesting
+# Screenscraping vs. API-Harvesting
 
 If you can, use an API, if you must, use Screenscraping instead
 
@@ -349,7 +362,7 @@ class: center, middle
 - We will use the [YouTube API](https://developers.google.com/youtube/v3/docs) today
 
 ---
-# Let's check the API
+# Let's Check the API
 
 - Google provides a sandbox for their API that we can use to get a grasp of how it operates
 
@@ -362,7 +375,7 @@ class: center, middle
 - What we get back is a JSON formatted response with the formats and information we requested in the Sandbox
 
 ---
-# Most important parameters:
+# Most Important Parameters
 
 - All possible parameters are listed [here](https://developers.google.com/youtube/v3/docs/search/)
 
@@ -408,27 +421,9 @@ class: center, middle
 - **BEWARE: Sending one wrong request can fill up your daily quota**
   
 ---
-# Can I increase my Rate Limit?
+# Can I Increase my Rate Limit?
 
 .center[![plot](Images/Odyssey4.jpg)]
-
----
-layout: true
-
-
-
-&lt;div class="my-footer"&gt;
-  &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
-  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
-  &lt;div style="text-align: center;"&gt;&lt;span&gt;The YouTube API&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;style type="text/css"&gt;
-
-pre {
-  font-size: 10px
-}
-&lt;/style&gt;
 
 ---
 
@@ -460,7 +455,7 @@ pre {
 
 ---
 
-# 31/10/2019 My (shortened) Reply
+# 31/10/2019 My (Shortened) Reply
 
 - We want to investigate if the success of YouTube “channels” changes over time. For this purpose, we will create a list of 600 channels (“social media stars”) in order to compare them with each other. We will probably use a ranking service like Socialblade for that purpose.
 
@@ -622,6 +617,7 @@ class: center, middle
 
 # Any questions?
 
+---
 
 class: center, middle
 
