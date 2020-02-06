@@ -1,18 +1,17 @@
 --- 
 title: "Automatic Sampling and Analysis of YouTube Data"
-subtitle: "Collecting Data With the tuber Package for R"
+subtitle: "Tools for the Automatic Sampling of YouTube Data"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: "2020-02-10"
-location: "GESIS, Cologne, Germany" 
+location: "GESIS, Cologne, Germany"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["default.css", "default-fonts.css", "workshop.css"]
+    css: ["default", "default-fonts", "../workshop.css"]
     nature:
       highlightStyle: "github"
       highlightLines: true
       countIncrementalSlides: false
-
 ---
 
 layout: true
@@ -44,7 +43,7 @@ pre {
 
 ---
 
-# Tools for the Automatic Sampling of YouTube data
+# Tools for the Automatic Sampling of YouTube Data
 
 - [Webometric Analyst](http://lexiurl.wlv.ac.uk/)
 
@@ -110,7 +109,7 @@ include_graphics("./Images/youtubedatatools.jpg")
 
 ---
 
-# How to retrieve comments with YouTube Data Tools
+# How to Retrieve Comments with YouTube Data Tools
 
 - [Identify relevant videos](https://www.channelcrawler.com/)
 
