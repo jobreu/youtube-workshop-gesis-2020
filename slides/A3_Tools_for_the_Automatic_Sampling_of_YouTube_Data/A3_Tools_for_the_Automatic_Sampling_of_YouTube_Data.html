@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
@@ -40,7 +40,7 @@ pre {
 
 ---
 
-# Tools for the Automatic Sampling of YouTube data
+# Tools for the Automatic Sampling of YouTube Data
 
 - [Webometric Analyst](http://lexiurl.wlv.ac.uk/)
 
@@ -48,7 +48,7 @@ pre {
 
 - [tuber](https://cran.r-project.org/web/packages/tuber/)
 
-Short tutorials on how to use the tools are available in our [GitHub repo](https://github.com/JuKo007/YouTubeComments)
+We wrote a [short tutorial](https://github.com/gesiscss/YouTubeComments/blob/master/How%20to%20automatically%20sample%20comments%20from%20YouTube_v3.pdf) on how to use the tools. **NB**: The `tuber` script mentioned in that tutorial is a bit outdated. We will explore how to work with `tuber` in more detail in this workshop.
 
 ---
 
@@ -112,7 +112,7 @@ Short tutorials on how to use the tools are available in our [GitHub repo](https
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:center;"&gt; Need API-Key? &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Need API Key? &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
@@ -140,7 +140,7 @@ Short tutorials on how to use the tools are available in our [GitHub repo](https
    &lt;td style="text-align:center;"&gt; Open Source &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:center;"&gt; Example: Dayum Video (22.2.19@2pm &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Example: Dayum Video (22-02-2019, 2pm) &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 47,163 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 44,828 &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 47,153 &lt;/td&gt;
@@ -153,13 +153,13 @@ Short tutorials on how to use the tools are available in our [GitHub repo](https
 
 ---
 
-# Time for a Live Demonstration
+# YouTube Data Tools
 
-&lt;img src="./Images/youtubedatatools.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="./Images/youtubedatatools.jpg" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# How to retrieve comments with YouTube Data Tools
+# How to Retrieve Comments with YouTube Data Tools
 
 - [Identify relevant videos](https://www.channelcrawler.com/)
 
@@ -171,13 +171,7 @@ Short tutorials on how to use the tools are available in our [GitHub repo](https
 
 - Open it with Notepad, copy&amp;paste to Excel and save as .XLS
 
-- Beware, saving as .CSV destroys emojis
-
----
-
-# Your Research / Application
-
-- Which tool would you prefer?
+- **NB**: Saving as .CSV destroys emojis
 
 ---
 
@@ -230,24 +224,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
+})();</script>
 
 <script>
 (function() {

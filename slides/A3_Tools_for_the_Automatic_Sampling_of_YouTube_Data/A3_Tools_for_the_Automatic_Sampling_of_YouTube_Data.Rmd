@@ -51,14 +51,14 @@ pre {
 
 - [tuber](https://cran.r-project.org/web/packages/tuber/)
 
-Short tutorials on how to use the tools are available in our [GitHub repo](https://github.com/JuKo007/YouTubeComments)
+We wrote a [short tutorial](https://github.com/gesiscss/YouTubeComments/blob/master/How%20to%20automatically%20sample%20comments%20from%20YouTube_v3.pdf) on how to use the tools. **NB**: The `tuber` script mentioned in that tutorial is a bit outdated. We will explore how to work with `tuber` in more detail in this workshop.
 
 ---
 
 # Overview
 
 ```{r tools table 1, echo = F}
-schedule <- data.frame(
+tools <- data.frame(
   "Method" = c("Type", "Platforms", "Collected Features", "Scoping"),
   "Manual Coding" = c("n/a", "All", "Depends on coding scheme", "Depends on coding scheme"),
   "Webometric Analyst" = c("Program", "Win", "Channel Info, Video Info, Comments, Video Search", "100 most recent or all comments"),
@@ -68,7 +68,7 @@ schedule <- data.frame(
   , check.names = FALSE
 )
 knitr::kable(
-  schedule
+  tools
   , format = "html"
   , align = "cc"
   , escape = FALSE
@@ -80,8 +80,8 @@ knitr::kable(
 # Pros and Cons
 
 ```{r tools table 2, echo = F}
-schedule <- data.frame(
-  "Method" = c("Need API-Key?", "Disadvantages", "Ease of Use", "License", "Example: Dayum Video (22.2.19@2pm"),
+tools_pc <- data.frame(
+  "Method" = c("Need API Key?", "Disadvantages", "Ease of Use", "License", "Example: Dayum Video (22-02-2019, 2pm)"),
   "Manual Coding" = c("No", "Time-consuming", "High", "n/a", "47,163"),
   "Webometric Analyst" = c("Yes", "Only first 5 follow-up comments, no error feedback, undetectable time-outs", "Low", "Free for n/c", "44,828"),
   "YouTube Data Tools" = c("No", "Lacking flexibility, fewer infos", "High", "Open Source", "47,153"),
@@ -90,7 +90,7 @@ schedule <- data.frame(
   , check.names = FALSE
 )
 knitr::kable(
-  schedule
+  tools_pc
   , format = "html"
   , align = "cc"
   , escape = FALSE
@@ -101,9 +101,9 @@ knitr::kable(
 
 ---
 
-# Time for a Live Demonstration
+# YouTube Data Tools
 
-```{r cases, out.width = "75%"}
+```{r cases, out.width = "90%"}
 include_graphics("./Images/youtubedatatools.jpg")
 ```
 
@@ -121,13 +121,7 @@ include_graphics("./Images/youtubedatatools.jpg")
 
 - Open it with Notepad, copy&paste to Excel and save as .XLS
 
-- Beware, saving as .CSV destroys emojis
-
----
-
-# Your Research / Application
-
-- Which tool would you prefer?
+- **NB**: Saving as .CSV destroys emojis
 
 ---
 

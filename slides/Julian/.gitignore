@@ -1,8 +1,0 @@
-# History files
-.Rhistory
-.Rapp.history
-# Session Data files
-.RData
-# files with credentials in plaintext
-/NotPublic
-.httr-oauth

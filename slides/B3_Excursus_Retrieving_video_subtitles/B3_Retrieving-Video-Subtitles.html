@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
     <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
-    <meta name="date" content="2020-02-10" />
-    <link rel="stylesheet" href="default.css" type="text/css" />
-    <link rel="stylesheet" href="default-fonts.css" type="text/css" />
-    <link rel="stylesheet" href="workshop.css" type="text/css" />
+    <meta name="date" content="2020-02-11" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="..\workshop.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # Automatic Sampling and Analysis of YouTube Data
-## Collecting Data With the tuber Package for R
+## Excursus: Retrieving Video Subtitles
 ### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
-### 2020-02-10
+### 2020-02-11
 
 ---
 
@@ -27,8 +27,8 @@ layout: true
 
 &lt;div class="my-footer"&gt;
   &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
-  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
-  &lt;div style="text-align: center;"&gt;&lt;span&gt;Collecting Data With the tuber Package for R&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-11&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Excursus: Retrieving Video Subtitles&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;style type="text/css"&gt;
@@ -171,24 +171,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
+})();</script>
 
 <script>
 (function() {

@@ -1,13 +1,13 @@
 --- 
 title: "Automatic Sampling and Analysis of YouTube Data"
-subtitle: "Collecting Data With the tuber Package for R"
+subtitle: "Excursus: Retrieving Video Subtitles"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
-date: "2020-02-10"
+date: "2020-02-11"
 location: "GESIS, Cologne, Germany" 
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["default.css", "default-fonts.css", "workshop.css"]
+    css: ["default", "default-fonts", "../workshop.css"]
     nature:
       highlightStyle: "github"
       highlightLines: true
@@ -22,9 +22,7 @@ if (!require(easypackages)) install.packages("easypackages")
 library(easypackages)
 library(tuber)
 
-packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", "tuber", prompt = F)
-
-devtools::install_github("fkeck/subtools")
+packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", "fkeck/subtools", "tuber", prompt = F)
 
 options(htmltools.dir.version = FALSE)
 
@@ -71,7 +69,7 @@ pre {
 
   - Not sure if even possible because there always seems to be an <i>ASR</i>
   
-- Videos with more than one subtitle
+- Videos with more than one set of subtitles
 
   - Examples: <i>ASR</i> and regular subtitle, more than one language, more than one subtitle for the same language
 
@@ -85,7 +83,7 @@ pre {
 
 # Retrieving Video Subtitles -3
 
-- First we need to get a video's list of subtitles
+- First we need to get the list of subtitles for a video
 
   `caption_list <- list_caption_tracks(part = "snippet", video_id = "nI_OfkQOG6Q")`
 
