@@ -7,8 +7,8 @@ ReplaceEmoji <- function(x) {
   if ("devtools" %in% installed.packages() != TRUE) {
     install.packages("devtools")
   }
-  if ("qdabRegex" %in% installed.packages() != TRUE) {
-    install.packages("qdabRegex")
+  if ("qdapRegex" %in% installed.packages() != TRUE) {
+    install.packages("qdapRegex")
   }
   if ("emo" %in% installed.packages() != TRUE) {
     devtools::install_github("hadley/emo")
