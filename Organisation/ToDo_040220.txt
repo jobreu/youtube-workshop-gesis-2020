@@ -1,4 +1,0 @@
-- "round robin" slide checking -> Zeiten vereinbaren
-- Repo aufräumen: Slides (numbering), Scripts, Data, exercises, CSS files
-- remove data files from repo?
-- scrape comments again (for exercises)? when?
