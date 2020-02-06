@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
@@ -41,17 +41,19 @@ pre {
 ---
 
 
-# Retrieving Video Subtitles -1
+# Retrieving Video Subtitles (1)
 
-- Instead of transscribing a video, you can retrieve its subtitles
+- Instead of transscribing a video, you can retrieve its subtitles.
 
 - What research would you conduct with video subtitles?
 
 ---
 
-# Retrieving Video Subtitles -2
+# Retrieving Video Subtitles (2)
 
-- Retrieve a list of subtitles with `tuber::list_caption_tracks` (costs around 52 quota)
+- Retrieve a list of subtitles with
+
+  - `tuber::list_caption_tracks` (costs around 52 quota)
 
 - Videos with automatically created subtitle (&lt;i&gt;ASR&lt;/i&gt;)
 
@@ -59,26 +61,23 @@ pre {
 
   - Can be downloaded, but text quality can be bad (especially if translated)
 
-
 - Videos without any subtitles
 
   - Not sure if even possible because there always seems to be an &lt;i&gt;ASR&lt;/i&gt;
   
-- Videos with more than one subtitle
+- Videos with more than one set of subtitles
 
   - Examples: &lt;i&gt;ASR&lt;/i&gt; and regular subtitle, more than one language, more than one subtitle for the same language
 
   - Can be downloaded, but subtitle for analysis must be selected
 
-- Videos with [deactivated 3rd party contribution](https://stackoverflow.com/questions/30653865/downloading-captions-always-returns-a-403)
-  
-  - Error 403
+- Videos with [deactivated 3rd party contribution](https://stackoverflow.com/questions/30653865/downloading-captions-always-returns-a-403) return Error 403
   
 ---
 
-# Retrieving Video Subtitles -3
+# Retrieving Video Subtitles (3)
 
-- First we need to get a video's list of subtitles
+- First, we need to get the list of subtitles for a video
 
   `caption_list &lt;- list_caption_tracks(part = "snippet", video_id = "nI_OfkQOG6Q")`
 
@@ -118,7 +117,7 @@ pre {
 
 # Time for a Live Demonstration
 
-&lt;img src="./pics/youtubesubtitles.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="./Images/youtubesubtitles.jpg" width="75%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -127,7 +126,7 @@ class: center, middle
 # Any questions?
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
@@ -171,7 +170,24 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 (function() {
