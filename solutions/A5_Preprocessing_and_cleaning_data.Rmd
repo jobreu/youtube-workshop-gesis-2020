@@ -1,0 +1,128 @@
+---
+title: 'Exercises - Preprocessing and Data Cleaning'
+author: 'Julian Kohne'
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  unilur::tutorial_html_solution: default
+  unilur::tutorial_pdf_solution: default
+  unilur::tutorial_pdf: default
+  unilur::tutorial_html: default
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE, include=FALSE}
+# custom boxes
+knitr::opts_template$set(clues = list(box.title = "Clues",
+                                      box.body = list(fill = "#fff9dc", colour = "black"),
+                                      box.header = list(fill = "#ffec8b", colour = "black"),
+                                      box.icon = "fa-search",
+                                      box.collapse = TRUE))
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy()
+```
+
+```{block, box.title = "Exercise 1", box.body = list(fill = "white"), box.icon = "fa-star"}
+Load the dataset `CensusTweets.Rdata` into your R-session, and get an overview of the contained variables. What do the variables `quote_count` and `reply_count` describe? Why do we have missing data in them?
+```
+
+```{block, opts.label = "clues"}
+To load the data, you can use the `load()` function, to get an overview of the contained variabled, you can simply use `colnames()`. To find out more about what the variables mean, you can try to find the twitter _data-dictionary_ online to find out how a _tweet object_ is structured.
+
+```
+
+```{r, results = 'hide', solution = TRUE}
+# Loading dataset
+load("../data/CensusTweets.Rdata")
+
+# overview of columns
+colnames(Census_tweets)
+
+```
+
+```{block, solution = TRUE}
+
+From the [Twitter API documentation](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object):
+
+quote_count:	Integer	
+Nullable. Indicates approximately how many times this Tweet has been quoted by Twitter users. Example:"quote_count":33
+Note: This object is **only available with the Premium and Enterprise tier products**.
+
+reply_count: Integer	
+Number of times this Tweet has been replied to. Example:"reply_count":30
+Note: This object is **only available with the Premium and Enterprise tier products**.
+
+```
+
+
+```{block, box.title = "Exercise 2", box.body = list(fill = "white"), box.icon = "fa-star"}
+We only want to keep the variables `screen_name`, `user_id`, `status_id`,`created_at`,`text` and `source`. Create a new dataframe called `Selection` containing only these variables.
+```
+
+```{block, opts.label = "clues"}
+You can use the `subset()` function to only keep the variables you are interested in
+
+```
+
+```{r, results = 'hide', solution = TRUE}
+# selecting variables
+Selection <- subset(Census_tweets, select = c("screen_name",
+                                              "user_id",
+                                              "status_id",
+                                              "created_at",
+                                              "text",
+                                              "source"))
+
+# checking selection
+head(Selection,5)
+
+```
+
+```{block, box.title = "Exercise 3", box.body = list(fill = "white"), box.icon = "fa-star"}
+Check the class of the variable `created_at` in your new dataframe. Is this class suitable for further analysis? If not, change the class to the appropriate one and compute the time difference between the tweet in the first row and the tweet in the last row.
+
+```
+
+```{block, opts.label = "clues"}
+To check the class of the `created_at` variable, you can use the `class()` function. To check the formatting of the Tweet timestamp, you can check the [Twitter Documentation](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object). To transfoms character strings into datetime objects in R, you can use the base function `as.POSIXct()` or the more convenient `anytime()` function from the package with the same name.
+
+```
+
+```{r, results = 'hide' ,solution = TRUE}
+# Checking class
+class(Selection$created_at)
+
+# transforming to datatime object
+library(anytime)
+Selection$created_at <- anytime(Selection$created_at,asUTC = TRUE)
+class(Selection$created_at)
+
+# computing time difference
+Selection$created_at[1] - Selection$created_at[dim(Selection)[1]]
+
+```
+
+```{block, box.title = "Exercise 4", box.body = list(fill = "white"), box.icon = "fa-star"}
+Check the tweet `text` varaible of the tweet in the sixth row of your `Selection` dataframe. Is it ready for text analysis or does it still contain things that need to be removed? If so, remove them from the whole column and save the results in a new variable called `textClean`.
+
+```
+
+```{block, opts.label = "clues"}
+You can use multiple functions from the `qdabRegex` package to remove hyperlinks and hashtags from the tweet text. You can search for the appropriate functions in the documentation which can be found [here](https://cran.r-project.org/web/packages/qdapRegex/qdapRegex.pdf)
+
+```
+```{r, solution = TRUE}
+# loading package
+library(qdapRegex)
+
+# removing hyperlinks
+textClean <- rm_url(Selection$text)
+
+# removing hashtags
+textClean <- rm_hash(textClean)
+
+# checking results
+View(textClean)
+
+```
