@@ -1,4 +1,4 @@
-## New YouTube parsing Script
+## YouTube parsing Script
 
 yt_parse <- function(data){
 
@@ -30,14 +30,23 @@ yt_parse <- function(data){
 
   #### Data Preperation
 
+  # accounting for dataframes without "parentId" (those scraped with get_comments() instead of get_all_comments())
+
+  if (is.null(data$parentId)) {
+
+    parentId <- rep(NA,dim(data)[1])
+    data <- cbind.data.frame(data,parentId)
+
+  }
+
   # only keeping the relevant columns
-  data <- data[,c("authorDisplayName","textOriginal","likeCount","publishedAt","updatedAt","moderationStatus","id")]
+  data <- data[,c("authorDisplayName","textOriginal","likeCount","publishedAt","updatedAt","parentId","id")]
 
   # convert dataframe columns to proper types
   data$authorDisplayName <- as.character(data$authorDisplayName)
   data$textOriginal <- as.character(data$textOriginal)
   data$likeCount <- as.numeric(data$likeCount)
-  data$moderationStatus <- as.character(data$moderationStatus)
+  data$parentId <- as.character(data$parentId)
   data$id <- as.character(data$id)
   data$publishedAt <- anytime(data$publishedAt, asUTC = TRUE)
   data$updatedAt <- anytime(data$updatedAt, asUTC = TRUE)
@@ -61,8 +70,8 @@ yt_parse <- function(data){
   Links <- I(Links)
 
   #### Combine everything into one dataframe
-  df <- cbind.data.frame(data$authorDisplayName,data$textOriginal,TextEmoRep,TextEmoDel,Emoji,data$likeCount,Links,data$publishedAt,data$updatedAt,data$moderationStatus,data$id, stringsAsFactors = FALSE)
-  names(df) <- c("Author","Text","TextEmojiReplaced","TextEmojiDeleted","Emoji","LikeCount","URL","Published","Updated","ModerationStatus","CommentID")
+  df <- cbind.data.frame(data$authorDisplayName,data$textOriginal,TextEmoRep,TextEmoDel,Emoji,data$likeCount,Links,data$publishedAt,data$updatedAt,data$parentId,data$id, stringsAsFactors = FALSE)
+  names(df) <- c("Author","Text","TextEmojiReplaced","TextEmojiDeleted","Emoji","LikeCount","URL","Published","Updated","ParentId","CommentID")
   row.names(df) <- NULL
 
   #### return results
