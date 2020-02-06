@@ -1,6 +1,6 @@
 ---
-title: "Automatic sampling and analysis of YouTubeData"
-subtitle: "Collecting data with the tuber package for R"
+title: "Automatic Sampling and Analysis of YouTubeData"
+subtitle: "Collecting Data With the tuber Package for R"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: "2020-02-10"
 location: "GESIS, Cologne, Germany"
@@ -36,7 +36,7 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ---
 
-# The `tuber` package
+# The `tuber` Package
 
 With the [`tuber` package](https://github.com/soodoku/tuber) you can access the *YouTube* API via `R`. The author of the package has written a short [vignette](https://cran.r-project.org/web/packages/tuber/vignettes/tuber-ex.html) to introduce some of its main functions.
 
@@ -62,12 +62,12 @@ options(stringsAsFactors = FALSE)
 
 ---
 
-# Excursus: Keep your secrets secret
+# Excursus: Keep Your Secrets Secret (1)
 
 If you save your API credentials in an `R` script, anyone who has that script can potentially use your API key. This can affect your quota and might even cause costs for you.
 
 ```{r cases, out.width = "60%", echo = F}
-include_graphics("./pics/Google_API_key_alert.png")
+include_graphics("./Images/Google_API_key_alert.png")
 ```
 .center[
 <small><small>Source: https://twitter.com/sil_aarts/status/1187352423796477953</small></small>
@@ -75,7 +75,7 @@ include_graphics("./pics/Google_API_key_alert.png")
 
 ---
 
-# Excursus: Keep your secrets secret
+# Excursus: Keep Your Secrets Secret (2)
 
 If you use `R` environment variables, your credentials won't be shared if you share your scripts. However, the information is still stored in a plain text file. You can run `usethis::edit_r_environ()` to see its contents.
 
@@ -88,7 +88,7 @@ library(keyring)
 
 ---
 
-# Excursus: The `keyring` package
+# Excursus: The `keyring` Package
 
 To store your credentials in an encrypted password-protected keyring you first need to create a new keyring.
 
@@ -102,14 +102,14 @@ key_set("app_secret",
         keyring ="YouTube_API")
 ```
 
-When you are prompted to enter the password now you should enter your app secret. At the end of your script, you should lock the keyring again.
+When you are prompted to enter the password, now you should enter your app secret. At the end of your script, you should lock the keyring again.
 ```{r lock keyring, eval = F}
 keyring_lock("YouTube_API")
 ```
 
 ---
 
-# Authenticate your app
+# Authenticate Your App
 
 ```{r authenticate plain, eval = F}
 yt_oauth(app_id = "my_app_id", # paste your app ID here
@@ -128,20 +128,20 @@ yt_oauth(app_id = "my_app_id",  # paste your app ID here
 
 # Authentication
 
-When running the `yt_oauth()` function there will be a prompt in the console asking you to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple `R` sessions that need your credentials (example: knitting an `RMarkdown` document). 
+When running the `yt_oauth()` function, there will be a prompt in the console asking you to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple `R` sessions that need your credentials (example: knitting an `RMarkdown` document). 
 
-Similar to the app key and secret, you should never share the `.httr-oauth` file as it can be read in `R` using `read_RDS()` (the file contains a list list with all information needed for OAuth, including your app key and secret). Hence, it is usually ok (and safer) to select "No" when asked whether to store a local `.httr-oauth` file. 
+Similar to the app key and secret, you should never share the `.httr-oauth` file as it can be read in `R` using `read_RDS()` (the file contains a list with all information needed for OAuth, including your app key and secret). Hence, it is usually ok (and safer) to select "No" when asked whether to store a local `.httr-oauth` file. 
 ---
 
-# App permissions
+# App Permissions
 
 After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your *Google* account and to give permissions. *Google* will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", then on "Open App_Name", and grant the app the required permissions for your account. After that, you can close the browser and return to `R`.
 
 ---
 
-# Channel statistics
+# Channel Statistics (1)
 
-You can find the channel ID by searching on the *YouTube* website and then choosing Type = Channel from the options in the filter menu. When you click on the channel you want in the search results you see the channel ID at the end of the URL (after "/channel/").
+You can find the channel ID by searching on the *YouTube* website and then choosing Type = Channel from the options in the filter menu. When you click on the channel you want in the search results, you see the channel ID at the end of the URL (after "/channel/").
 
 ```{r YouTube oauth, echo = F}
 yt_oauth()
@@ -155,7 +155,7 @@ Note: If you want additional data on channels/video creators and their performan
 
 ---
 
-# Channel statistics
+# Channel Statistics (2)
 
 `get_channel_stats` returns a list which can then be wrangled into a dataframe (tibble).
 
@@ -173,7 +173,7 @@ hadley_stats_df
 
 ---
 
-# Video statistics
+# Video Statistics
 
 The video IDs are the last 11 characters of the video URL. Example: https://www.youtube.com/watch?v=DcJFdCmN98s -> ID = DcJFdCmN98s
 
@@ -189,9 +189,9 @@ dayum_stats
 
 ---
 
-# Viewer comments
+# Viewer Comments
 
-  There are two functions for collecting viewer comments for specific videos (both return a dataframe):
+There are two functions for collecting viewer comments for specific videos (both return a dataframe):
 
 1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results` (needs to be >= 20). If the number is > 100, the function fetches all results (see `?get_comment_threads`). NB: This function does not collect replies to comments.
 
@@ -199,7 +199,7 @@ dayum_stats
 
 ---
 
-# Other useful `tuber` functions
+# Other Useful `tuber` Functions
 
 `get_video_details("video_id")`: list with metadata for the video (e.g., title, description, tags)
 
@@ -207,18 +207,17 @@ dayum_stats
 
 `get_playlists(filter=c(channel_id="channel_id"))`: list with playlists for a channel
 
-`get_playlist_items(filter =c(playlist_id = "playlist_id"))`: dataframe with items from a playlist
+`get_playlist_items(filter=c(playlist_id="playlist_id"))`: dataframe with items from a playlist
 
-
-For the full list of functions in the package see the [`tuber` reference manual](https://cran.r-project.org/web/packages/tuber/tuber.pdf).
+For the full list of functions in the package, see the [`tuber` reference manual](https://cran.r-project.org/web/packages/tuber/tuber.pdf).
 
 ---
 
-# Searching video IDs
+# Searching Video IDs (1)
 
 `tuber` provides the function `yt_search()` to use the API to search *YouTube*. However, using this function is extremely costly in terms of API queries. 
 
-A single search query with the `yt_search()` function can easily exceed your daily quota limit as by default it returns data for all search results (you can check the number of results for a search query via the *YouTube* Data API Explorer). Hence, if you want to use the `yt_search()` function, we would strongly recommend setting the `get_all` argument to `FALSE`. This returns up to 50 results.
+A single search query with the `yt_search()` function can easily exceed your daily quota limit as by default, it returns data for all search results (you can check the number of results for a search query via the *YouTube* Data API Explorer). Hence, if you want to use the `yt_search()` function, we would strongly recommend setting the `get_all` argument to `FALSE`. This returns up to 50 results.
 
 ```{r yt_search, eval = F}
 yt_search(term = "tidyverse",
@@ -227,19 +226,19 @@ yt_search(term = "tidyverse",
 
 ---
 
-# Searching video IDs
+# Searching Video IDs (2)
 
 There are two alternatives to using the `yt_search()` function from the `tuber` package to search for *YouTube* video IDs:
 
 1. Manual search via the *YouTube* website: This works well for a small number of videos but is not really feasible if you want a large number of video IDs for your analyses.
 
-2. Web scraping: [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age". However, you should use this method with caution. The [robots.txt of *YouTube*](https://www.youtube.com/robots.txt) disallows the scraping of results pages. In practical terms, the (over)use of web scraping can, e.g., get your IP address blocked (at least temporarily). While an introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)). 
+2. Web scraping: [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age". However, you should use this method with caution. The [robots.txt of *YouTube*](https://www.youtube.com/robots.txt) disallows the scraping of results pages. In practical terms, the (over)use of web scraping can, e.g., get your IP address blocked (at least temporarily). A practical introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)). 
 
 ---
 
-# Collecting comments for multiple videos
+# Collecting Comments for Multiple Videos
 
-If you want to collect comments for multiple videos, you need a vector with all video IDs (in the code example below this vector is named `video_ids`). If you have that, you can use `map_df()` from the [`purrr` package](https://purrr.tidyverse.org/) to iterate over video IDs and create a combined dataframe (of course, you could also do this with a for-loop).
+If you want to collect comments for multiple videos, you need a vector with all video IDs (in the code example below, this vector is named `video_ids`). If you have that, you can use `map_df()` from the [`purrr` package](https://purrr.tidyverse.org/) to iterate over video IDs and create a combined dataframe (of course, you could also do this with a for-loop).
 
 ```{r comments map_df, eval = F}
 comments <- purrr::map_df(.x = video_ids,
@@ -250,7 +249,7 @@ Important notice: Be aware that your daily API quota limit very likely won't all
 
 ---
 
-# YouTube API quota limits
+# YouTube API Quota Limits
 
 Since January 11, 2019, the [*YouTube* Data API v3](https://developers.google.com/youtube/v3) has a limit of **10000 queries per day** (was 1M/day before that and even 50M/day until April 20, 2016).
 
@@ -258,7 +257,7 @@ The [*YouTube* Data API documentation](https://developers.google.com/youtube/v3/
 
 ---
 
-# YouTube API quota limits
+# YouTube API Quota Limits
 
 You can monitor the quota use of your app via the [*Google* Cloud Developer Console](https://console.cloud.google.com). From the navigation menu, select *APIs & Services*, then click on *YouTube Data API v3* in the list on the bottom of the page, and then on *Quotas* in the sidebar menu.
 
@@ -266,7 +265,7 @@ In order to be able to estimate the quota costs of a specific API call via the `
 
 ---
 
-# `tuber` function code
+# `tuber` Function Code
 
 ```{r tuber function code}
 get_stats
@@ -274,7 +273,7 @@ get_stats
 
 ---
 
-# Exemplary quota costs for `tuber` functions
+# Exemplary Quota Costs for `tuber` Functions
 
 ```{r tuber quota cost examples, echo = F}
 quota_costs <- data.frame(
@@ -297,15 +296,15 @@ For reference: `yt_search()` has a quota cost of 102 per page of results (with a
 
 ---
 
-# How do I know the quota costs when I use `tuber`?
+# How do I Know the Quota Costs When I use `tuber`?
 
-a) Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments (without replies) and you wish to collect all of them, you can estimate your cost as follows: 100 results per page = 40 pages & cost per page for `get_comment_threads()` = 5 -> overall cost = 200. In practice this is a bit more difficult to estimate as both the website of the video and `get_stats()` give you the comment count including replies.
+a. Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments (without replies) and you wish to collect all of them, you can estimate your cost as follows: 100 results per page = 40 pages & cost per page for `get_comment_threads()` = 5 -> overall cost = 200. In practice, this is a bit more difficult to estimate as both the website of the video and `get_stats()` give you the comment count including replies.
 
-b) Use the *Google* Cloud Console for your app to monitor your API quota use.
+b. Use the *Google* Cloud Console for your app to monitor your API quota use.
 
 ---
 
-# Managing your API quota
+# Managing Your API Quota
 
 The daily quota for your app resets at midnight Pacific Time. There are 3 ways of dealing with the quota limit:
 
@@ -317,7 +316,7 @@ The daily quota for your app resets at midnight Pacific Time. There are 3 ways o
 
 ---
 
-# Manual quota limit management example
+# Manual Quota Limit Management Example
 
 If you want to use `yt_search()` and want more than 50 search results, you can use the `page_token` argument to get more than one page of results.
 
