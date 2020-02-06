@@ -1,5 +1,0 @@
-GET https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=100&moderationStatus=published&order=time&textFormat=html&videoId=RG9TMn1FJzc&key=[YOUR_API_KEY] HTTP/1.1
-
-Authorization: Bearer [AIzaSyDJ5uyNVddmvcZScd5mK8KnSDBUHX1ADME]
-Accept: application/json
-
