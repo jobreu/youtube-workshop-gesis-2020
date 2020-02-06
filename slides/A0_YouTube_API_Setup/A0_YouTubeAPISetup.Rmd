@@ -38,7 +38,7 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 
 # Setting up API access to the *YouTube* API
-
+ 
 To effectively work with *YouTube* data, we need access to its Application Programming Interface (API). As this process, unfortunately, can be a bit tedious, we prepared this preliminary tutorial so you don't have to spend time setting up your API access during the workshop. Please follow this tutorial and check if the setup works before the workshop. If your setup does not work, feel free to contact us before the workshop (the sooner the better) and we'll try to assist you in setting up access to the *YouTube* API. If, for some reason, setting up access to the API does not work for you and we don't find a solution or if you cannot access the API during the workshop, we will have some data prepared that you can then work with in the workshop.
   
 [HINT](https://en.wikipedia.org/wiki/YouTube): Pink texts are hyperlinks to the respective website that you can simply click on
