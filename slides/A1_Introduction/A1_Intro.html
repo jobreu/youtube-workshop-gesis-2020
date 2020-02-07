@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
@@ -296,7 +296,7 @@ Another thing you might notice when looking at our code is that we love 🐍 as 
 
   - Comment characteristics&lt;br /&gt;&lt;small&gt;([Thelwall, Sud, &amp; Vis, 2012]( https://doi.org/10.1002/asi.21679))&lt;/small&gt;
 
-  - Subtopics, sentiments, &amp; gender differences&lt;br /&gt;&lt;small&gt;([Thelwall, 2017](https://doi.org/10.1080/13645579.2017.1381821); [Röchert, Neubaum, Ross, Brachten, &amp; Stieglitz, 2020](https://computationalcommunication.org/ccr/article/view/15/7)])&lt;/small&gt;
+  - Subtopics, sentiments, &amp; gender differences&lt;br /&gt;&lt;small&gt;([Thelwall, 2017](https://doi.org/10.1080/13645579.2017.1381821); [Röchert, Neubaum, Ross, Brachten, &amp; Stieglitz, 2020](https://computationalcommunication.org/ccr/article/view/15/7))&lt;/small&gt;
 
 - Who writes it (communicator)?
     - User experiences&lt;br /&gt;&lt;small&gt;([Defy Media, 2017](http://www.newsroom-publicismedia.fr/wp-content/uploads/2017/06/Defi-media-acumen-Youth_Video_Diet-mai-2017.pdf); [Lange, 2007](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.170.3808&amp;rep=rep1&amp;type=pdf); [Moor, Heuvelman, &amp; Verleur, 2010](https://doi.org/10.1016/j.chb.2010.05.023); [Oksanen, Hawdon, Holkeri, Naesi, &amp; Raesaenen, 2014](https://doi.org/10.1108/S1537-466120140000018021); [Szostak, 2013](https://journals.mcmaster.ca/mjc/article/view/280); [Yang, Hsu, &amp; Tan, 2010](https://doi.org/10.1089/cyber.2009.0105))&lt;/small&gt;
@@ -310,7 +310,7 @@ class: center, middle
 # Any questions so far?
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
@@ -354,7 +354,24 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 (function() {
