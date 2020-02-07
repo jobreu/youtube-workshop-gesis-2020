@@ -565,6 +565,9 @@ saveRDS(df, file = "../../data/ParsedComments.rds")
 ```
 
 ---
+
 class: center, middle
 
-# Exercises
+# [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/A5_Preprocessing_and_cleaning_data_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/A5_Preprocessing_and_cleaning_data_solution.html)
