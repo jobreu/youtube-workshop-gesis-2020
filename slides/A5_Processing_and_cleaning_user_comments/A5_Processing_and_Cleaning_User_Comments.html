@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
@@ -322,7 +322,7 @@ Sys.time() - testtime
 ```
 
 ```
-## Time difference of 2.659761 days
+## Time difference of 3.495231 days
 ```
 
 This internal representation of time objects will be extremely important for plotting trends over time
@@ -372,7 +372,7 @@ Selection$publishedAt[1]
 ---
 # Extracting Information
 
-After having formatted all our selected columns, we usually also want to create some new ones with information
+After having formatted all our selected columns, we usually also want to create some TextEmoRep ones with information
 that is not directly available in the raw data. Consider for example our these comments:
 
 
@@ -412,7 +412,7 @@ expressions. You can learn more about regular expressions [here](https://en.wiki
 #to deal with the HTML formatting of the links
 library(qdapRegex)
 Links &lt;- rm_url(Selection$textOriginal, extract = TRUE)
-textNew &lt;- rm_url(Selection$textOriginal)
+LinkDel &lt;- rm_url(Selection$textOriginal)
 head(Links,2)
 ```
 
@@ -432,7 +432,7 @@ links that were contained in the textOriginal column. At the same time, the link
 
 
 ```r
-textNew[495]
+LinkDel[495]
 ```
 
 ```
@@ -464,34 +464,9 @@ Unfortunately, it does **not** contain a predefined method for emoji, so we will
 removing the emoji and come up with our own method for extracting them.
 
 ---
-# Removing Emoji
-
-First of all, we remove the emoji from our `textNew` variable to have one _clean_ column that we can use for textmining later
-
-
-```r
-# We take the textNew column and also delete the emoji from it
-library(emo)
-textNew[39]
-```
-
-```
-## [1] "More bullshit 😷🤢"
-```
-
-```r
-textNew &lt;- ji_replace_all(textNew,"")
-textNew[39]
-```
-
-```
-## [1] "More bullshit "
-```
-
----
 # Extracting Emoji (2)
 
-Next, we want to replace the emoji with a textual description, so that we can treat it just like any other token in text mining. This is no trivial task, as we have to go through each comment and replace each emoji with it's respective textual description. Unfortuntely, we did not find a working, easy to use, out of the box solution for this. But we can always make our own!
+First we want to replace the emoji with a textual description, so that we can treat it just like any other token in text mining. This is no trivial task, as we have to go through each comment and replace each emoji with it's respective textual description. Unfortuntely, we did not find a working, easy to use, out of the box solution for this. But we can always make our own!
 
 Essentially, we want to replace this:
 
@@ -605,13 +580,13 @@ Next, we need to `loop` through all of our emoji and replace them one after the 
 
 
 ```r
-# Assigning the column to a new variable
-New &lt;- Selection$textOriginal
+# Assigning the column to a TextEmoRep variable
+TextEmoRep &lt;- LinkDel
 
-# Looping through all Emojis for all comments in textNew
+# Looping through all Emojis for all comments in LinkDel
 for (i in 1:dim(EmojiList)[1]) {
 
-  New &lt;- rm_default(New,
+  TextEmoRep &lt;- rm_default(TextEmoRep,
                   pattern = EmojiList[i,3],
                   replacement = paste0("EMOJI_",
                                        EmojiList[i,4],
@@ -629,7 +604,7 @@ As output, we get a large character vector with replaced emoji
 
 
 ```r
-New[39]
+TextEmoRep[39]
 ```
 
 ```
@@ -667,18 +642,17 @@ ExtractEmoji &lt;- function(x){
 ---
 # Extracting Emoji (10)
 
-We can apply the function to get one vector containing the text without emoji and one vector containing
-only the emoji
+We can apply the function to get one vector containing only the emoji as textual descriptions
 
 
 ```r
-Emoji &lt;- sapply(New,ExtractEmoji)
+Emoji &lt;- sapply(TextEmoRep,ExtractEmoji)
 names(Emoji) &lt;- NULL
-textNew[39]
+LinkDel[39]
 ```
 
 ```
-## [1] "More bullshit "
+## [1] "More bullshit 😷🤢"
 ```
 
 ```r
@@ -690,17 +664,42 @@ Emoji[39]
 ```
 
 ---
+# Removing Emoji
+
+In addition, we remove the emoji from our `LinkDel` variable to have one _clean_ column that we can use for textmining later. This column will not contain hyperlinks or emoji.
+
+
+```r
+# We take the LinkDel column and also delete the emoji from it
+library(emo)
+LinkDel[39]
+```
+
+```
+## [1] "More bullshit 😷🤢"
+```
+
+```r
+TextEmoDel &lt;- ji_replace_all(LinkDel,"")
+TextEmoDel[39]
+```
+
+```
+## [1] "More bullshit "
+```
+
+---
 # Extracting Information
 
 We now have different versions of our text column
 
-1) The original one, with hyperlinks and Emoji
+1) The original one, with hyperlinks and emoji (`Selection$textOriginal`)
 
-2) One with only plain text and without hyperlinks and emoji
+2) One with only plain text and without hyperlinks and emoji (`TextEmoDel`)
 
-3) One with only hyperlinks
+3) One with only hyperlinks (`Links`)
 
-4) One with only emoji
+4) One with only emoji (`Emoji`)
 
 We want to integrate them in our dataframe
 
@@ -711,18 +710,40 @@ We can now recombine our dataframe with the additional columns we created to hav
 
 
 ```r
-Selection &lt;- cbind.data.frame(Selection,
-                              I(Emoji),
-                              New,
-                              I(Links),
-                              stringsAsFactors = FALSE)
+df &lt;- cbind.data.frame(Selection$authorDisplayName,
+                       Selection$textOriginal,
+                       TextEmoRep,
+                       TextEmoDel,
+                       I(Emoji),
+                       Selection$likeCount,
+                       I(Links),
+                       Selection$publishedAt,
+                       Selection$updatedAt,
+                       Selection$parentId,
+                       Selection$id,
+                       stringsAsFactors = FALSE)
 ```
+---
+# Linking everything back together
 
-At last, we can save the dataframe for later use
+At last, we can give the columns appropriate names and save the dataframe for later use
 
 
 ```r
-saveRDS(Selection, file = "ParsedComments.rds")
+# setting column names
+names(df) &lt;- c("Author",
+               "Text",
+               "TextEmojiReplaced",
+               "TextEmojiDeleted",
+               "Emoji",
+               "LikeCount",
+               "URL",
+               "Published",
+               "Updated",
+               "ParentId",
+               "CommentID")
+
+saveRDS(df, file = "../../data/ParsedComments.rds")
 ```
 
 ---
@@ -731,7 +752,7 @@ class: center, middle
 # Exercises
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
