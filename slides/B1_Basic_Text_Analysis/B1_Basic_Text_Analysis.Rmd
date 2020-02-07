@@ -1,6 +1,6 @@
 ---
-title: "Automatic sampling and analysis of YouTubeData"
-subtitle: "Basic text analysis of user comments"
+title: "Automatic sampling and Analysis of YouTube Data"
+subtitle: "Basic Text Analysis of User Comments"
 author: "Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni"
 date: "2020-02-11"
 location: "GESIS, Cologne, Germany"
@@ -44,7 +44,7 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ---
 
-# Required libraries for this session
+# Required Libraries for This Session
 
 ```{r libraries, eval=F}
 library(tidyverse)
@@ -58,7 +58,7 @@ install_github("hadley/emo")
 
 ---
 
-# Collect & parse the data
+# Collect & Parse the Data
 
 ```{r get & parse comments, eval=F}
 Comments <- get_all_comments(c(video_id="DcJFdCmN98s")) # takes a while
@@ -72,7 +72,7 @@ load("../../data/DayumParsedCommentsUTF8.Rdata")
 
 ---
 
-# Comments over time: Data wrangling `r ji("cowboy")`
+# Comments Over Time: Data Wrangling `r ji("cowboy")`
 
 We want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
 
@@ -96,7 +96,7 @@ PercTimes <- round(quantile(cumsum(FormattedComments$counter),
 
 ---
 
-# Comments over time: Plot
+# Comments Over Time: Plot
 
 ```{r comments over time plot code, eval=F}
 weekly_comments %>% 
@@ -123,7 +123,7 @@ weekly_comments %>%
 
 ---
 
-# Number of comments over time: Plot
+# Number of Comments Over Time: Plot
 
 ```{r comments over time plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
 PercTimes <- round(quantile(cumsum(FormattedComments$counter), 
@@ -152,7 +152,7 @@ weekly_comments %>%
 ```
 ---
 
-# Text mining
+# Text Mining
 
 In this session, we will discuss some basic exploratory analyses of *YouTube* user comments. We will explore the use of words as well as the use of emojis.
 
@@ -172,7 +172,7 @@ In the following, we will very briefly introduce some key terms and steps in tex
 
 ---
 
-# Popular text mining packages
+# Popular Text Mining Packages
 
 - [tm](http://tm.r-forge.r-project.org/): the first comprehensive text mining package for R
 
@@ -182,7 +182,7 @@ In the following, we will very briefly introduce some key terms and steps in tex
 
 ---
 
-# Text as data (in a `r ji("chestnut")`)
+# Text as Data (in a `r ji("chestnut")`)
 
 **Document** = collection of strings (+ metadata about the documents)
 
@@ -214,7 +214,7 @@ For our examples in this session, we will go through the following preprocessing
 
 # Tokenization
 
-Before we tokenize the comments, we want to remove newline commands from the strings
+Before we tokenize the comments, we want to remove newline commands from the strings.
 
 ```{r remove newline}
 FormattedComments <- FormattedComments %>% 
@@ -239,7 +239,7 @@ toks <- FormattedComments %>%
 
 ---
 
-# Document-feature matrix
+# Document-Feature Matrix
 
 Now we create a document-feature matrix (DFM) and remove stopwords.
 
@@ -250,7 +250,7 @@ commentsDfm <- dfm(toks,
 
 ---
 
-# Most frequent words
+# Most Frequent Words
 
 ```{r word freq}
 TermFreq <- textstat_frequency(commentsDfm)
@@ -259,7 +259,7 @@ TermFreq[10:20, ]
 
 ---
 
-# Removing tokens
+# Removing Tokens
 
 There seem to be ASCII emojis among the most frequent tokens. We might want to remove these and/or other tokens if we consider them irrelevant for our analyses.
 
@@ -274,7 +274,7 @@ For more options for selecting or removing tokens, see the [quanteda documentati
 
 ---
 
-# Plot most frequent words
+# Plot Most Frequent Words (1)
 
 ```{r code word freq plot, eval=F}
 head(TermFreq, n = 20) %>% 
@@ -295,7 +295,7 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 ---
 
-# Plot most frequent words
+# Plot Most Frequent Words (2)
 
 ```{r word freq plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
 head(TermFreq, n = 20) %>% 
@@ -316,7 +316,7 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 ---
 
-# Plot docfreq
+# Plot Docfreq (1)
 
 ```{r code docfreq plot, eval=F}
 head(TermFreq, n = 20) %>% 
@@ -337,7 +337,7 @@ ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
 
 ---
 
-# Plot docfreq
+# Plot Docfreq (2)
 
 ```{r docfreq plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
 head(TermFreq, n = 20) %>% 
@@ -360,7 +360,7 @@ ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
 
 # Emojis
 
-In most of the research studying user-generated text from social media emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. 
+In most of the research studying user-generated text from social media, emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. 
 
 In the following, we will do some exploratory analysis of emoji frequencies in *YouTube* comments. Before we can start, we first need to do some data cleaning again, then tokenize the emojis as some comments include more than one emoji, and create an emoji DFM.
 
@@ -377,7 +377,7 @@ EmojiDfm <- dfm(emoji_toks) # create DFM for emojis
 
 ---
 
-# Most frequent emojis
+# Most Frequent Emojis
 
 ```{r emoji freq}
 EmojiFreq <- textstat_frequency(EmojiDfm)
@@ -386,7 +386,7 @@ head(EmojiFreq, n = 10)
 
 ---
 
-# Plot most frequent emojis
+# Plot Most Frequent Emojis (1)
 
 ```{r lame emoji bar plot code, eval=F}
 head(EmojiFreq, n = 10) %>% 
@@ -409,7 +409,7 @@ Note: Similar to what we did for the comment text before we could replace `frequ
 
 ---
 
-# Plot most frequent emojis
+# Plot Most Frequent Emojis (2)
 
 ```{r lame emoji bar plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
 head(EmojiFreq, n = 10) %>% 
@@ -430,9 +430,9 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 ---
 
-# `r ji("sunglasses")` emoji frequency plot: Preparation 1
+# `r ji("sunglasses")` Emoji Frequency Plot: Preparation (1)
 
-The previous emoji frequency plot was a bit `r ji("sleepy_face")`. To make things prettier we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...<sup>1</sup>
+The previous emoji frequency plot was a bit `r ji("sleepy_face")`. To make things prettier, we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...<sup>1</sup>
 
 As a first step, we need an emoji lookup table in which the values in the name column have the same format as the labels in the feature column of our `EmojiFreq` object.
 
@@ -446,12 +446,12 @@ emoji_lookup <- jis %>%
 ```
 
 .footnote[
-[1] For an alternative approach to using emojis in `ggplot2` see this [blog post by Emil Hvitfeldt](https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/)
+[1] For an alternative approach to using emojis in `ggplot2` see this [blog post by Emil Hvitfeldt](https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/).
 ]
 
 ---
 
-# `r ji("sunglasses")` emoji frequency plot: Preparation 2
+# `r ji("sunglasses")` Emoji Frequency Plot: Preparation (2)
 
 The second step of preparation for the nicer emoji frequency plot is creating mappings of emojis to data points so that we can use emojis instead of points in a scatter plot.<sup>1</sup>
 
@@ -467,12 +467,12 @@ for(i in top_emojis){
 ```
 
 .footnote[
-[1] Please note that this code has not been tested systematically. We only used it with a few videos. Depending on which emojis are the most frequent for the video you look at, this might not work because a) one of the emojis is not included in the emoji lookup table (which uses the `jis` data frame from the [`emo` package](https://github.com/hadley/emo)) or b) the content in the `runes` column does not match the format/code that the `emoji` argument in the `geom_emoji` function from the [`emoGG` package](https://github.com/dill/emoGG) expects.
+[1] Please note that this code has not been tested systematically. We only used it with a few videos. Depending on which emojis are the most frequent for the video you look at, this might not work because (a) one of the emojis is not included in the emoji lookup table (which uses the `jis` data frame from the [`emo` package](https://github.com/hadley/emo)) or (b) the content in the `runes` column does not match the format/code that the `emoji` argument in the `geom_emoji` function from the [`emoGG` package](https://github.com/dill/emoGG) expects.
 ]
 
 ---
 
-# `r ji("sunglasses")` emoji frequency plot
+# `r ji("sunglasses")` Emoji Frequency Plot (1)
 
 .small[
 ```{r cool emoji bar plot code, eval=F}
@@ -507,7 +507,7 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 ---
 
-# `r ji("sunglasses")` emoji frequency plot
+# `r ji("sunglasses")` Emoji Frequency Plot (2)
 
 ```{r cool emoji bar plot, echo=F, dpi=300, out.width="700px", out.height="500px"}
 head(EmojiFreq, n = 10) %>% 

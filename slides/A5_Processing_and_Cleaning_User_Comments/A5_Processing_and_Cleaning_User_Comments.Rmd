@@ -20,13 +20,9 @@ layout: true
 ```{r setup, include = F}
 if (!require(easypackages)) install.packages("easypackages")
 library(easypackages)
-
 packages("knitr", "rmarkdown", "tidyverse", "kableExtra", "hadley/emo", prompt = F)
-
 options(htmltools.dir.version = FALSE)
-
 opts_chunk$set(echo = FALSE, fig.align = "center")
-
 ```
 
 <div class="my-footer">
@@ -48,9 +44,9 @@ class: center, middle
 # Processing and Cleaning User Comments
 
 ---
-# Preprocessing
+# Preprocessing (1)
 
-- Preprocessing refers to all steps that need to be taken to make the data suitable for the actual analysis
+- Preprocessing refers to all steps that need to be taken to make the data suitable for the actual analysis.
 
 - For webscraping data, this is often more tedious and time-consuming than for survey data because:
   - the data is not designed with your analysis in mind
@@ -59,37 +55,37 @@ class: center, middle
   - the data is typically more heterogenous
   - the data is typically larger
   
-- In addition, it's often necessary to work on Servers instead of regular PCs
+- In addition, it's often necessary to work on Servers instead of regular PCs.
 
-- Even then, restructuring or transforming data can take days, so mistakes hurt more
+- Even then, restructuring or transforming data can take days, so mistakes hurt more.
 
 ---
-# Preprocessing
+# Preprocessing (2)
 
-- In _Data Science_, most time is typically spent on the preprocessing rather than the actual analysis
+- In _Data Science_, most time is typically spent on the preprocessing rather than the actual analysis.
 
 ![plot](./Images/DS2.jpg)
 
 .tiny[Source: https://www.forbes.com/sites/gilpress/2016/03/23/data-preparation-most-time-consuming-least-enjoyable-data-science-task-survey-says/#157890a96f63]
 
 ---
-# Preprocessing
+# Preprocessing (3)
 
-- Also, it is perceived as the least enjoyable part of the process
+- Also, it is perceived as the least enjoyable part of the process.
 
 ![plot](./Images/DS1.jpg)
 
 .tiny[Source: https://www.forbes.com/sites/gilpress/2016/03/23/data-preparation-most-time-consuming-least-enjoyable-data-science-task-survey-says/#157890a96f63]
 ---
-# Preprocessing _YouTube_ comments
+# Preprocessing _YouTube_ Comments (1)
 
-- The `tuber` package already returns an R dataframe instead of a JSON
+- The `tuber` package already returns an R dataframe instead of a JSON.
 
-- We can already select which data we need by using the API through `tuber`
+- We can already select which data we need by using the API through `tuber`.
 
-- For single videos, the data is small enough to be processed on a regular PC
+- For single videos, the data is small enough to be processed on a regular PC.
 
-- However, this doesn't mean that the data is already usable for all intents and purposes
+- However, this doesn't mean that the data is already usable for all intents and purposes.
 
 - We still need to:
   - select
@@ -97,12 +93,12 @@ class: center, middle
   - extract
   - link
   
-the information that is relevant to us
+the information that is relevant to us.
 
 ---
-# Preprocessing _YouTube_ Comments
+# Preprocessing _YouTube_ Comments (2)
 
-Loading the unprocessed comments into R
+Loading the unprocessed comments into R.
 
 ```{r, echo = TRUE}
 # loading raw data (This is the BackUp file)
@@ -113,19 +109,19 @@ comments <- readRDS("../../data/RawComments.rds")
 # Understanding Your Data (1)
 
 The first step is always to understand your data, this is especially crucial for _found data_ because
-it was not designed with your analysis in mind
+it was not designed with your analysis in mind.
 
 ```{r, echo = TRUE}
 # listing all columns
 colnames(comments)
 ```
 
-Luckily, the _YouTube_ API is very [well documented](https://developers.google.com/youtube/v3/docs/comments) and provides brief explanations for all the variables you can extract from it
+Luckily, the _YouTube_ API is very [well documented](https://developers.google.com/youtube/v3/docs/comments) and provides brief explanations for all the variables you can extract from it.
 
 ---
 # Understanding Your Data (2)
 
-This information is valuable for understanding missing data
+This information is valuable for understanding missing data.
 
 ```{r, echo = TRUE}
 table(is.na(comments$parentId))
@@ -138,7 +134,7 @@ A quick look into the documentation reveals:
 ---
 # Understanding Your Data (3)
 
-...or for knowing how specific datatypes are formatted
+...or for knowing how specific datatypes are formatted.
 
 ```{r, echo = TRUE}
 head(comments$publishedAt)
@@ -152,7 +148,7 @@ A quick look into the documentation reveals:
 ---
 # Understanding Your Data (4)
 
-...or how similar variables are different from each other
+...or how similar variables are different from each other.
 
 ```{r}
 comments$textOriginal[8]
@@ -166,7 +162,7 @@ strwrap(comments$textDisplay[8],79)
 ---
 # Selecting What You (Don't) need
 
-Now we can decide on what we need for further analysis
+Now we can decide on what we need for further analysis.
 
 ```{r, echo = TRUE}
 Selection <- subset(comments,select = -c(authorProfileImageUrl,
@@ -177,15 +173,14 @@ Selection <- subset(comments,select = -c(authorProfileImageUrl,
                                          viewerRating,
                                          moderationStatus))
 colnames(Selection)
-
 ```
 
 **Word of advice**: Always keep an unalterd copy of your raw data and don't overwrite it. You never know what kinds of mistakes/oversights you might notice down the line and you don't want to have to recollect everything. Save your parsed data in a seperate file (or in multiple steps if your preprocessing pipeline is complex).
 
 ---
-# Formatting your Data
+# Formatting Data
 
-By default, the data you get out of `tuber` is most likely not in the right format
+By default, the data you get out of `tuber` is most likely not in the right format.
 
 ```{r, echo = TRUE}
 sapply(Selection, class)
@@ -204,21 +199,20 @@ Sys.time() - Selection$publishedAt[1]
 ---
 # Formatting `likeCount`
 
-We want the `likeCount` to be a numeric variable and the timestamps to be datetime objects
+We want the `likeCount` to be a numeric variable and the timestamps to be datetime objects.
 
 ```{r, echo = TRUE}
 # Transforming likeCount to numeric
 # (carefull, this is overwriting the column)
 Selection$likeCount <- as.numeric(Selection$likeCount)
-
 # testing
 summary(Selection$likeCount)
 ```
 
-We can now work with the number of likes as a numeric variable
+We can now work with the number of likes as a numeric variable.
 
 ---
-# Formatting your Timestamps (1)
+# Formatting Timestamps (1)
 
 Timestamps are extremely complex objects due to:
  - Different calendars
@@ -251,7 +245,7 @@ Sys.time() - testtime
 ```
 
 This internal representation of time objects will be extremely important for plotting trends over time
-and calculating time differences
+and calculating time differences.
 
 ---
 # Formatting Timestamps (3)
@@ -275,8 +269,7 @@ sapply(list(Selection$publishedAt,Selection$updatedAt),class)
 ---
 # Formatting Timestamps (4)
 
-Be aware of how to interpret your timestamps. Note that the date was interpreted as UTC but converted to our local CET timezone which is 1 hour ahead of UTC. This comment was made at 04:24:32 in _our time_, we have no idea about the time
-at the location of the user. She might of made this comment at night or in the morning, depending on where she's from.
+Be aware of how to interpret your timestamps. Note that the date was interpreted as UTC but converted to our local CET timezone which is 1 hour ahead of UTC. This comment was made at 04:24:32 in _our time_, we have no idea about the time at the location of the user. She might of made this comment at night or in the morning, depending on where she's from.
 
 ```{r, echo = TRUE}
 Selection$publishedAt[1]
@@ -296,9 +289,9 @@ Selection$textOriginal[495]
 
 There are two issues exemplefied by these comments:
 
-1) Comments contain emoji and hyperlinks that might distort our text analysis later
+1) Comments contain emoji and hyperlinks that might distort our text analysis later.
 
-2) These are features that we'd like to have in a seperate column for our analysis
+2) These are features that we'd like to have in a seperate column for our analysis.
 
 ---
 # Extracting Hyperlinks (1)
@@ -324,7 +317,6 @@ links that were contained in the textOriginal column. At the same time, the link
 
 ```{r, echo = TRUE}
 textNew[495]
-
 Links[495]
 ```
 
@@ -346,7 +338,7 @@ removing the emoji and come up with our own method for extracting them.
 ---
 # Removing Emoji
 
-First of all, we remove the emoji from our `textNew` variable to have one _clean_ column that we can use for textmining later
+First of all, we remove the emoji from our `textNew` variable to have one _clean_ column that we can use for textmining later.
 
 ```{r, echo = TRUE}
 # We take the textNew column and also delete the emoji from it
@@ -376,7 +368,7 @@ with this
 ---
 # Extracting Emoji (3)
 
-First of all, we need a dataframe that contains the emoji as they are internally represented by R (this can be quite the [hassle](https://dss.iq.harvard.edu/blog/escaping-character-encoding-hell-r-windows). Luckily, this is contained in the `emo` package
+First of all, we need a dataframe that contains the emoji as they are internally represented by R (this can be quite the [hassle](https://dss.iq.harvard.edu/blog/escaping-character-encoding-hell-r-windows). Luckily, this is contained in the `emo` package.
 
 ```{r, warning=FALSE, echo = TRUE}
 library(emo)
@@ -387,15 +379,13 @@ EmojiList[1:3,c(1,3,4)]
 ---
 # Extracting Emoji (4)
 
-Next, we need to paste the names of the Emoji together while capitalizing every words first letter for better readibility
+Next, we need to paste the names of the Emoji together while capitalizing every words first letter for better readibility.
 
 ```{r, echo = TRUE}
 # Defining a function for capitalizing and pasting names together
 simpleCap <- function(x) {
-
   # Splitting the string
   splitted <- strsplit(x, " ")[[1]]
-
   # Pasting it back together with capital letters
   paste(toupper(substring(splitted, 1,1)),
         substring(splitted, 2),
@@ -424,27 +414,24 @@ EmojiList[1:3,c(1,3,4)]
 ---
 # Extracting Emoji (6)
 
-Next, we need to order our dictionary from longest to shortest, so that we can prevent partial matching of shorter strings later
+Next, we need to order our dictionary from longest to shortest, so that we can prevent partial matching of shorter strings later.
 
 ```{r, echo = TRUE}
 EmojiList <- EmojiList[rev(order(nchar(jis$emoji))),]
 head(EmojiList[,c(1,3,4)],5)
 ```
-Note that what we are ordering by is the `emoji` column, not the `text` or `runes` columns
+Note that what we are ordering by is the `emoji` column, not the `text` or `runes` columns.
 
 ---
 # Extracting Emoji (7)
 
-Next, we need to `loop` through all of our emoji and replace them one after the other in each comment (this may take a while)
+Next, we need to `loop` through all of our emoji and replace them one after the other in each comment (this may take a while).
 
 ```{r, warning = FALSE, echo = TRUE}
-
 # Assigning the column to a new variable
 New <- Selection$textOriginal
-
 # Looping through all Emojis for all comments in textNew
 for (i in 1:dim(EmojiList)[1]) {
-
   New <- rm_default(New,
                   pattern = EmojiList[i,3],
                   replacement = paste0("EMOJI_",
@@ -454,13 +441,12 @@ for (i in 1:dim(EmojiList)[1]) {
                   clean = FALSE,
                   trim = FALSE)
 }
-
 ```
 
 ---
 # Extracting Emoji (8)
 
-As output, we get a large character vector with replaced emoji
+As output, we get a large character vector with replaced emoji.
 
 ```{r, echo = TRUE}
 New[39]
@@ -470,7 +456,6 @@ New[39]
 # Extracting Emoji (9)
 ```{r, echo = TRUE, size = 'tiny'}
 ExtractEmoji <- function(x){
-
   SpacerInsert <- gsub(" ","[{[SpAC0R]}]", x)
   ExtractEmoji <- rm_between(SpacerInsert,
                              "EMOJI_","[{[SpAC0R]}]",
@@ -491,14 +476,13 @@ ExtractEmoji <- function(x){
   Emoji <- paste0(DeleteSpacer, collapse = "")
   return(Emoji)
 }
-
 ```
 
 ---
 # Extracting Emoji (10)
 
 We can apply the function to get one vector containing the text without emoji and one vector containing
-only the emoji
+only the emoji.
 
 ```{r, echo = TRUE}
 Emoji <- sapply(New,ExtractEmoji)
@@ -508,9 +492,9 @@ Emoji[39]
 ```
 
 ---
-# Extracting Information
+# Extracting Information (2)
 
-We now have different versions of our text column
+We now have different versions of our text column:
 
 1) The original one, with hyperlinks and Emoji
 
@@ -520,10 +504,10 @@ We now have different versions of our text column
 
 4) One with only emoji
 
-We want to integrate them in our dataframe
+We want to integrate them in our dataframe.
 
 ---
-# Linking everything back together
+# Linking Everything Back Together
 
 We can now recombine our dataframe with the additional columns we created to have the perfect starting point for our analysis! However, because we sometimes have more than two links or two emoji per comment, we need to use the `I()` function so we can put them in the dataframe `as is`. Later, we will have to unlist these columns rowwise if we want to use them. 
 

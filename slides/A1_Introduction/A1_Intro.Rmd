@@ -247,7 +247,7 @@ knitr::kable(
 
   - Comment characteristics<br /><small>([Thelwall, Sud, & Vis, 2012]( https://doi.org/10.1002/asi.21679))</small>
 
-  - Subtopics, sentiments, & gender differences<br /><small>([Thelwall, 2017](https://doi.org/10.1080/13645579.2017.1381821); [Röchert, Neubaum, Ross, Brachten, & Stieglitz, 2020](https://computationalcommunication.org/ccr/article/view/15/7)])</small>
+  - Subtopics, sentiments, & gender differences<br /><small>([Thelwall, 2017](https://doi.org/10.1080/13645579.2017.1381821); [Röchert, Neubaum, Ross, Brachten, & Stieglitz, 2020](https://computationalcommunication.org/ccr/article/view/15/7))</small>
 
 - Who writes it (communicator)?
     - User experiences<br /><small>([Defy Media, 2017](http://www.newsroom-publicismedia.fr/wp-content/uploads/2017/06/Defi-media-acumen-Youth_Video_Diet-mai-2017.pdf); [Lange, 2007](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.170.3808&rep=rep1&type=pdf); [Moor, Heuvelman, & Verleur, 2010](https://doi.org/10.1016/j.chb.2010.05.023); [Oksanen, Hawdon, Holkeri, Naesi, & Raesaenen, 2014](https://doi.org/10.1108/S1537-466120140000018021); [Szostak, 2013](https://journals.mcmaster.ca/mjc/article/view/280); [Yang, Hsu, & Tan, 2010](https://doi.org/10.1089/cyber.2009.0105))</small>
