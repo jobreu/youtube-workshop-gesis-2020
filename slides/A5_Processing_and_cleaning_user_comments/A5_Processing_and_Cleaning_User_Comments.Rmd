@@ -546,6 +546,7 @@ df <- cbind.data.frame(Selection$authorDisplayName,
 At last, we can give the columns appropriate names and save the dataframe for later use
 
 ```{r, echo = TRUE}
+
 # setting column names
 names(df) <- c("Author",
                "Text",
@@ -560,6 +561,7 @@ names(df) <- c("Author",
                "CommentID")
 
 saveRDS(df, file = "../data/ParsedComments.rds")
+
 ```
 
 ---
