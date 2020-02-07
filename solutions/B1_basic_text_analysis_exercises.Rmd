@@ -22,7 +22,9 @@ knitr::opts_template$set(clues = list(box.title = "Clues",
 klippy::klippy()
 ```
 
-In the following exercises, we will use the data you have collected in the previous session (all comments for the video "The Census" by Last Week Tonight with John Oliver. You might have to adjust the following code to use the correct file path on your computer.
+In the following exercises, we will use the data you have collected in the previous session (all comments for the video "The Census" by Last Week Tonight with John Oliver. Please note that your results might look slightly different than the output in the solutions for these exercises as we collected the comments earlier. 
+
+You might have to adjust the following code to use the correct file path on your computer.
 
 ```{r load data}
 comments <- readRDS("../data/ParsedComments.rds")
@@ -127,7 +129,7 @@ EmojiFreq  %>%
 ```
 
 ```{block, box.title = "Bonus", box.body = list(fill = "white"), box.icon = "fa-star"}
-If you're finished with tasks 1-4 and/or want to do/try out something else, you can create an emoji plot similar to the one you saw in the lecture slides for the video "The Census" by Last Week Tonight with John Oliver. We have created a script containing a function for the emoji mapping which you can source with the following code (NB: you probably have to adjust the path to the script in the code below). You might also want to have a look at the comments in the `emoji_mapping_function.R` file.
+If you're finished with tasks 1-4 and/or want to do/try out something else, you can create an emoji plot similar to the one you saw in the lecture slides for the video "The Census" by Last Week Tonight with John Oliver. We have created a script containing a function for the emoji mapping which you can source with the following code (NB: you might have to adjust the path to the script in the code below). You might also want to have a look at the `emoji_mapping_function.R` file to see what this functions does.
 ```
 
 ```{r source mapping function}

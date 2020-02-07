@@ -60,9 +60,11 @@ install_github("hadley/emo")
 
 # Collect & Parse the Data
 
+Note: To save time and your *YouTube* API quota limit we suggest that you don't "code along" in this session
+
 ```{r get & parse comments, eval=F}
 Comments <- get_all_comments(c(video_id="DcJFdCmN98s")) # takes a while
-source("yt_parse.R") # yt_parse.R needs to be in the same directory
+source("yt_parse.R") # yt_parse.R needs to be in the working directory here
 FormattedComments <- yt_parse(Comments) # will take a while
 ```
 
@@ -74,7 +76,7 @@ load("../../data/DayumParsedCommentsUTF8.Rdata")
 
 # Comments Over Time: Data Wrangling `r ji("cowboy")`
 
-We want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
+First, we want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
 
 ```{r wrangle comments over time}
 FormattedComments <- FormattedComments %>% 
@@ -241,7 +243,7 @@ toks <- FormattedComments %>%
 
 # Document-Feature Matrix
 
-Now we create a document-feature matrix (DFM) and remove stopwords.
+With the tokens we can create a document-feature matrix (DFM) and remove stopwords.
 
 ```{r dfm}
 commentsDfm <- dfm(toks, 
@@ -317,6 +319,8 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 ---
 
 # Plot Docfreq (1)
+
+Instead of the raw frequency of words we can also look at the number of comments that a particular word appears in. This metric takes into account that words might be used multiple times in the same comment.
 
 ```{r code docfreq plot, eval=F}
 head(TermFreq, n = 20) %>% 
@@ -542,6 +546,6 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/tidyverse-workshop-gesis-2019/exercises/A5_DataWrangling1_exercises_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/B1_basic_text_analysis_exercises_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/tidyverse-workshop-gesis-2019/solutions/A5_DataWrangling1_exercises_solution.html)
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/B1_basic_text_analysis_exercises_solution.html)

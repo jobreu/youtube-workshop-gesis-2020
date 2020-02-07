@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Automatic sampling and analysis of YouTubeData</title>
+    <title>Automatic sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
     <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
     <meta name="date" content="2020-02-11" />
@@ -13,8 +13,8 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Automatic sampling and analysis of YouTubeData
-## Basic text analysis of user comments
+# Automatic sampling and Analysis of YouTube Data
+## Basic Text Analysis of User Comments
 ### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
 ### 2020-02-11
 
@@ -27,12 +27,12 @@ layout: true
 &lt;div class="my-footer"&gt;
   &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
   &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-11&lt;/span&gt;&lt;/div&gt;
-  &lt;div style="text-align: center;"&gt;&lt;span&gt;Basic text analysis of user comments&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Basic Text Analysis of User Comments&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 ---
 
-# Required libraries for this session
+# Required Libraries for This Session
 
 
 ```r
@@ -47,12 +47,14 @@ install_github("hadley/emo")
 
 ---
 
-# Collect &amp; parse the data
+# Collect &amp; Parse the Data
+
+Note: To save time and your *YouTube* API quota limit we suggest that you don't "code along" in this session
 
 
 ```r
 Comments &lt;- get_all_comments(c(video_id="DcJFdCmN98s")) # takes a while
-source("yt_parse.R") # yt_parse.R needs to be in the same directory
+source("yt_parse.R") # yt_parse.R needs to be in the working directory here
 FormattedComments &lt;- yt_parse(Comments) # will take a while
 ```
 
@@ -60,9 +62,9 @@ FormattedComments &lt;- yt_parse(Comments) # will take a while
 
 ---
 
-# Comments over time: Data wrangling 🤠
+# Comments Over Time: Data Wrangling 🤠
 
-We want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
+First, we want to plot the development of the number of comments per week over time and show until when 50%, 75%, 90%, and 99% of the comments had been posted. This requires some data wrangling.
 
 
 ```r
@@ -85,7 +87,7 @@ PercTimes &lt;- round(quantile(cumsum(FormattedComments$counter),
 
 ---
 
-# Comments over time: Plot
+# Comments Over Time: Plot
 
 
 ```r
@@ -113,12 +115,12 @@ weekly_comments %&gt;%
 
 ---
 
-# Number of comments over time: Plot
+# Number of Comments Over Time: Plot
 
 &lt;img src="B1_Basic_Text_Analysis_files/figure-html/comments over time plot-1.png" width="700px" height="500px" style="display: block; margin: auto;" /&gt;
 ---
 
-# Text mining
+# Text Mining
 
 In this session, we will discuss some basic exploratory analyses of *YouTube* user comments. We will explore the use of words as well as the use of emojis.
 
@@ -138,7 +140,7 @@ In the following, we will very briefly introduce some key terms and steps in tex
 
 ---
 
-# Popular text mining packages
+# Popular Text Mining Packages
 
 - [tm](http://tm.r-forge.r-project.org/): the first comprehensive text mining package for R
 
@@ -148,7 +150,7 @@ In the following, we will very briefly introduce some key terms and steps in tex
 
 ---
 
-# Text as data (in a 🌰)
+# Text as Data (in a 🌰)
 
 **Document** = collection of strings (+ metadata about the documents)
 
@@ -180,7 +182,7 @@ For our examples in this session, we will go through the following preprocessing
 
 # Tokenization
 
-Before we tokenize the comments, we want to remove newline commands from the strings
+Before we tokenize the comments, we want to remove newline commands from the strings.
 
 
 ```r
@@ -207,9 +209,9 @@ toks &lt;- FormattedComments %&gt;%
 
 ---
 
-# Document-feature matrix
+# Document-Feature Matrix
 
-Now we create a document-feature matrix (DFM) and remove stopwords.
+With the tokens we can create a document-feature matrix (DFM) and remove stopwords.
 
 
 ```r
@@ -219,7 +221,7 @@ commentsDfm &lt;- dfm(toks,
 
 ---
 
-# Most frequent words
+# Most Frequent Words
 
 
 ```r
@@ -244,7 +246,7 @@ TermFreq[10:20, ]
 
 ---
 
-# Removing tokens
+# Removing Tokens
 
 There seem to be ASCII emojis among the most frequent tokens. We might want to remove these and/or other tokens if we consider them irrelevant for our analyses.
 
@@ -260,7 +262,7 @@ For more options for selecting or removing tokens, see the [quanteda documentati
 
 ---
 
-# Plot most frequent words
+# Plot Most Frequent Words (1)
 
 
 ```r
@@ -282,13 +284,15 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 ---
 
-# Plot most frequent words
+# Plot Most Frequent Words (2)
 
 &lt;img src="B1_Basic_Text_Analysis_files/figure-html/word freq plot-1.png" width="700px" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# Plot docfreq
+# Plot Docfreq (1)
+
+Instead of the raw frequency of words we can also look at the number of comments that a particular word appears in. This metric takes into account that words might be used multiple times in the same comment.
 
 
 ```r
@@ -310,7 +314,7 @@ ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
 
 ---
 
-# Plot docfreq
+# Plot Docfreq (2)
 
 &lt;img src="B1_Basic_Text_Analysis_files/figure-html/docfreq plot-1.png" width="700px" height="500px" style="display: block; margin: auto;" /&gt;
 
@@ -318,7 +322,7 @@ ggplot(aes(x = reorder(feature, -docfreq), y = docfreq)) +
 
 # Emojis
 
-In most of the research studying user-generated text from social media emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. 
+In most of the research studying user-generated text from social media, emojis have, so far, been largely ignored. However, emojis convey emotions and meaning, and can, thus, provide additional information or context when working with textual data. 
 
 In the following, we will do some exploratory analysis of emoji frequencies in *YouTube* comments. Before we can start, we first need to do some data cleaning again, then tokenize the emojis as some comments include more than one emoji, and create an emoji DFM.
 
@@ -336,7 +340,7 @@ EmojiDfm &lt;- dfm(emoji_toks) # create DFM for emojis
 
 ---
 
-# Most frequent emojis
+# Most Frequent Emojis
 
 
 ```r
@@ -360,7 +364,7 @@ head(EmojiFreq, n = 10)
 
 ---
 
-# Plot most frequent emojis
+# Plot Most Frequent Emojis (1)
 
 
 ```r
@@ -384,15 +388,15 @@ Note: Similar to what we did for the comment text before we could replace `frequ
 
 ---
 
-# Plot most frequent emojis
+# Plot Most Frequent Emojis (2)
 
 &lt;img src="B1_Basic_Text_Analysis_files/figure-html/lame emoji bar plot-1.png" width="700px" height="500px" style="display: block; margin: auto;" /&gt;
 
 ---
 
-# 😎 emoji frequency plot: Preparation 1
+# 😎 Emoji Frequency Plot: Preparation (1)
 
-The previous emoji frequency plot was a bit 😪. To make things prettier we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...&lt;sup&gt;1&lt;/sup&gt;
+The previous emoji frequency plot was a bit 😪. To make things prettier, we can use the actual emojis instead of the text labels in our plot. Doing this takes a bit of preparation...&lt;sup&gt;1&lt;/sup&gt;
 
 As a first step, we need an emoji lookup table in which the values in the name column have the same format as the labels in the feature column of our `EmojiFreq` object.
 
@@ -407,12 +411,12 @@ emoji_lookup &lt;- jis %&gt;%
 ```
 
 .footnote[
-[1] For an alternative approach to using emojis in `ggplot2` see this [blog post by Emil Hvitfeldt](https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/)
+[1] For an alternative approach to using emojis in `ggplot2` see this [blog post by Emil Hvitfeldt](https://www.hvitfeldt.me/blog/real-emojis-in-ggplot2/).
 ]
 
 ---
 
-# 😎 emoji frequency plot: Preparation 2
+# 😎 Emoji Frequency Plot: Preparation (2)
 
 The second step of preparation for the nicer emoji frequency plot is creating mappings of emojis to data points so that we can use emojis instead of points in a scatter plot.&lt;sup&gt;1&lt;/sup&gt;
 
@@ -429,12 +433,12 @@ for(i in top_emojis){
 ```
 
 .footnote[
-[1] Please note that this code has not been tested systematically. We only used it with a few videos. Depending on which emojis are the most frequent for the video you look at, this might not work because a) one of the emojis is not included in the emoji lookup table (which uses the `jis` data frame from the [`emo` package](https://github.com/hadley/emo)) or b) the content in the `runes` column does not match the format/code that the `emoji` argument in the `geom_emoji` function from the [`emoGG` package](https://github.com/dill/emoGG) expects.
+[1] Please note that this code has not been tested systematically. We only used it with a few videos. Depending on which emojis are the most frequent for the video you look at, this might not work because (a) one of the emojis is not included in the emoji lookup table (which uses the `jis` data frame from the [`emo` package](https://github.com/hadley/emo)) or (b) the content in the `runes` column does not match the format/code that the `emoji` argument in the `geom_emoji` function from the [`emoGG` package](https://github.com/dill/emoGG) expects.
 ]
 
 ---
 
-# 😎 emoji frequency plot
+# 😎 Emoji Frequency Plot (1)
 
 .small[
 
@@ -470,7 +474,7 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 ---
 
-# 😎 emoji frequency plot
+# 😎 Emoji Frequency Plot (2)
 
 &lt;img src="B1_Basic_Text_Analysis_files/figure-html/cool emoji bar plot-1.png" width="700px" height="500px" style="display: block; margin: auto;" /&gt;
 
@@ -478,9 +482,9 @@ ggplot(aes(x = reorder(feature, -frequency), y = frequency)) +
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/tidyverse-workshop-gesis-2019/exercises/A5_DataWrangling1_exercises_question.html) time 🏋️‍♀️💪🏃🚴
+# [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/B1_basic_text_analysis_exercises_question.html) time 🏋️‍♀️💪🏃🚴
 
-## [Solutions](https://jobreu.github.io/tidyverse-workshop-gesis-2019/solutions/A5_DataWrangling1_exercises_solution.html)
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/B1_basic_text_analysis_exercises_solution.html)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

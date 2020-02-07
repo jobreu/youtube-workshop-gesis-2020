@@ -43,7 +43,7 @@ yt_oauth(app_id = "my_app_id", # paste your app ID here
 While going through the following exercises you might want to monitor your API quota usage via the *Google Cloud Platform* dashboard for your app (APIs & Services -> Dashboard -> Select YouTube Data API v3 -> Quotas) to see the query costs for the `tuber` function calls. 
 
 ```{block, box.title = "2", box.body = list(fill = "white"), box.icon = "fa-star"}
-How many view, subscribers, and videos does the channel of the *Pew Research Center* currently have?
+How many views, subscribers, and videos does the channel of the *Pew Research Center* currently have?
 ```
 
 ```{block, opts.label = "clues"}
@@ -78,16 +78,16 @@ To get all comments including replies you need to use the function `get_all_comm
 comments_lwt_census <- get_all_comments("1aheRpmurAo")
 ```
 
-NB: If you check the comment count on the website of the video you will see that there are more comments than in the dataframe you just created. This is because `get_all_comments` only collects up to 5 replies per comment.
+NB: If you check the comment count on the website of the video you will see that there are more comments than in the dataframe you just created. This is because `get_all_comments` from `tuber` only collects up to 5 replies per comment.
 
 ```{block, box.title = "5", box.body = list(fill = "white"), box.icon = "fa-star"}
 As a final step we want to save the comments we just collected so we can use them again in the exercises for the following sessions. Please save the the comments as an .rds file.
 ```
 
 ```{block, opts.label = "clues"}
-To save an .rds file you can use the `base R` function `saveRDS`. Ideally, you should save the file in the folder containing the workshops materials. The code in the solution uses a relative path to save the file in your current working directory.
+To save an .rds file you can use the `base R` function `saveRDS`. Ideally, you should have/create a `data` folder in the one that contains the workshops materials. The code in the solution assumes that your working directory is the `PARTICIPANTS_CODE` folder (or some other subfolder within the one that contains the course materials) and stores the file in the `data` folder that you should have (created).
 ```
 
 ```{r save, solution = TRUE, eval = F}
-saveRDS(comments_lwt_census, "./RawComments.rds")
+saveRDS(comments_lwt_census, "../data/RawComments.rds")
 ```

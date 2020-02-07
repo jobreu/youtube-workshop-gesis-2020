@@ -102,7 +102,7 @@ key_set("app_secret",
         keyring ="YouTube_API")
 ```
 
-When you are prompted to enter the password, now you should enter your app secret. At the end of your script, you should lock the keyring again.
+When you are prompted to enter the password, now you should enter your app secret. After that - as well as whenever you unlock a keyring to use the credentials stored inside - you should lock the keyring again.
 ```{r lock keyring, eval = F}
 keyring_lock("YouTube_API")
 ```
@@ -128,20 +128,61 @@ yt_oauth(app_id = "my_app_id",  # paste your app ID here
 
 # Authentication
 
-When running the `yt_oauth()` function, there will be a prompt in the console asking you to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple `R` sessions that need your credentials (example: knitting an `RMarkdown` document). 
+When running the `yt_oauth()` function, there will be a prompt in the console asking you whether you want to save the access token in a file. If you select "Yes", `tuber` will create a local file (in your working directory) to cache [OAuth](https://en.wikipedia.org/wiki/OAuth) access credentials between `R` sessions. The token stored in this file will be valid for one hour (and can be automatically refreshed). Doing this makes sense if you know you will be running multiple `R` sessions that need your credentials (example: knitting an `RMarkdown` document). 
 
-Similar to the app key and secret, you should never share the `.httr-oauth` file as it can be read in `R` using `read_RDS()` (the file contains a list with all information needed for OAuth, including your app key and secret). Hence, it is usually ok (and safer) to select "No" when asked whether to store a local `.httr-oauth` file. 
+Similar to the app key and secret, you should never share the `.httr-oauth` file as it can be read in `R` using `readRDS()` (the file contains a list with your app ID and the access token). Hence, it is usually ok (and safer) to select "No" when asked whether to store a local `.httr-oauth` file. 
+
 ---
 
-# App Permissions
+# App Authorization (1)
 
-After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your *Google* account and to give permissions. *Google* will probably tell you that it is not safe to grant the app access to your account. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended", then on "Open App_Name", and grant the app the required permissions for your account. After that, you can close the browser and return to `R`.
+After making your choice regarding the `.httr-oauth` file, a browser window should open, prompting you to log in with your *Google* account and to give permissions.
+
+![plot](Images/20.png)
+
+---
+
+# App Authorization (2)
+
+ *Google* will mark the app as unsecure as it has not been verified. However, since you created the app and presumably are its sole user, you can go ahead and trust yourself: Click "Extended".
+
+![plot](Images/21.png)
+
+# App Authorization (3)
+
+Click "Go to Name_of_your_app(unsafe)".
+
+![plot](Images/22.png)
+
+---
+
+# App Authorization (4)
+
+Click "Allow" to grant the app the required permissions this your account.
+
+![plot](Images/23.png)
+
+---
+
+# App Authorization (5)
+
+Click "Allow" again to confirm your choice
+
+![plot](Images/24.png)
+
+---
+
+# App Authorization (6)
+
+After that, you can close the browser tab/window and return to `R`.
+
+![plot](Images/25.png)
 
 ---
 
 # Channel Statistics (1)
 
-You can find the channel ID by searching on the *YouTube* website and then choosing Type = Channel from the options in the filter menu. When you click on the channel you want in the search results, you see the channel ID at the end of the URL (after "/channel/").
+After authorizing your app, you can start by getting some statistics for a channel. You can find the channel ID by searching on the *YouTube* website and then choosing Type = Channel from the options in the filter menu. When you click on the channel you want in the search results, you see the channel ID at the end of the URL (after "/channel/").
 
 ```{r YouTube oauth, echo = F}
 yt_oauth()
@@ -157,7 +198,7 @@ Note: If you want additional data on channels/video creators and their performan
 
 # Channel Statistics (2)
 
-`get_channel_stats` returns a list which can then be wrangled into a dataframe (tibble).
+`get_channel_stats` returns a list which can then be wrangled into a dataframe (or a a tibble as in the code below).
 
 ```{r channel stats to df}
 hadley_stats_df <- hadley_stats$statistics %>% 
@@ -193,9 +234,9 @@ dayum_stats
 
 There are two functions for collecting viewer comments for specific videos (both return a dataframe):
 
-1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results` (needs to be >= 20). If the number is > 100, the function fetches all results (see `?get_comment_threads`). NB: This function does not collect replies to comments.
+1. `get_comment_threads()` collects comments for a video. By default, it collects the 100 most recent comments. The number of comments can be changed with the argument `max_results` (needs to be >= 20). If the number is > 100, the function fetches all results (see `?get_comment_threads`). **NB:** This function does not collect replies to comments.
 
-2. `get_all_comments()` collects all comments for a video, including replies to comments. NB: For some reason, this function only collects up to 5 replies per comment (the related [issue in the `tuber` GitHub repo](https://github.com/soodoku/tuber/issues/52) is still open). Depending on the number of comments for a video, running this function can take some time and might also deplete your API quota limit (more on that later).
+2. `get_all_comments()` collects all comments for a video, including replies to comments. **NB:** For some reason, this function only collects up to 5 replies per comment (the related [issue in the `tuber` GitHub repo](https://github.com/soodoku/tuber/issues/52) is still open). Depending on the number of comments for a video, running this function can take some time and might also deplete your API quota limit (more on that later).
 
 ---
 
@@ -232,7 +273,7 @@ There are two alternatives to using the `yt_search()` function from the `tuber` 
 
 1. Manual search via the *YouTube* website: This works well for a small number of videos but is not really feasible if you want a large number of video IDs for your analyses.
 
-2. Web scraping: [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age". However, you should use this method with caution. The [robots.txt of *YouTube*](https://www.youtube.com/robots.txt) disallows the scraping of results pages. In practical terms, the (over)use of web scraping can, e.g., get your IP address blocked (at least temporarily). A practical introduction to web scraping would be beyond the scope of this workshop (but there are many online tutorials available: [example](https://blog.rsquaredacademy.com/web-scraping/)). 
+2. Web scraping: [Freelon (2018)](https://www.tandfonline.com/doi/abs/10.1080/10584609.2018.1477506?journalCode=upcp20) argues that researchers interested in social media and other internet data should know/learn how to scrape the web in what he calls the "post-API age". However, you should use this method with caution. The [robots.txt of *YouTube*](https://www.youtube.com/robots.txt) disallows the scraping of results pages. In practical terms, the (over)use of web scraping might, e.g., get your IP address blocked (at least temporarily). A complete introduction to web scraping would be beyond the scope of this workshop, but we have created some slides with a short tutorial (in the folder with the slides on the *YouTube* API) and there are many online tutorials on this (e.g., [this one](https://blog.rsquaredacademy.com/web-scraping/)). 
 
 ---
 
@@ -245,23 +286,13 @@ comments <- purrr::map_df(.x = video_ids,
                           .f = get_all_comments)
 ```
 
-Important notice: Be aware that your daily API quota limit very likely won't allow you to collect all comments for videos with a high number of comments.
+**Important notice:** Be aware that your daily API quota limit very likely won't allow you to collect all comments for videos with a high number of comments.
 
 ---
 
 # YouTube API Quota Limits
 
-Since January 11, 2019, the [*YouTube* Data API v3](https://developers.google.com/youtube/v3) has a limit of **10000 queries per day** (was 1M/day before that and even 50M/day until April 20, 2016).
-
-The [*YouTube* Data API documentation](https://developers.google.com/youtube/v3/docs/) lists the costs of different API calls and allows you to test the API (without incurring any quota costs). There also is a [Quota Calculator](https://developers.google.com/youtube/v3/determine_quota_cost) for this API (note that the calculator does not list all types of API calls).
-
----
-
-# YouTube API Quota Limits
-
-You can monitor the quota use of your app via the [*Google* Cloud Developer Console](https://console.cloud.google.com). From the navigation menu, select *APIs & Services*, then click on *YouTube Data API v3* in the list on the bottom of the page, and then on *Quotas* in the sidebar menu.
-
-In order to be able to estimate the quota costs of a specific API call via the `tuber` package, you need to know the specific queries that the function you use produces. If you want to do this, you can print the function code (you can do this in R by executing the function name without () behind it: `get_stats`). You can then use the information from that code for the Quota Calculator or the API Explorer. The help file for the function of interest can also be helpful here (`?get_stats`).
+In order to be able to estimate the quota costs of a specific API call via the `tuber` package, you need to know the specific queries that the function you use produces. If you want to do this, you can print the function code (you can do this in `R` by executing the function name without `()` at the end: e.g., `get_stats`). You can then use the information from that code for the [Quota Calculator](https://developers.google.com/youtube/v3/determine_quota_cost) or the API Explorer (by clicking on the respective method in the [YouTube API documentation](https://developers.google.com/youtube/v3/docs/)). The help file for the function of interest can also be useful here (`?get_stats`).
 
 ---
 
@@ -298,9 +329,9 @@ For reference: `yt_search()` has a quota cost of 102 per page of results (with a
 
 # How do I Know the Quota Costs When I use `tuber`?
 
-a. Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments (without replies) and you wish to collect all of them, you can estimate your cost as follows: 100 results per page = 40 pages & cost per page for `get_comment_threads()` = 5 -> overall cost = 200. In practice, this is a bit more difficult to estimate as both the website of the video and `get_stats()` give you the comment count including replies.
+a) Estimate the costs based on costs for the specific query and the number of returned results. For example, if a video has 4000 comments (without replies) and you wish to collect all of them, you can estimate your cost as follows: 100 results per page = 40 pages & cost per page for `get_comment_threads()` = 5 -> overall cost = 200. In practice, this is a bit more difficult to estimate as both the website of the video and `get_stats()` give you the comment count including replies.
 
-b. Use the *Google* Cloud Console for your app to monitor your API quota use.
+b) Use the *Google* Cloud Console for your app to monitor your API quota use.
 
 ---
 
@@ -310,9 +341,9 @@ The daily quota for your app resets at midnight Pacific Time. There are 3 ways o
 
 1. Schedule your scripts. You can either do this manually (by splitting your data collection into batches and running the scripts on different days) or automatically (e.g., using the [taskScheduleR package](https://github.com/bnosac/taskscheduleR) for Windows or the [cronR package](https://github.com/bnosac/cronR) for Linux/Unix).
 
-2. Request an increase through the Quotas menu in the developer console for your app mentioned previously. However, this will quite likely cost money and process is somewhat opaque and tedious as it requires you to fill out extended forms that were created for developers of actual apps.
+2. Request an increase through the Quotas menu in the developer console for your app mentioned previously. However, this will quite likely cost money and Ro has already told you how tedious this process is.
 
-3. Use multiple apps and/or accounts for your data collection. This requires some manual scheduling/planning. Keep in mind that there is a limited number of projects per account for the *Google* Cloud Platform. Note that - depending on your setup and use - this strategy might get your API quota, app(s), account(s) or IP address(es) suspended/blocked. 
+3. Use multiple apps and/or accounts for your data collection. This requires some manual scheduling/planning. Keep in mind that there is a limited number of projects per account for the *Google* Cloud Platform. Note that - depending on your setup and use - this strategy might get your API quota, app(s), account(s) or IP address(es) suspended/blocked (at least temporarily). 
 
 ---
 
@@ -342,6 +373,6 @@ search_results <- bind_rows(search_p1, search_p2)
 
 class: center, middle
 
-# [Exercise](https://jobreu.github.io/tidyverse-workshop-gesis-2019/exercises/A5_DataWrangling1_exercises_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
+# [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/A4_tuber_exercises_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/tidyverse-workshop-gesis-2019/solutions/A5_DataWrangling1_exercises_solution.html)
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/A4_tuber_exercises_solution.html)
