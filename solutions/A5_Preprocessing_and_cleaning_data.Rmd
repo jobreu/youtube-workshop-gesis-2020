@@ -30,13 +30,13 @@ Load your scraped dataset or the one we prepared for you into your R-session and
 ```
 
 ```{block, opts.label = "clues"}
-To load the data, you can use the `load()` function, to get an overview of the contained variables, you can simply use `colnames()`. To find out more about what the variables mean, you can go to the YouTube data API documentation and search for the comments ouput description.
+To load the data, you can use the `readRDS()` function, to get an overview of the contained variables, you can simply use `colnames()`. To find out more about what the variables mean, you can go to the YouTube data API documentation and search for the comments ouput description.
 
 ```
 
 ```{r, results = 'hide', solution = TRUE}
 # Loading dataset
-comments <- readRDS("../data/RawComments.Rds")
+comments <- readRDS("../data/RawComments.rds")
 
 # overview of columns
 colnames(comments)
@@ -51,7 +51,7 @@ The [YouTube API documentation](https://developers.google.com/youtube/v3/docs/co
 
 
 ```{block, box.title = "Exercise 2", box.body = list(fill = "white"), box.icon = "fa-star"}
-We only want to remove the variables `authorProfileImageUrl`, `authorChannelUrl`, `authorChannelUrl.value`,`video_id`,`canRate` and `viewerRating` and `moderationStatus`. Create a new dataframe called `Selection` containing only the reamining variables.
+We want to remove the variables `authorProfileImageUrl`, `authorChannelUrl`, `authorChannelUrl.value`,`video_id`,`canRate` and `viewerRating` and `moderationStatus`. Create a new dataframe called `Selection` containing only the remaining variables.
 ```
 
 ```{block, opts.label = "clues"}
@@ -130,7 +130,7 @@ Check the `textOriginal` column in your Selection dataframe. There are still hyp
 ```
 
 ```{block, opts.label = "clues"}
-The `qdabRegex` package has many prebuild functions to detect, remove and replace specific character strings. You can use the `rm_url()` function to extract and replace hyperlinks for example. Be sure to check it's documentation with `?rm_url()` to learn how to extract and how to replace hyperlinks
+The `qdabRegex` package has many prebuild functions to detect, remove and replace specific character strings. You can for example use the `rm_url()` function to extract and replace hyperlinks. You can check it's documentation with `?rm_url()` to learn how to extract and how to replace hyperlinks.
 
 ```
 ```{r, solution = TRUE}
@@ -151,19 +151,19 @@ head(LinksDel,10)
 ```
 
 ```{block, box.title = "Exercise 6", box.body = list(fill = "white"), box.icon = "fa-star"}
-Check the `LinksDel` variable to see that there are still emoji contained in the column. For our analysis later, we want to do three things:
+Check the `LinksDel` variable to see that there are still emoji contained in the column. For our later analysis, we want to do three things:
 
-1) Create one column with emoji removed for easier text mining
-2) Create one column with emoji replaced by a textual description for easier text mining
-3) Create one column containing only the textual description of emoji for easier emoji analysis
+1) Create one column without hyperlinks and emoji for easier text mining
+2) Create one column where emoji are replaced by a textual description for easier text mining
+3) Create one column containing only the textual description of emoji
 
-Do achieve this, we first need a dictionary of emoji and their corresponding textual descriptions in a usable format.
-Load the `emo` package and have a look at the contained dataframe `jis`. Assign this dataframe to a new dataframe called `EmojiList`. Afterwards, source the provided `CamelCase.R` script to transform the textual description from regular case into CamelCase. Finally, create a new variable called `TextEmoDel` containing the text without the emoji (you can use the `ji_replace_all()` function from the `emo` package for that)
+To achieve this, we first need a dictionary of emoji and their corresponding textual descriptions in a usable format.
+Load the `emo` package and have a look at the contained dataframe `jis`. Copy it to a new dataframe called `EmojiList`. Afterwards, source the provided `CamelCase.R` script (in the scripts folder) to transform the textual description from regular case into CamelCase. Finally, create a new variable called `TextEmoDel` containing the text without the emoji (you can use the `ji_replace_all()` function from the `emo` package for that)
 
 ```
 
 ```{block, opts.label = "clues"}
-We provide you with a function that capitalizes the first character of each word. The function is called `simpleCap()` and the scripts name us `CamelCase.R`. You can load it into your workspace using the `source()` function and specifying it's location. You can find the function in the `scripts` folder. Keep in mind that this function is only capitalizing the first letters of each word, you still need to get rid of the extra space characters. The `gsub()` function is a handy tool for this.
+We provide you with a function that capitalizes the first character of each word. The function is called `simpleCap()` and the scripts name is `CamelCase.R`. You can load it into your workspace using the `source()` function and specifying it's location. You can find the function in the `scripts` folder. Keep in mind that this function is only capitalizing the first letters of each word, you still need to get rid of the extra space characters. The `gsub()` function is a handy tool for this.
 
 ```
 ```{r, solution = TRUE}
@@ -194,7 +194,7 @@ TextEmoDel <- ji_replace_all(LinksDel,"")
 ```
 
 ```{block, box.title = "Exercise 7", box.body = list(fill = "white"), box.icon = "fa-star"}
-Ultimately, we want to use our `EmojiList` dataframe to replace the instances of emoji in our text with the textual description. We will be doing that by looping through all emoji in all texts and replacing them one at a time. There is a problem however: Some emoji are made up of multiple "shorter" emoji. If we match part of a "longer" emoji and replace it with it's text description, the rest will become unreadble. For this reason, we need to make sure that we replace the emoji **from longest to shortest**. Sort the `EmojiList` dataframe by the length of the `emoji` column from longest to shortest.
+Ultimately, we want to use our `EmojiList` dataframe to replace the instances of emoji in our text with the textual description. We can do that by looping through all emoji in all texts and replacing them one at a time. There is a problem however: Some emoji are made up of multiple "shorter" emoji. If we match part of a "longer" emoji and replace it with it's text description, the rest will become unreadble. For this reason, we need to make sure that we replace the emoji **from longest to shortest**. Sort the `EmojiList` dataframe by the length of the `emoji` column from longest to shortest.
 
 ```
 
@@ -213,14 +213,14 @@ head(EmojiList[,c(1,3,4)],5)
 
 
 ```{block, box.title = "Exercise 8", box.body = list(fill = "white"), box.icon = "fa-star"}
-We now have a working dictionary for replacing emoji with a textual description! Create a new variable called `TextEmoRep` as a copy of the `LinksDel` variable. Next, loop through the ordered `EmojiList` and for every element in `TextEmoRep` replace contained emoji with "EMOJI_" followed by their textual description. You can use the `rm_default()` function from the `qdapRegex` package to replace custom patterns. Be sure to check the documentation so you can set the appropriate options for the function.
+We now have a working dictionary for replacing emoji with a textual description! Create a new variable called `TextEmoRep` as a copy of the `LinksDel` variable. Next, loop through the ordered `EmojiList` and for every element in `TextEmoRep`, replace the contained emoji with "EMOJI_" followed by their textual description. You can use the `rm_default()` function from the `qdapRegex` package to replace custom patterns. Be sure to check the documentation so you can set the appropriate options for the function.
 
-Beware: There might be warnings in your console even if you are doing everything right
+Beware: There will be warnings in your console even if you are doing everything right.
 
 ```
 
 ```{block, opts.label = "clues"}
-Be sure to loop through the dictionary sorted from longest to shortest emoji. You need to use `for` loop to go through each emoji for each comment one at a time. The `paste()` function is usefull for adding the prefix "EMOJI_" in front of your textual descriptions. Don't forget to set the arguments `fixed = TRUE`, `clean = TRUE` and `trim = FALSE` in your call to `rm_default()`   
+Loop through the dictionary sorted from longest to shortest emoji. You need to use a `for` loop to go through all emoji for all comments, one at a time. The `paste()` function is useful for adding the prefix "EMOJI_" in front of your textual descriptions. Don't forget to set the arguments `fixed = TRUE`, `clean = TRUE` and `trim = FALSE` in your call to `rm_default()`  
 
 ```
 ```{r, solution = TRUE, warning=FALSE,message=FALSE}
@@ -251,12 +251,12 @@ TextEmoRep[159:171]
 ```
 
 ```{block, box.title = "Exercise 8", box.body = list(fill = "white"), box.icon = "fa-star"}
-We now have the original text column and the text column with removed hyperlinks and were emoji are replaced with their textual descriptions `TextEmoRep`. We only need one more text column that _only_ contains the textual desciptions of the emoji. Use the predefined function `ÈxtractEmoji()` from the scripts folder to create this column
+We now have the original text column, and the text column with removed hyperlinks and were emoji are replaced with their textual descriptions (`TextEmoRep`). We need one more variable that _only_ contains the textual desciptions of the emoji. You can use our predefined function `ÈxtractEmoji()` from the scripts folder to create this variable.
 
 ```
 
 ```{block, opts.label = "clues"}
-Use the `source()` function to source the `ExtractEmoji.R` script from the `scripts` folder and then apply the `ExtractEmoji()` function to the variable `TextEmoRep`. To remove useless names from the extracted Emojis, you can set the `names(Emoji)` to `NULL`
+Use the `source()` function to source the `ExtractEmoji.R` script from the `scripts` folder and then `sapply()` the `ExtractEmoji()` function to the variable `TextEmoRep`. To remove useless rownames from the extracted Emojis, you can set `names(Emoji)` to `NULL`
 
 ```
 ```{r, solution = TRUE}
@@ -276,38 +276,58 @@ Emoji[39]
 ```{block, box.title = "Exercise 8", box.body = list(fill = "white"), box.icon = "fa-star"}
 We now have selected all the variables we need, formatted them into the right formats, cleaned the text and extracted some additional information from it. Create a new dataframe called `df` that contains the following variables:
 
-Selection$authorDisplayName
-Selection$textOriginal,
-TextEmoRep,
-TextEmoDel,
-Emoji,
-Selection$likeCount,
-Links,
-Selection$publishedAt,
-Selection$updatedAt,
-Selection$parentId,
-Selection$id
+- Selection$authorDisplayName
+
+- Selection$textOriginal
+
+- TextEmoRep
+
+- TextEmoDel
+
+- Emoji
+
+- Selection$likeCount
+
+- Links
+
+- Selection$publishedAt
+
+- Selection$updatedAt
+
+- Selection$parentId
+
+- Selection$id
 
 Set the following names for the column in the new dataframe:
 
-Author
-Text
-TextEmojiReplaced
-TextEmojiDeleted
-Emoji
-LikeCount
-URL
-Published
-Updated
-ParentId
-CommentID
+- Author
+
+- Text
+
+- TextEmojiReplaced
+
+- TextEmojiDeleted
+
+- Emoji
+
+- LikeCount
+
+- URL
+
+- Published
+
+- Updated
+
+- ParentId
+
+- CommentID
 
 Save the new dataframe as an RDS object with the name "ParsedComments.Rds"
 
 ```
 
 ```{block, opts.label = "clues"}
-You can use the `cbind.data.frame()` function to paste together multiple columns to a dataframe. You need to set the argument `stringsAsFactors = FALSE` though, to prevent strings from being interpreted as factor variables. In addition, the variables `Links` and `Emoji` are lists and can contain multiple values per row. For this reason, we need to use a dirty hack by enclosing them with the `I()` function to be able to put them into a dataframe. You can save your result using the `saveRDS()` function.
+You can use the `cbind.data.frame()` function to paste together multiple columns to a dataframe. You need to set the argument `stringsAsFactors = FALSE` though, to prevent strings from being interpreted as factor variables. In addition, the variables `Links` and `Emoji` are lists and can contain multiple values per row. For this reason, we need to enclose them with the `I()` function to be able to put them into a dataframe. You can save your result using the `saveRDS()` function.
 
 
 ```
