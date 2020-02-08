@@ -26,10 +26,21 @@ opts_chunk$set(echo = TRUE, fig.align = "center")
 
 ```
 
+<div class="my-footer">
+  <div style="float: left;"><span>`r gsub("<br />", ", ", gsub("<br /><br />|<a.+$", "", metadata$author))`</span></div>
+  <div style="float: right;"><span>`r metadata$location`, `r metadata$date`</span></div>
+  <div style="text-align: center;"><span>`r gsub(".+<br />", " ", metadata$subtitle)`</span></div>
+</div>
+
+<style type="text/css">
+
+pre {
+  font-size: 10px
+}
+</style>
+
 ---
-
 class: center, middle
-
 # The YouTube API
 
 ---
@@ -42,9 +53,9 @@ class: center, middle
 - The HTML is rendered by a webbrowser so the user can interact with it
 
 - Through interacting with the rendered website, we can either retrieve content from the database
-or send content to the database
+or send information to the database
 
-- The Youtube Website is
+- The Youtube Websi!te is
     - built in [HTML](https://de.wikipedia.org/wiki/Hypertext_Markup_Language), 
     - uses [CSS](https://de.wikipedia.org/wiki/Cascading_Style_Sheets) for the "styling"
     - dynamically loads content using [Ajax](https://en.wikipedia.org/wiki/Ajax) from the Database
@@ -87,190 +98,11 @@ class: center, middle
 - A GET request is an HTTP method for asking a server to send a specific resource (usually an HTML page) back
 to your local machine
 
-- You can try it out in your console with the command:
-  
-  .small[GET https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol]
+- You can try it out in your console
 
-- This is the basic principle that all the Scraping packages build-on.
+- This is the basic principle that all the Scraping packages build-on
 
 - We will not use this directly and will let the higher-level applications handle this under the hood
-
----
-# Screenscraping with Rvest
-
-```{r collapse = TRUE, results='hide'}
-# installing and attaching package
-if ("rvest" %in% installed.packages() != TRUE) {
-  install.packages("rvest")};library(rvest)
-
-# defining website and Xpath from inspect function in browser
-page <- "https://www.youtube.com/watch?v=1aheRpmurAo&"
-Xp <- "/html/body/div[2]/div[4]/div/div[5]/div[2]/div[2]/div/div[2]/meta[2]"
-
-# getting page
-Website <- read_html(page)
-
-# getting node containing the description
-Description <- html_nodes(Website, xpath = Xp)
-
-# printing description
-html_attr(Description, name = "content")
-```
-"John Oliver discusses the census, why it matters, and the consequences of an undercount.
-Connect with Last Week Tonight online.Subscribe to the Last Week ..."
-
----
-# Screenscraping
-
-- **Problem:** We only get part of the description, the text seems to cut off at a certain point
-
-- This happens because on YouTube is a **dynamic** website that loads new content based on what users do on the website. With some actions, the HTML of the site changes without having to reload:
-    - More comments only load when you scroll down
-    - You have to click on "show more" to see the video description
-    - You have to click on "show answers" to see more comment replies
-  
-- This makes screenscraping **a lot** harder
-
-- Most social media websites and websites with multimedia content are dynamic
-
-![plot](Images/YouTube_better.png)
-
----
-# Screenscraping with RSelenium
-
-```{r}
-# We first have to configure docker and open a docker container:
-# https://callumgwtaylor.github.io/blog/2018/02/01/using-rselenium-and-docker-to-webscrape-in-r-using-the-who-snake-database/
-
-# installing packages
-if ("RSelenium" %in% installed.packages() != TRUE) {
-  install.packages("RSelenium")
-}
-
-# attaching package
-library(RSelenium)
-
-# opening docker container from system
-check <- system2("docker", args = "ps", stdout = TRUE)
-
-```
----
-# Screenscraping with RSelenium
-
-```{r}
-
-# opening new container (and killing old ones)
-if (length(check) == 1) {
-  
-  #start new container
-  system2("docker", args = c("run", "-d", "-p", "4445:4444", "selenium/standalone-chrome"))
-  
-} else {
-  
-  # kill old container
-  DockerName <- trimws(strsplit(check[2],"tcp")[[1]][2])
-  system2("docker", args = c("kill",DockerName))
-  
-  # start new container
-  system2("docker", args = c("run", "-d", "-p", "4445:4444", "selenium/standalone-chrome"))
-  
-}
-
-```
----
-# Screenscraping with RSelenium
-
-```{r}
-# Assigning google chrome docker session
-remDr <- RSelenium::remoteDriver(remoteServerAddr = "localhost",
-                                 port = 4445L,
-                                 browserName = "chrome")
-
-# Waiting for 5 seconds to finish initialization of docker session
-Sys.sleep(5)
-
-```
-
----
-# Screenscraping with RSelenium
-
-- We can now navigate to a website and print a screenshot
-
-```{r, results = 'hide'}
-
-# Open remote connection
-remDr$open()
-
-# Navigate to website
-remDr$navigate("https://www.youtube.com/watch?v=1aheRpmurAo&")
-
-# Wait for 2 seconds for the website to load
-Sys.sleep(2)
-
-# Scrolling down a bit
-webElem <- remDr$findElement("css", "body")
-for (i in 20){
-  webElem$sendKeysToElement(list(key = "down_arrow"))
-}
-
-
-# take screenshot
-remDr$screenshot(file = 'Images/RSeleniumScreenshot.png')
-```
-
----
-# Screenshot 
-
-![plot](Images/RSeleniumScreenshot.png)
-
----
-# Screenscraping with RSelenium
-
- - We can then navigate to the "show more" button, and click it
-
-```{r, results = 'hide'}
-
-# Xpath of "show more" button (using inspect element in Browser)
-xp <- '//*[@id="more"]/yt-formatted-string'
-
-# navigating to button element
-element <- remDr$findElement(using = 'xpath', xp)
-
-# click on button
-element$clickElement()
-
-# Scrolling down a bit
-webElem <- remDr$findElement("css", "body")
-for (i in 20){
-  webElem$sendKeysToElement(list(key = "down_arrow"))
-}
-
-# take screenshot (we can see that the description box is now expanded)
-remDr$screenshot(file = 'Images/RSeleniumScreenshot2.png')
-
-```
----
-# Screenshot 
-
-![plot](Images/RSeleniumScreenshot2.png)
-
----
-# Screenscraping with RSelenium
-
-- We can then extract the contents of the expanded description box
-
-```{r, results = 'hide'}
-
-#navigating to description element
-xp2 <- '//*[@id="description"]/yt-formatted-string'
-element2 <- remDr$findElement(using = 'xpath', xp2)
-
-# get element text
-unlist(element2$getElementText())
-
-```
-
-"John Oliver discusses the census, why it matters, and the consequences of an undercount.\n\nConnect with Last Week Tonight online... \n\nSubscribe to the Last Week Tonight YouTube channel for more almost news as it almost happens: www.youtube.com/lastweektonight \n\nFind Last Week Tonight on Facebook like your mom would: www.facebook.com/lastweektonight \n\nFollow us on Twitter for news about jokes and jokes about news: www.twitter.com/lastweektonight \n\nVisit our official site for all that other stuff at once: www.hbo.com/lastweektonight"
 
 ---
 # Screenscraping
@@ -297,10 +129,10 @@ class: center, middle
 # API-Harvesting
 
 - An [**A**pplication **P**rogramming **I**nterface]([API](https://en.wikipedia.org/wiki/Application_programming_interface)) is:
-  - system build for developers
-  - directly communicate with the database
+  - a system build for developers
+  - directly communicating with the database
   - Voluntary service of the website
-  - they can dictate what information is accessible, to whom, how, and in which quantities.
+  - dictating what information is accessible, to whom, how, and in which quantities.
 
 ![plot](Images/API_harvesting.png)
 
@@ -327,14 +159,14 @@ class: center, middle
 - Advantages of API-Harvesting:
   + No need to interact with HTML files, you only get the information you asked for
   + The data you get is already nicely formatted (usually JSON files)
-  + You can be sure that what you do is perfectly legal and in line with ToS
+  + You can be sure that what you do is legal and (probably) in line with Terms of Service
 
 - Disadvantages of API-Harvesting:
   - Not every website has an API
-  - You can only get what the company allows you to get
-  - There are often restricting quotas (querys per day)
+  - You can only get what the it allows you to get
+  - There are often restricting quotas (e.g. daily limits)
   - there is no standard language to make querys, you have to check the documentation
-  - Not every API has a documentation
+  - Not every API has a (good) documentation
   
 ---
 class: inverse, middle, center
@@ -371,6 +203,48 @@ class: center, middle
 - What we get back is a JSON formatted response with the formats and information we requested in the Sandbox
 
 ---
+# What is JSON?
+
+- [Java Script Object Notation](https://en.wikipedia.org/wiki/JSON)
+
+- Language indpendent data format (like .csv)
+
+- Like a nested List of Key:Value pairs
+
+- Standard data format for many APIs and web applications
+
+- Better than tabular formats (.csv / .tsv) at storing large quantities of data by not declaring missing data
+
+- Represented in R as a list of lists, needs to be transformed into a regular dataframe (this can be tedious)
+
+---
+# What is JSON?
+
+```{r, results = 'hide'}
+'{
+  "first name": "John",
+  "last name": "Smith",
+  "age": 25,
+  "address": {
+    "street address": "21 2nd Street",
+    "city": "New York",
+    "postal code": "10021"
+  },
+  "phone numbers": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "mobile",
+      "number": "646 555-4567"
+    }
+  ],
+  "sex": "male"
+}'
+```
+
+---
 # Most Important Parameters
 
 - All possible parameters are listed [here](https://developers.google.com/youtube/v3/docs/search/)
@@ -386,9 +260,11 @@ class: center, middle
 
 - The package handles the authentification with our credentials and translates R commands into API calls
 
-- In essence, we can run R commands and get API results back
+- It also simplifies the JSON response to a standard dataframe automatically
 
-- For this workshop, we will use the [tubeR package](https://cran.r-project.org/web/packages/tuber/tuber.pdf)
+- In essence, we can run R commands and get nicely formatted API results back
+
+- For this workshop, we will thus use the [tubeR package](https://cran.r-project.org/web/packages/tuber/tuber.pdf)
 
 ---
 # Rate Limits
@@ -410,17 +286,28 @@ class: center, middle
 
   - different types (e.g write operation: 50 units; video upload: 1600 units)
   
-  - how many parts the requested resource has (playlist:2; channel: 6; video: 10)
+  - how many parts the requested resource has (playlist:2 ; channel:6 ; video:10)
   
-- **You should only request parts that you absolutely need to make the most of your units** 
+- **You should only request parts that you absolutely need to make the most of your units. More on that in the data collection session. ** 
 
-- **BEWARE: Sending one wrong request can fill up your daily quota**
-  
+**BEWARE: Sending wrong requests can fill up your daily quota**
+
+---
+# Rate Limits
+
+- You can check the rate limits in the [_YouTube_ API Documentation](https://developers.google.com/youtube/v3/getting-started#quota)
+
+- You can see how much of your quota you have already used up in the developer console
+
+![plot](Images/Quotas.png)
+
+![plot](Images/Metrics.png)
+
 ---
 # Can I Increase my Rate Limit?
 
 .center[![plot](Images/Odyssey4.jpg)]
-
+  
 ---
 
 # Raising the Quota Limit for YouTube `r ji("cowboy")`
@@ -617,9 +504,8 @@ class: center, middle
 
 class: center, middle
 
-# Exercises
+# [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/A2_The_YouTube_API_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
----
-class: center, middle
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/A2_TheYouTube_API_solution.html)
 
-# Thank You
+

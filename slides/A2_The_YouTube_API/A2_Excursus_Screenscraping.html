@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Automatic Sampling and Analysis of YouTube Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
+    <meta name="date" content="2020-02-10" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Automatic Sampling and Analysis of YouTube Data
+## Excursus Screenscraping
+### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
+### 2020-02-10
+
+---
+
+# Screenscraping
+
+There are basically two ways to do screenscraping R
+  - Rvest: Sufficient for scraping **static** websites
+  - RSelenium: Can also deal with **dynamic** websites
+
+Dynamic websites are pages that _dynamically_ load content from the database without
+changing the URL
+
+Example: When you click on "show more" on the comment replies of a _YouTube_ video, new content
+is loaded from the database but not the whole website is reloaded. This is done with [Ajax](https://en.wikipedia.org/wiki/Ajax_(programming) )
+
+---
+# Screenscraping with Rvest
+
+
+```r
+# installing and attaching package
+if ("rvest" %in% installed.packages() != TRUE) {
+  install.packages("rvest")};library(rvest)
+## Loading required package: xml2
+
+# defining website and Xpath from inspect function in browser
+page &lt;- "https://www.youtube.com/watch?v=1aheRpmurAo&amp;"
+Xp &lt;- "/html/body/div[2]/div[4]/div/div[5]
+/div[2]/div[2]/div/div[2]/meta[2]"
+
+# getting page
+Website &lt;- read_html(page)
+
+# getting node containing the description
+Description &lt;- html_nodes(Website, xpath = Xp)
+
+# printing description
+html_attr(Description, name = "content")
+```
+"John Oliver discusses the census, why it matters, and the consequences of an undercount.
+Connect with Last Week Tonight online.Subscribe to the Last Week ..."
+
+---
+# Screenscraping with RSelenium
+
+
+```r
+# We first have to configure docker and open a docker container:
+# https://callumgwtaylor.github.io/blog/2018/02/01/
+# using-rselenium-and-docker-to-webscrape-in-r-using-the
+# -who-snake-database/
+
+# installing packages
+if ("RSelenium" %in% installed.packages() != TRUE) {
+  install.packages("RSelenium")
+}
+
+# attaching package
+library(RSelenium)
+
+# opening docker container from system
+check &lt;- system2("docker", args = "ps", stdout = TRUE)
+```
+
+---
+# Screenscraping with RSelenium
+
+
+```r
+# opening new container (and killing old ones)
+if (length(check) == 1) {
+  
+  #start new container
+  system2("docker", args = c("run",
+                             "-d",
+                             "-p",
+                             "4445:4444",
+                             "selenium/standalone-chrome"))
+  
+} else {
+  
+  # kill old container
+  DockerName &lt;- trimws(strsplit(check[2],"tcp")[[1]][2])
+  system2("docker", args = c("kill",DockerName))
+  
+  # start new container
+  system2("docker", args = c("run",
+                             "-d",
+                             "-p",
+                             "4445:4444",
+                             "selenium/standalone-chrome"))
+  
+}
+```
+---
+# Screenscraping with RSelenium
+
+
+```r
+# Assigning google chrome docker session
+remDr &lt;- RSelenium::remoteDriver(remoteServerAddr = "localhost",
+                                 port = 4445L,
+                                 browserName = "chrome")
+
+# Waiting for 5 seconds to finish initialization of docker session
+Sys.sleep(5)
+```
+
+---
+# Screenscraping with RSelenium
+
+- We can now navigate to a website and print a screenshot
+
+
+```r
+# Open remote connection
+remDr$open()
+
+# Navigate to website
+remDr$navigate("https://www.youtube.com/watch?v=1aheRpmurAo&amp;")
+
+# Wait for 2 seconds for the website to load
+Sys.sleep(2)
+
+# Scrolling down a bit
+webElem &lt;- remDr$findElement("css", "body")
+for (i in 20){
+  webElem$sendKeysToElement(list(key = "down_arrow"))
+}
+
+
+# take screenshot
+remDr$screenshot(file = 'Images/RSeleniumScreenshot.png')
+```
+
+---
+# Screenshot 
+
+![plot](Images/RSeleniumScreenshot.png)
+
+---
+# Screenscraping with RSelenium
+
+ - We can then navigate to the "show more" button, and click it
+
+
+```r
+# Xpath of "show more" button (using inspect element in Browser)
+xp &lt;- '//*[@id="more"]/yt-formatted-string'
+
+# navigating to button element
+element &lt;- remDr$findElement(using = 'xpath', xp)
+
+# click on button
+element$clickElement()
+
+# Scrolling down a bit
+webElem &lt;- remDr$findElement("css", "body")
+for (i in 20){
+  webElem$sendKeysToElement(list(key = "down_arrow"))
+}
+
+# take screenshot (we can see that the description box
+# is now expanded)
+remDr$screenshot(file = 'Images/RSeleniumScreenshot2.png')
+```
+---
+# Screenshot 
+
+![plot](Images/RSeleniumScreenshot2.png)
+
+---
+# Screenscraping with RSelenium
+
+- We can then extract the contents of the expanded description box
+
+
+```r
+#navigating to description element
+xp2 &lt;- '//*[@id="description"]/yt-formatted-string'
+element2 &lt;- remDr$findElement(using = 'xpath', xp2)
+
+# get element text
+unlist(element2$getElementText())
+```
+
+"John Oliver discusses the census, why it matters, and the consequences of an undercount.\n\nConnect with Last Week Tonight online... \n\nSubscribe to the Last Week Tonight YouTube channel for more almost news as it almost happens: www.youtube.com/lastweektonight \n\nFind Last Week Tonight on Facebook like your mom would: www.facebook.com/lastweektonight \n\nFollow us on Twitter for news about jokes and jokes about news: www.twitter.com/lastweektonight \n\nVisit our official site for all that other stuff at once: www.hbo.com/lastweektonight"
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
