@@ -13,6 +13,13 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
+```{r, echo=FALSE,results='hide'}
+library(emo)
+
+```
+
+
 # Screenscraping
 
 There are basically two ways to do screenscraping R
