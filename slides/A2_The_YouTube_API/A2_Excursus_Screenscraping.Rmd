@@ -211,4 +211,4 @@ class: center, middle
 
 # [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/A2_Excursus_Screenscraping_question.html) time `r ji("weight_lifting_woman")``r ji("muscle")``r ji("running_man")``r ji("biking_man")`
 
-## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/A2_Excursus_Screensraping_solution.html)
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/A2_Excursus_Screenscraping_solution.html)
