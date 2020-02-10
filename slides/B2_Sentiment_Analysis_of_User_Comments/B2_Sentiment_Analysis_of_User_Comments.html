@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Automatic Sampling and Analysis of YouTube Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julian Kohne Johannes Breuer M. Rohangis Mohseni" />
+    <meta name="date" content="2020-02-10" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../workshop.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Automatic Sampling and Analysis of YouTube Data
+## Sentiment Analysis of User Comments
+### Julian Kohne<br />Johannes Breuer<br />M. Rohangis Mohseni
+### 2020-02-10
+
+---
+
+
+layout: true
+
+
+
+&lt;div class="my-footer"&gt;
+  &lt;div style="float: left;"&gt;&lt;span&gt;Julian Kohne, Johannes Breuer, M. Rohangis Mohseni&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="float: right;"&gt;&lt;span&gt;GESIS, Cologne, Germany, 2020-02-10&lt;/span&gt;&lt;/div&gt;
+  &lt;div style="text-align: center;"&gt;&lt;span&gt;Sentiment Analysis of User Comments&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style type="text/css"&gt;
+
+pre {
+  font-size: 10px
+}
+&lt;/style&gt;
+
+---
+class: center, middle
+
+# Sentiment Analysis of User Comments
+
+---
+# Setup
+
+Keep in mind that R always wants to convert strings to factors by default in read/write operations.
+We can switch it off globally for this session so we don't have to think about it for every command.
+
+
+```r
+# Because we are working with textual data, we need to prevent R
+# from recognizing all text strings as factors
+options(stringsAsFactors = FALSE)
+```
+---
+class: center, middle
+# Basic Sentiment Analysis
+
+---
+# Sentiment Analysis
+
+- The basic task of sentiment analysis is to detect the _polarity_ of a sentence or a collection of sentences in terms of positivity and negativity
+
+- There are other methods to detect:
+    - emotional states
+    - political stances
+    - objectivity/subjectivity
+    
+- Often used in market research on product reviews
+
+- For _YouTube_ we can quantify the reception of the video by looking at the sentiment in the comment section
+
+---
+# Basic Idea of Sentiment Analysis
+
+We compare each word in a sentence with a predefined dictionary
+
+- Each word gets a score between -1 (negative) and +1 (positive), with 0 being neutral
+
+- We add up all the scores for a sentence to get an overall score for the sentence
+
+
+.center[![plot](Images/SAExample.png)]
+
+---
+# Basic Sentiment Analysis
+
+
+```r
+lexicon::hash_sentiment_jockers[sample(1:10738,10),]
+```
+
+```
+##                    x     y
+##  1:           inmate -0.80
+##  2:          derides -1.00
+##  3:          council  0.40
+##  4:     unlawfulness -1.00
+##  5:      condemnable -1.00
+##  6:             cult -1.00
+##  7:            fears -1.00
+##  8: indiscriminating -0.25
+##  9:         scathing -1.00
+## 10:      flourishing  0.50
+```
+
+---
+# Basic Sentiment Analysis
+
+- This simple approach is a crude approximation
+
+- It is limited for a multitude of reasons:
+  - Negations ("This video is not bad, why would someone hate it?")
+  - Adverbial modification ("I love it" vs. "I absolutely love it")
+  - Context ("The horror movie was scary with many unsettling plot twists")
+  - Domain specificity ("You should see their decadent dessert menu.")
+  - Slang ("Yeah, this is the shit!")
+  - Sarcasm ("Superb reasoning, you must be really smart")
+  - Abbreviations ("You sound like a real mofo")
+  - Emoticons and Emoji ("How nice of you... 😠")
+  - ASCII Art ("( ͡° ͜ʖ ͡°)")
+  
+- These limitations can lead to inaccurate classifications, for [example](https://www.youtube.com/watch?v=DcJFdCmN98s):
+
+---
+# Basic Sentiment Analysis
+
+### Classified as very negative
+&lt;font color=red&gt;Fucking&lt;/font&gt; hilarious! And that guy could either do commercials or be an actor, I've never, in my entire life, heard anyone express themselves that strongly about a &lt;font color=red&gt;fucking&lt;/font&gt; hamburger.  And now all I know is I have never eaten one of those but &lt;font color=red&gt;damned&lt;/font&gt; if I won't have it on my list of &lt;font color=red&gt;shit&lt;/font&gt; to do tomorrow! &lt;font color=red&gt;Hell&lt;/font&gt; of a job by schmoyoho as well, whoever said this should be a commercial &lt;font color=red&gt;hit&lt;/font&gt; it on the head.
+
+### Classified as very positive
+Schmoyoho, we're not really &lt;font color=green&gt;entertained&lt;/font&gt; by you anymore.  You're sort of &lt;font color=green&gt;like&lt;/font&gt; Dane Cook. At first we thought, "&lt;font color=green&gt;Wow&lt;/font&gt;! Get a load of this channel! It's &lt;font color=green&gt;funny&lt;/font&gt;!" But then we realized after far too long, "&lt;font color=green&gt;Wow&lt;/font&gt;, these guys are just a one trick pony! There is absolutely nothing I &lt;font color=green&gt;like&lt;/font&gt; about these people!"  You've run your course. The shenanigans, the "songifies".. we get it. It's just not that &lt;font color=green&gt;funny&lt;/font&gt; man. We don't really &lt;font color=green&gt;like&lt;/font&gt; you. So please, for your own sake, go and actually try to make some real &lt;font color=green&gt;friends&lt;/font&gt;.
+
+---
+# Sentiment Analysis of _YouTube_ Comments
+
+There are way more sophisticated methods for sentiment analysis that yield  better results, however, their mathematical complexity is beyond the scope of this tutorial. We will do three things in this tutorial and compare the respective results
+
+1) Apply a basic sentiment analysis to our scraped _YouTube_ comments
+
+2) Use a slightly more elaborate out of the box method for sentiment analysis
+
+3) Extend the basic sentiment analysis to emoji
+
+&lt;font color=red&gt;Word of Advice:&lt;/font&gt; Before using the more elaborate methods in your own research, make sure that you understand the underlying model, so you can make sense of your results. You should never blindly trust someone else's implementation without understanding it. Also: Always do spotchecks to see if you get any unexpected results.
+
+---
+# 1) Basic Comment Sentiments
+
+First of all, we load our preprocessed comments and try out the build in basic sentiment tagger from the `syuzhet` package
+
+
+```r
+# loading data
+comments &lt;- readRDS("../../data/ParsedComments.rds")
+
+# loading package
+library(syuzhet)
+
+# Testing simple tagger
+get_sentiment("Superb reasoning, you must be really smart")
+```
+
+```
+## [1] 1.5
+```
+
+---
+# 1) Basic Comment Sentiments
+
+We can appy the basic sentiment tagger to the whole vector of comments. Keep in mind that we need to use the text column without hyperlinks and emoji.
+
+
+```r
+# Creating basic Sentiment scores
+BasicSentiment &lt;- get_sentiment(comments$TextEmojiDeleted)
+
+# summarizing basic sentiment scores
+summary(BasicSentiment)
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## -10.75000  -0.50000   0.00000  -0.01116   0.60000  11.70000
+```
+
+Checking the documentation of the `get_sentiment()` function reveals that it can take different _methods_ as arguments. These methods correspond to different dictionaries and might yield different results. The function also allows to use a custom dictionary by providing a dataframe to the _lexicon_ argument
+
+---
+# 1) Basic Comment Sentiments
+
+Lets compare the results of the different dictionaries
+
+
+```r
+# computing sentiment scores with different dictionaries
+BasicSentimentSyu &lt;- get_sentiment(comments$TextEmojiDeleted,
+                                   method = "syuzhet")
+BasicSentimentBing &lt;- get_sentiment(comments$TextEmojiDeleted,
+                                    method = "bing")
+BasicSentimentAfinn &lt;- get_sentiment(comments$TextEmojiDeleted,
+                                     method = "afinn")
+BasicSentimentNRC &lt;- get_sentiment(comments$TextEmojiDeleted,
+                                   method = "nrc")
+```
+---
+# 1) Basic Comment Sentiments
+
+
+```r
+# combining them to a dataframe
+Sentiments &lt;- cbind.data.frame(BasicSentimentSyu,
+                               BasicSentimentBing,
+                               BasicSentimentAfinn,
+                               BasicSentimentNRC,
+                               1:5777)
+# setting colnames
+colnames(Sentiments) &lt;- c("Syuzhet",
+                          "Bing",
+                          "Afinn",
+                          "NRC",
+                          "Comment")
+```
+---
+# 1) Basic Comment Sentiments
+
+```r
+# Correlation Matrix
+cor(Sentiments[,c(-5)])
+```
+
+```
+##           Syuzhet      Bing     Afinn       NRC
+## Syuzhet 1.0000000 0.7501405 0.7421081 0.6528393
+## Bing    0.7501405 1.0000000 0.6706855 0.4647964
+## Afinn   0.7421081 0.6706855 1.0000000 0.4333834
+## NRC     0.6528393 0.4647964 0.4333834 1.0000000
+```
+
+---
+# 1) Basic Comment Sentiments
+
+
+```r
+# loading library
+library(ggplot2)
+
+# transforming data to long format
+SentimentsLong &lt;- reshape2::melt(Sentiments,
+                                 id.vars = c("Comment"))
+
+# Violin Plot
+ggplot(SentimentsLong, aes(x=variable,
+                           y=value,
+                           fill=variable)) + 
+    geom_violin() +
+    ggtitle("Distributions of Sentiment Scores
+            for different Dictionaries")
+```
+---
+# 1) Basic Comment Sentiments
+
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# 1) Basic Comment Sentiments
+
+The choice of the dictionary can have an impact on your sentiment analysis. For this reason, it's crucial to select the dictionary with care and to be aware of how, by whom and for which purpose it was constructed. You can find more information on the specifics of the differnt dictionaries [here](https://arxiv.org/pdf/1901.08319.pdf).
+
+
+
+In this tutorial, we will continue with the `syuzhet` dictionary.
+
+
+```r
+# Adding the Syuzhet Comments to our dataframe
+comments$Sentiment &lt;- Sentiments$Syuzhet
+```
+
+---
+# 1) Basic Comment Sentiments
+
+Another pitfall to be aware of is the length of the comments. Let's have a look at the distribution of Words per comment
+
+
+```r
+# Computing number of words per comment
+comments$Words &lt;- sapply(comments$TextEmojiDeleted,
+                         function(x){length(unlist(strsplit(x,
+                                                            " ")))})
+```
+
+
+
+```r
+# Histogram
+ggplot(comments, aes(x=Words)) + 
+  geom_histogram(binwidth = 1) + 
+  geom_vline(aes(xintercept=mean(Words)),
+             color="red",
+             linetype="dashed",
+             size = 0.5) +
+  ggtitle(label = "Number of Words per Comment") +
+  xlab("No. of Words") +
+  ylab("No. of Comments")
+```
+
+---
+# 1) Basic Comment Sentiments
+
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# 1) Basic Comment Sentiments
+
+Because longer comments also contain more words, they have a higher likelihood to get more extreme sentiment scores. Lets' look at the most negative and the most ppositive comments
+
+
+```r
+# Most positive comment
+strwrap(comments$TextEmojiDeleted[Sentiments$Syuzhet ==
+                            max(Sentiments$Syuzhet)], 79)
+
+# Most negative comment
+strwrap(comments$TextEmojiDeleted[Sentiments$Syuzhet ==
+                              min(Sentiments$Syuzhet)], 79)
+```
+---
+# 1) Basic Comment Sentiments
+
+**Most positive Comment**
+"I am going to watch but i am so scared you are going to fuck up for me the one civic duty i have done since i legally could...work the census. I am weirdly passionate that the numbers are correct. My favorite house i every had to verify was the counties burn house. I really do enjoy doing this and i sent in my application last week for work it for the 3rd time. Edit: thank you. I believe we can only make our country better is by having a well educated, healthy, food and housing secure population. Things are not perfect but i have hope and making sure that funds are properly distrubute as laws hopefully change (i have hope). Encourage eduation and open mindedness in this upcoming group.) is something i think is extremely important."
+
+**Most negative Comment** "Please tell me how it's worse. From my perspective, it seems that the fostering of government dependence, unions, loss of jobs, stop and frisk, and gun restriction in detroit and chicago are more damaging than any republican policy. Giving tax cuts to walmart is bad policy, but its not destroying my neighborhoods. Forcing everyone to become TSA agents and city workers has definitely destroyed my neighborhoods. The failure of the party is so obvious, all you can do is pass off the blame by calling the opposition racist and claiming the party is reformed. What are the evil policies hurting blacks? I have some ideas."
+
+---
+# 1) Basic Comment Sentiments
+
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Basic Comment Sentiment
+
+To control for the effect of comment length, we can divide the sentiment score by the number of words in the comment to get a new indicator:  _SentimentPerWord_ 
+
+
+```r
+# Normalizing for number of Words
+comments$SentimentPerWord &lt;- comments$Sentiment / comments$Words
+
+# Most positive comment
+head(comments$TextEmojiDeleted[comments$Sentiment ==
+                                 max(comments$SentimentPerWord,
+                                     na.rm=T)],1)
+
+# Most negative comment
+head(comments$TextEmojiDeleted[comments$Sentiment ==
+                                 min(comments$SentimentPerWord,
+                                      na.rm=T)],1)
+```
+---
+# Basic Comment Sentiment
+
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+class: center, middle
+# More elaborate Method(s)
+
+---
+# 2) More elaborate Method(s)
+
+Although no sentiment detection method is perfect, some are more sophisticated than others.
+  - `sentimentR` package
+  - **Stanford coreNLP** utilities set
+
+
+`sentimentr` attempts to take into account:
+- valence shifters
+- negators
+- amplifiers (intensifiers),
+- de-amplifiers (downtoners),
+- and adversative conjunctions
+
+Negators appear ~20% of the time a polarized word appears in a sentence. Conversely, adversative conjunctions appear with polarized words ~10% of the time. Not accounting for the valence shifters could significantly impact the modeling of the text sentiment.
+
+---
+# 2) More elaborate Method(s)
+
+**Stanford coreNLP** utilities set:
+- build in Java.
+- very performant
+- tricky to get to work from R
+- [documentation](https://github.com/trinker/sentimentr) on GitHub
+
+We will be using `sentimentR` for this tutorial
+
+---
+# 2) `SentimentR`
+
+First, we need to attach the package
+
+
+```r
+if ("sentimentr" %in% installed.packages() == FALSE) {
+  install.packages("sentimentr")
+}
+
+library(sentimentr)
+```
+then we can compute sentiment scores
+
+
+```r
+# computing sentiment scores
+Sentences &lt;- get_sentences(comments$TextEmojiDeleted)
+SentDF &lt;- sentiment_by(Sentences)
+comments &lt;- cbind.data.frame(comments,SentDF[,c(2,3,4)])
+colnames(comments)[c(15,16,17)] &lt;- c("word_count",
+                                     "sd",
+                                     "ave_sentiment")
+```
+
+---
+# 2) `SentimentR`
+
+Lets check is the sentiment scoring for sentimentR correlates with the simpler approach
+
+
+```r
+# plotting SentimentPerWord vs. SentimentR
+ggplot(comments, aes(x=ave_sentiment, y=SentimentPerWord)) + 
+    geom_point(size =0.5) +
+    ggtitle("Basic Sentiment Scores vs. `SentimentR`") +
+    xlab("SentimentR Score") +
+    ylab("Syuzhet Score") +
+    geom_smooth(method=lm, se = TRUE)
+```
+---
+# 2) `SentimentR`
+
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-22-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+# 2) `SentimentR`
+
+We want to compare the difference score for the two methods
+
+
+```r
+#computing difference score
+comments$SentiDiff &lt;- comments$ave_sentiment-
+                      comments$SentimentPerWord
+
+hist(comments$SentiDiff,
+     main= "Distribution of Differences:
+      SentimentR vs. Syuzhet",
+     xlab = "Difference Score",
+     ylab = "Frequency",
+     breaks = 50)
+```
+
+---
+# `SentimentR`
+
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+# 2) `SentimentR`
+
+Lets check for which comments we get the biggest differences between the two methods.
+A bigger difference means that `SentimentPerWord` is more positive than `SentimentR`
+
+
+```r
+# top 5 maximum difference comments
+strwrap(comments[order(comments$SentiDiff),c(2)][1:5],79)
+```
+
+```
+## [1] "@CottonCatt I wish"                                               
+## [2] "@SuddenReal Yeah but 'no' would be a real protest to the question"
+## [3] "Ive DEFINITELY had a group poop nightmare 😬"                      
+## [4] "Margarita M. Ugh I wish hahah"                                    
+## [5] "3:35 wtf? 😂😂😂"
+```
+
+---
+# 2) `SentimentR`
+
+`SentimentR` is:
+  - better at dealing with negations
+  - better at detecting fixed expressions
+  - better at detecting adverbs
+  - better at detecting slang and abbreviations
+  - easy to implement
+  - quite fast
+
+---
+class: center, middle
+# Sentiments for Emoji
+
+---
+# 3) Sentiments for Emoji
+
+Emoji are often used to confer emotions (hence the name), so they might be a valuable addition
+to assess the sentiment of a comment. This is less straigtforward than assessing
+sentiments based on word dictionaries due to multiple reasons:
+
+- Emoji can have multiple meanings: 🙏
+- They are highly context dependent: 🍆
+- They are culture-dependent: 🍑
+- They are person-dependent: 😂 😂
+
+
+---
+# 3) Sentiments for Emoji
+
+In addition, emoji are rendered differently on different platforms, eliciting different
+emotions.
+
+![plot](Images/Emoji.png)
+
+Source: [Miller et al., 2016](https://jacob.thebault-spieker.com/papers/ICWSM16_emoji.pdf)
+---
+# 3) Sentiments for Emoji
+
+In addition, they are also notoriously difficult to deal with from the technical side due to the infamous [character encoding hell](https://dss.iq.harvard.edu/blog/escaping-character-encoding-hell-r-windows)
+
+- Emoji can come in one of multiple completely different encodings
+- Your operating system has a default encoding that is used when opening/writing files in a text editor
+- Your R installation has a default encoding that gets used when opening/writing files
+
+If either of those mismatch at any point, you can  accidentally overwrite the original encoding in a non-recoverable.
+To us, this happened especially often with UTF8 encoded files and Windows operating system (Default: Latin-1252)
+
+![plot](Images/Encoding.png)
+---
+# 3) Sentiments for Emoji
+
+Luckily, we already saved our emoji in a textual description format and can simply treat them as a character string for sentiment analysis. We can therefore proceed in 3 steps:
+
+1) Create a suitable sentiment dictionary for textual descriptions of emoji
+
+2) Compute sentiment scores for comments only based on emoji
+
+3) Compare the emoji sentiment scores with the text-based sentiments
+
+---
+# Emoji Sentiment Dictionary
+
+We will use the emoji sentiment dictionary from the `lexicon` package. It only contains the 734 most frequent emoji but since the distribution of emoji follows [Zipf's Law](https://en.wikipedia.org/wiki/Zipf%27s_law), it should cover most of the used emoji.
+
+
+```r
+# emoji Sentiments
+EmojiSentiments &lt;- lexicon::emojis_sentiment
+EmojiSentiments[1:5,c(1,2,4)]
+```
+
+```
+##               byte                            name sentiment
+## 1 &lt;f0&gt;&lt;9f&gt;&lt;98&gt;&lt;80&gt;                   grinning face 0.5717540
+## 2 &lt;f0&gt;&lt;9f&gt;&lt;98&gt;&lt;81&gt;  beaming face with smiling eyes 0.4499772
+## 3 &lt;f0&gt;&lt;9f&gt;&lt;98&gt;&lt;82&gt;          face with tears of joy 0.2209684
+## 4 &lt;f0&gt;&lt;9f&gt;&lt;98&gt;&lt;83&gt;     grinning face with big eyes 0.5580431
+## 5 &lt;f0&gt;&lt;9f&gt;&lt;98&gt;&lt;84&gt; grinning face with smiling eyes 0.4220315
+```
+in comparison, our data looks like this:
+
+
+```r
+# Example from our data 
+comments$Emoji[3138]
+```
+
+```
+## [1] "EMOJI_GrinningFace "
+```
+
+---
+# Emoji Sentiment Dictionary
+
+We bring the textual description in the dictionary in line with the formatting in our data so we can replace one with the other using standard text manipulation techniques
+
+
+```r
+# changing formatting in dictionary
+EmojiNames &lt;- paste0("emoji_",gsub(" ","",EmojiSentiments$name))
+EmojiSentiment &lt;- cbind.data.frame(EmojiNames,
+                                   EmojiSentiments$sentiment,
+                                   EmojiSentiments$polarity)
+names(EmojiSentiment) &lt;- c("word","sentiment","valence")
+EmojiSentiment[1:5,]
+```
+
+```
+##                                word sentiment  valence
+## 1                emoji_grinningface 0.5717540 positive
+## 2  emoji_beamingfacewithsmilingeyes 0.4499772 positive
+## 3          emoji_facewithtearsofjoy 0.2209684 positive
+## 4     emoji_grinningfacewithbigeyes 0.5580431 positive
+## 5 emoji_grinningfacewithsmilingeyes 0.4220315 positive
+```
+---
+# Emoji Sentiment Dictionary
+
+
+```r
+# we then tokenize the emoji-only column in our formatted dataframe
+EmojiToks &lt;- tokens(tolower(as.character(unlist(comments$Emoji))))
+EmojiToks[130:131]
+```
+
+```
+## tokens from 2 documents.
+## text130 :
+## [1] "emoji_facewithtearsofjoy" "emoji_facewithtearsofjoy"
+## 
+## text131 :
+## [1] "emoji_facewithtearsofjoy"
+```
+
+---
+# Computing Sentiment Scores
+
+We can now replace the emojis that appear in the dictionary with the corresponding sentiment scores
+
+```r
+# Creating dictionary object
+EmojiSentDict &lt;- as.dictionary(EmojiSentiment[,1:2])
+
+# Replacing Emoji with sentiment scores
+EmojiToksSent &lt;- tokens_lookup(x = EmojiToks,
+                               dictionary = EmojiSentDict)
+EmojiToksSent[130:131]
+```
+
+```
+## tokens from 2 documents.
+## text130 :
+## [1] "0.220968403775133" "0.220968403775133"
+## 
+## text131 :
+## [1] "0.220968403775133"
+```
+
+---
+# Computing Sentiment Scores
+
+
+```r
+# only keep the assigned sentiment scores for the emoji vector
+AllEmojiSentiments &lt;- tokens_select(EmojiToksSent,EmojiSentiment$sentiment,
+                                    "keep")
+AllEmojiSentiments &lt;- as.list(AllEmojiSentiments)
+
+# define function to average emoji sentiment scores  per comment
+MeanEmojiSentiments &lt;- function(x){
+  
+  x &lt;- mean(as.numeric(as.character(x)))
+  return(x)
+  
+}
+
+# Apply the function to every comment that contains emojis
+MeanEmojiSentiment &lt;- lapply(AllEmojiSentiments,MeanEmojiSentiments)
+MeanEmojiSentiment[MeanEmojiSentiment == 0] &lt;- NA
+MeanEmojiSentiment &lt;- unlist(MeanEmojiSentiment)
+MeanEmojiSentiment[130:131]
+```
+
+```
+##   text130   text131 
+## 0.2209684 0.2209684
+```
+  
+---
+# Emoji Sentiment Scores
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-32-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Emoji Sentiment vs. Word Sentiment
+
+
+```r
+comments &lt;- cbind.data.frame(comments,MeanEmojiSentiment)
+
+# correlation between averaged emoji sentiment score
+#   and averaged text sentiment score
+cor(comments$ave_sentiment,
+    comments$MeanEmojiSentiment,
+    use="complete.obs")
+```
+
+```
+## [1] 0.1707166
+```
+
+
+
+```r
+# plot the relationship
+ggplot(comments, aes(x = ave_sentiment,
+                     y = MeanEmojiSentiment))+
+  geom_point(shape = 1) +
+  labs(title = "Averaged sentiment scores for text and emojis") +
+  scale_x_continuous(limits = c(-5,5)) +
+  scale_y_continuous(limits = c(-1,1))
+```
+---
+# Emoji Sentiment vs. Word Sentiment
+&lt;img src="B2_Sentiment_Analysis_of_User_Comments_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" /&gt;
+---
+# Emoji Sentiment vs. Word Sentiment
+
+As we can see, there seems to be no  meaningful relationship between the sentiment scores of the text and the sentiment
+of the used emojis. This can have multiple reasons:
+  - Comments that score very high (positive) on emoji sentiment typically contain very little text
+  - Comments that score very low  (negative) on emoji sentiment typically contain very little text
+  - dictionary based bag-of-words/-emojis sentiment analysis is not perfect - there is a lot of room for error in both metrics
+  - most comment text and emoji sentiments are neutral
+  - emojis are very much context dependent, but we only consider a single sentiment score for each emoji
+  - we only have data on the most common emoji
+
+---
+# Emoji Sentiment vs. Word Sentiment
+
+The data is clustered around vertical and horizintal lines:
+
+ - skewed distribution of number of emojis per comment and types of emojis used
+   (e.g., using the one emoji exactly once is by far the most common case for this particular video)
+ - most common average sentiment per word is zero
+
+---
+class: center, middle
+
+# [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/B2_Sentiment_Analysis_of_User_Comments_question.html) time 🏋️‍♀️💪🏃🚴
+
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/AB2_Sentiment_Analysis_of_User_Comments_solution.html)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
