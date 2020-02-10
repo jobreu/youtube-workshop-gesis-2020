@@ -250,8 +250,8 @@ TextEmoRep[159:171]
 
 ```
 
-```{block, box.title = "Exercise 8", box.body = list(fill = "white"), box.icon = "fa-star"}
-We now have the original text column, and the text column with removed hyperlinks and were emoji are replaced with their textual descriptions (`TextEmoRep`). We need one more variable that _only_ contains the textual desciptions of the emoji. You can use our predefined function `ÈxtractEmoji()` from the scripts folder to create this variable.
+```{block, box.title = "Exercise 9", box.body = list(fill = "white"), box.icon = "fa-star"}
+We now have the original text column, and the text column with removed hyperlinks and were emoji are replaced with their textual descriptions (`TextEmoRep`). We need one more variable that _only_ contains the textual desciptions of the emoji. You can use our predefined function `ExtractEmoji()` from the scripts folder to create this variable.
 
 ```
 
@@ -273,7 +273,7 @@ Emoji[39]
 
 ```
 
-```{block, box.title = "Exercise 8", box.body = list(fill = "white"), box.icon = "fa-star"}
+```{block, box.title = "Exercise 10", box.body = list(fill = "white"), box.icon = "fa-star"}
 We now have selected all the variables we need, formatted them into the right formats, cleaned the text and extracted some additional information from it. Create a new dataframe called `df` that contains the following variables:
 
 - Selection$authorDisplayName

@@ -192,7 +192,7 @@ Sentiments <- cbind.data.frame(BasicSentimentSyu,
                                BasicSentimentBing,
                                BasicSentimentAfinn,
                                BasicSentimentNRC,
-                               1:5777)
+                               1:dim(comments)[1])
 # setting colnames
 colnames(Sentiments) <- c("Syuzhet",
                           "Bing",
