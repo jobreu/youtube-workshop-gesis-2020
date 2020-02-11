@@ -303,7 +303,7 @@ ggplot(comments, aes(x=Words)) +
 ---
 # 1) Basic Comment Sentiments
 
-Because longer comments also contain more words, they have a higher likelihood to get more extreme sentiment scores. Lets' look at the most negative and the most ppositive comments
+Because longer comments also contain more words, they have a higher likelihood to get more extreme sentiment scores. Lets' look at the most negative and the most positive comments
 
 ```{r, echo = TRUE, results = 'hide'}
 # Most positive comment
@@ -328,12 +328,12 @@ strwrap(comments$TextEmojiDeleted[Sentiments$Syuzhet ==
 
 ```{r, echo = FALSE}
 # plotting Sentiment vs. Number of Words
-ggplot(comments, aes(x=Words, y=Sentiment, col=Sentiment)) + 
-    geom_point(size =0.5) +
+ggplot(comments, aes(x = Words, y = Sentiment, col = Sentiment)) + 
+    geom_point(size = 0.5) +
     ggtitle("Sentiment Scores vs. Comment length") +
     xlab("No. of Words in Comment") +
     ylab("Sentiment Score of Comment") +
-    scale_color_gradient(low="red", high="green")
+    scale_color_gradient(low = "red", high = "green")
 
 ```
 
@@ -349,24 +349,24 @@ comments$SentimentPerWord <- comments$Sentiment / comments$Words
 # Most positive comment
 head(comments$TextEmojiDeleted[comments$Sentiment ==
                                  max(comments$SentimentPerWord,
-                                     na.rm=T)],1)
+                                     na.rm = T)],1)
 
 # Most negative comment
 head(comments$TextEmojiDeleted[comments$Sentiment ==
                                  min(comments$SentimentPerWord,
-                                      na.rm=T)],1)
+                                      na.rm = T)],1)
 ```
 ---
 # Basic Comment Sentiment
 
 ```{r, echo = FALSE, warning=F, message=F}
 # plotting SentimentPerWord vs. Number of Words
-ggplot(comments, aes(x=Words, y=SentimentPerWord, col=Sentiment)) + 
-    geom_point(size =0.5) +
+ggplot(comments, aes(x = Words, y = SentimentPerWord, col = Sentiment)) + 
+    geom_point(size = 0.5) +
     ggtitle("Sentiment per Word Scores vs. Comment length") +
     xlab("No. of Words in Comment") +
     ylab("Sentiment Score of Comment per Word") +
-    scale_color_gradient(low="red", high="green")
+    scale_color_gradient(low = "red", high = "green")
 ```
 
 ---
@@ -542,8 +542,7 @@ In addition, they are also notoriously difficult to deal with from the technical
 - Your operating system has a default encoding that is used when opening/writing files in a text editor
 - Your R installation has a default encoding that gets used when opening/writing files
 
-If either of those mismatch at any point, you can  accidentally overwrite the original encoding in a non-recoverable.
-To us, this happened especially often with UTF8 encoded files and Windows operating system (Default: Latin-1252)
+If either of those mismatch at any point, you can  accidentally overwrite the original encoding in a non-recoverable way. To us, this happened especially often with UTF-8 encoded files on Windows (Default: Latin-1252)
 
 ![plot](Images/Encoding.png)
 ---
@@ -568,7 +567,7 @@ EmojiSentiments <- lexicon::emojis_sentiment
 EmojiSentiments[1:5,c(1,2,4)]
 ```
 in comparison, our data looks like this:
-
+  
 ```{r, echo = TRUE}
 # Example from our data 
 comments$Emoji[3138]
