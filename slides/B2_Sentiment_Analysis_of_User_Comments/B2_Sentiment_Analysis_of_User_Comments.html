@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Automatic Sampling and Analysis of YouTube Data</title>
     <meta charset="utf-8" />
@@ -94,17 +94,17 @@ lexicon::hash_sentiment_jockers[sample(1:10738,10),]
 ```
 
 ```
-##                    x     y
-##  1:           inmate -0.80
-##  2:          derides -1.00
-##  3:          council  0.40
-##  4:     unlawfulness -1.00
-##  5:      condemnable -1.00
-##  6:             cult -1.00
-##  7:            fears -1.00
-##  8: indiscriminating -0.25
-##  9:         scathing -1.00
-## 10:      flourishing  0.50
+##             x    y
+##  1:   combust -0.6
+##  2: crippling -1.0
+##  3:    demise -0.5
+##  4:   empower  0.5
+##  5:    ponder  0.4
+##  6:     abhor -0.5
+##  7:  feasible  0.4
+##  8:  gimmicks -0.4
+##  9:   winking  0.6
+## 10:    martyr -0.4
 ```
 
 ---
@@ -184,7 +184,7 @@ summary(BasicSentiment)
 
 ```
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-## -10.75000  -0.50000   0.00000  -0.01116   0.60000  11.70000
+## -10.75000  -0.50000   0.00000  -0.01085   0.60000  11.70000
 ```
 
 Checking the documentation of the `get_sentiment()` function reveals that it can take different _methods_ as arguments. These methods correspond to different dictionaries and might yield different results. The function also allows to use a custom dictionary by providing a dataframe to the _lexicon_ argument
@@ -216,7 +216,7 @@ Sentiments &lt;- cbind.data.frame(BasicSentimentSyu,
                                BasicSentimentBing,
                                BasicSentimentAfinn,
                                BasicSentimentNRC,
-                               1:5777)
+                               1:dim(comments)[1])
 # setting colnames
 colnames(Sentiments) &lt;- c("Syuzhet",
                           "Bing",
@@ -234,10 +234,10 @@ cor(Sentiments[,c(-5)])
 
 ```
 ##           Syuzhet      Bing     Afinn       NRC
-## Syuzhet 1.0000000 0.7501405 0.7421081 0.6528393
-## Bing    0.7501405 1.0000000 0.6706855 0.4647964
-## Afinn   0.7421081 0.6706855 1.0000000 0.4333834
-## NRC     0.6528393 0.4647964 0.4333834 1.0000000
+## Syuzhet 1.0000000 0.7491930 0.7413473 0.6519061
+## Bing    0.7491930 1.0000000 0.6705407 0.4636890
+## Afinn   0.7413473 0.6705407 1.0000000 0.4323534
+## NRC     0.6519061 0.4636890 0.4323534 1.0000000
 ```
 
 ---
@@ -316,7 +316,7 @@ ggplot(comments, aes(x=Words)) +
 ---
 # 1) Basic Comment Sentiments
 
-Because longer comments also contain more words, they have a higher likelihood to get more extreme sentiment scores. Lets' look at the most negative and the most ppositive comments
+Because longer comments also contain more words, they have a higher likelihood to get more extreme sentiment scores. Lets' look at the most negative and the most positive comments
 
 
 ```r
@@ -354,12 +354,12 @@ comments$SentimentPerWord &lt;- comments$Sentiment / comments$Words
 # Most positive comment
 head(comments$TextEmojiDeleted[comments$Sentiment ==
                                  max(comments$SentimentPerWord,
-                                     na.rm=T)],1)
+                                     na.rm = T)],1)
 
 # Most negative comment
 head(comments$TextEmojiDeleted[comments$Sentiment ==
                                  min(comments$SentimentPerWord,
-                                      na.rm=T)],1)
+                                      na.rm = T)],1)
 ```
 ---
 # Basic Comment Sentiment
@@ -536,8 +536,7 @@ In addition, they are also notoriously difficult to deal with from the technical
 - Your operating system has a default encoding that is used when opening/writing files in a text editor
 - Your R installation has a default encoding that gets used when opening/writing files
 
-If either of those mismatch at any point, you can  accidentally overwrite the original encoding in a non-recoverable.
-To us, this happened especially often with UTF8 encoded files and Windows operating system (Default: Latin-1252)
+If either of those mismatch at any point, you can  accidentally overwrite the original encoding in a non-recoverable way. To us, this happened especially often with UTF-8 encoded files on Windows (Default: Latin-1252)
 
 ![plot](Images/Encoding.png)
 ---
@@ -572,7 +571,7 @@ EmojiSentiments[1:5,c(1,2,4)]
 ## 5 &lt;f0&gt;&lt;9f&gt;&lt;98&gt;&lt;84&gt; grinning face with smiling eyes 0.4220315
 ```
 in comparison, our data looks like this:
-
+  
 
 ```r
 # Example from our data 
@@ -699,7 +698,7 @@ cor(comments$ave_sentiment,
 ```
 
 ```
-## [1] 0.1707166
+## [1] 0.1716417
 ```
 
 
@@ -742,10 +741,10 @@ class: center, middle
 
 # [Exercise](https://jobreu.github.io/youtube-workshop-gesis-2020/exercises/B2_Sentiment_Analysis_of_User_Comments_question.html) time 🏋️‍♀️💪🏃🚴
 
-## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/AB2_Sentiment_Analysis_of_User_Comments_solution.html)
+## [Solutions](https://jobreu.github.io/youtube-workshop-gesis-2020/solutions/B2_Sentiment_Analysis_of_User_Comments_solution.html)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/remark/0.14.0/remark.min.js"></script>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
